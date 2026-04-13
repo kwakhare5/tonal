@@ -7,3 +7,4 @@
 - [2026-04-13T10:05:30] refactor: optimize pitch tracking pipeline
 - [2026-04-13T12:30:18] perf: reduce web audio buffer latency
 - [2026-04-13T15:45:04] docs: detail audio synthesis architecture
+- [2026-04-13T19:20:51] test: add unit tests for frequency estimation
