@@ -11,3 +11,4 @@
 - [2026-04-15T08:40:22] feat: add preset macro audio filters
 - [2026-04-15T14:20:09] style: adjust dark mode slider contrast
 - [2026-04-15T18:50:33] fix: resolve audio context initialization race condition
+- [2026-04-14T10:15:22] refactor: streamline audio dsp pipeline
