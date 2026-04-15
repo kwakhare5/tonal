@@ -8,3 +8,4 @@
 - [2026-04-13T12:30:18] perf: reduce web audio buffer latency
 - [2026-04-13T15:45:04] docs: detail audio synthesis architecture
 - [2026-04-13T19:20:51] test: add unit tests for frequency estimation
+- [2026-04-15T08:40:22] feat: add preset macro audio filters
