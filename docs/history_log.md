@@ -10,3 +10,4 @@
 - [2026-04-13T19:20:51] test: add unit tests for frequency estimation
 - [2026-04-15T08:40:22] feat: add preset macro audio filters
 - [2026-04-15T14:20:09] style: adjust dark mode slider contrast
+- [2026-04-15T18:50:33] fix: resolve audio context initialization race condition
