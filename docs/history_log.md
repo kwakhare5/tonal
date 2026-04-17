@@ -14,3 +14,4 @@
 - [2026-04-14T10:15:22] refactor: streamline audio dsp pipeline
 - [2026-04-14T15:40:48] style: adjust waveform spectrum container padding
 - [2026-04-17T09:30:14] feat: add low-pass frequency filter preset
+- [2026-04-17T14:20:55] fix: resolve buffer underrun in audio stream
