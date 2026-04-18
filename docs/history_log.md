@@ -17,3 +17,4 @@
 - [2026-04-17T14:20:55] fix: resolve buffer underrun in audio stream
 - [2026-04-18T11:00:32] refactor: optimize web audio node allocation
 - [2026-04-18T15:15:09] style: update pitch tracker active state indicators
+- [2026-04-18T18:45:41] test: add integration test for audio context resume
