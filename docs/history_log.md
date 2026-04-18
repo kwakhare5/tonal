@@ -15,3 +15,4 @@
 - [2026-04-14T15:40:48] style: adjust waveform spectrum container padding
 - [2026-04-17T09:30:14] feat: add low-pass frequency filter preset
 - [2026-04-17T14:20:55] fix: resolve buffer underrun in audio stream
+- [2026-04-18T11:00:32] refactor: optimize web audio node allocation
