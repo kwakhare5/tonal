@@ -18,3 +18,4 @@
 - [2026-04-18T11:00:32] refactor: optimize web audio node allocation
 - [2026-04-18T15:15:09] style: update pitch tracker active state indicators
 - [2026-04-18T18:45:41] test: add integration test for audio context resume
+- [2026-04-19T10:45:18] docs: detail synthesis gain curve configuration
