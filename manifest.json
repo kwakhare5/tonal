@@ -1,0 +1,45 @@
+{
+  "manifest_version": 3,
+  "name": "Tonal",
+  "version": "1.0.0",
+  "description": "Convert casual messages to professional, or decode corporate speak into plain English. Works in Gmail, Slack, LinkedIn, WhatsApp Web.",
+  "permissions": [
+    "storage",
+    "activeTab"
+  ],
+  "host_permissions": [
+    "https://mail.google.com/*",
+    "https://app.slack.com/*",
+    "https://www.linkedin.com/*",
+    "https://web.whatsapp.com/*",
+    "https://generativelanguage.googleapis.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://mail.google.com/*",
+        "https://app.slack.com/*",
+        "https://www.linkedin.com/*",
+        "https://web.whatsapp.com/*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "css": [
+        "styles.css"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  }
+}

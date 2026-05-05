@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Tonal</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600&display=swap');
+    html {
+      box-sizing: border-box;
+    }
+    
+    *, *:before, *:after {
+      box-sizing: inherit;
+    }
+
+    body {
+      width: 320px;
+      margin: 0;
+      padding: 24px;
+      background-color: #ffffff;
+      color: #09090b;
+      font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      overflow-x: hidden;
+    }
+    
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    
+    h1 {
+      font-size: 22px;
+      font-weight: 600;
+      margin: 0;
+      color: #09090b;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .tagline {
+      font-size: 13px;
+      color: #71717a;
+      margin: 0 0 24px 0;
+    }
+    
+    .badge {
+      background-color: #f0fdf4;
+      color: #166534;
+      border: 1px solid #bbf7d0;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 8px;
+      border-radius: 16px;
+      display: none;
+    }
+    
+    .badge.visible {
+      display: inline-block;
+    }
+    
+    .form-group {
+      margin-bottom: 24px;
+    }
+    
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 8px;
+      color: #27272a;
+    }
+    
+    input[type="password"] {
+      width: 100%;
+      box-sizing: border-box;
+      background-color: #ffffff;
+      border: 1px solid #e4e4e7;
+      color: #09090b;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    
+    input[type="password"]:focus {
+      border-color: #09090b;
+      box-shadow: 0 0 0 1px #09090b;
+    }
+
+    .slider-container {
+      margin-top: 12px;
+    }
+    
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      background: transparent;
+      margin: 0;
+    }
+    
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      height: 20px;
+      width: 20px;
+      border-radius: 50%;
+      background: #09090b;
+      cursor: pointer;
+      margin-top: -8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      transition: box-shadow 0.2s;
+    }
+    
+    input[type="range"]::-webkit-slider-runnable-track {
+      width: 100%;
+      height: 4px;
+      cursor: pointer;
+      background: #e4e4e7;
+      border-radius: 2px;
+    }
+
+    input[type="range"]:focus {
+      outline: none;
+    }
+    
+    input[type="range"]:focus::-webkit-slider-thumb {
+      box-shadow: 0 0 0 4px rgba(9, 9, 11, 0.1);
+    }
+    
+    .slider-labels {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 8px;
+      font-size: 11px;
+      color: #71717a;
+      font-weight: 500;
+      padding: 0 2px;
+    }
+    
+    details {
+      margin-bottom: 24px;
+      border: 1px solid #e4e4e7;
+      border-radius: 12px;
+      padding: 16px;
+      background-color: #fafafa;
+      transition: all 0.2s;
+    }
+    
+    details[open] {
+      background-color: #ffffff;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    }
+    
+    summary {
+      font-size: 13px;
+      font-weight: 500;
+      color: #52525b;
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      user-select: none;
+    }
+    
+    summary::-webkit-details-marker {
+      display: none;
+    }
+    
+    summary::before {
+      content: "›";
+      font-size: 16px;
+      transition: transform 0.2s;
+    }
+    
+    details[open] summary::before {
+      transform: rotate(90deg);
+    }
+    
+    details[open] summary {
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #f4f4f5;
+      color: #09090b;
+    }
+    
+    .link-hint {
+      display: block;
+      font-size: 12px;
+      color: #71717a;
+      margin-top: 6px;
+    }
+    
+    .link-hint a {
+      color: #09090b;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+    
+    .link-hint a:hover {
+      color: #52525b;
+    }
+    
+    button#save-btn {
+      width: 100%;
+      background-color: #09090b;
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 14px;
+      font-family: inherit;
+      font-weight: 500;
+      cursor: pointer;
+      margin-top: 0px;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+    
+    button#save-btn:hover {
+      background-color: #27272a;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    }
+    
+    #status-msg {
+      margin: 0;
+      font-size: 13px;
+      text-align: center;
+      font-weight: 500;
+    }
+    
+    #status-msg:not(:empty) {
+      margin-top: 12px;
+      margin-bottom: -4px;
+    }
+    
+    .success-text {
+      color: #166534;
+    }
+    
+    .error-text {
+      color: #dc2626;
+    }
+    
+    .footer {
+      margin-top: 24px;
+      padding-top: 16px;
+      border-top: 1px solid #f4f4f5;
+      font-size: 12px;
+      color: #a1a1aa;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1><span style="font-size: 18px;">✨</span> Tonal</h1>
+    <span id="connected-badge" class="badge">Ready</span>
+  </div>
+  <p class="tagline">Find the perfect tone, every time.</p>
+  
+  <div class="form-group">
+    <label for="default-tone-slider">Default Tone Level</label>
+    <div class="slider-container">
+      <input type="range" id="default-tone-slider" min="0" max="2" step="1" value="1">
+      <div class="slider-labels">
+        <span>Texting</span>
+        <span>Work Chat</span>
+        <span>Corporate</span>
+      </div>
+    </div>
+  </div>
+  
+  <details>
+    <summary>Advanced / Custom API Key</summary>
+    <div class="form-group" style="margin-bottom: 0;">
+      <label for="api-key" style="font-size: 12px; color: #52525b; margin-bottom: 6px;">Override Default Gemini API Key (Optional)</label>
+      <input type="password" id="api-key" placeholder="Leave empty for default" autocomplete="off">
+      <span class="link-hint" style="margin-top: 8px;">Get a custom key from <a href="https://aistudio.google.com/app/apikey" target="_blank">Google AI Studio</a></span>
+    </div>
+  </details>
+  
+  <button id="save-btn">Save Settings</button>
+  <div id="status-msg"></div>
+  
+  <div class="footer">
+    Select text to decode, or click the ✨ icon in message boxes to convert tone.
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
