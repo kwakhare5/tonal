@@ -2,7 +2,6 @@
 
 <!-- PROJECT LOGO / BANNER -->
 <img src="icons/icon128.png" alt="Tonal Logo" width="128"/>
-
 <br/>
 <br/>
 # Tonal
