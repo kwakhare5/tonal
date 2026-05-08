@@ -1,82 +1,47 @@
-const DEFAULT_API_KEY = '';
-const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
+// background.js — Tonal
+// Calls the Cloudflare Worker proxy instead of Gemini directly.
+// No API key in this file. No API key in the extension at all.
 
-const PROMPTS = {
-  'Texting': `You are a tone converter. Rewrite the message below to sound like a casual text between friends.
-Use lowercase freely, be short, contractions are fine, skip unnecessary punctuation.
-Do not change the core meaning. Output ONLY the rewritten message, nothing else.`,
-  
-  'Work Chat': `You are a tone converter. Rewrite the message below to sound like a normal professional 
-talking to a colleague they're comfortable with. Friendly but clear. Not stiff, not too casual.
-Do not use corporate jargon. Output ONLY the rewritten message, nothing else.`,
-  
-  'Corporate': `You are a tone converter. Rewrite the message below in a formal, professional tone 
-suitable for emailing a manager, client, or HR. Complete sentences, proper punctuation,
-polite and clear. No slang. Output ONLY the rewritten message, nothing else.`,
-  
-  'DECODE': `You are a decoder. The user received this formal/corporate message and wants to understand 
-what it actually means in simple plain English. 
-Give a 1-3 sentence plain English summary of what this message is asking or saying.
-Be direct. Use everyday language. Start directly with the meaning, no preamble.
-Output ONLY the plain English explanation.`
-};
-
-function buildSystemPrompt(mode, toneLevel) {
-  if (mode === 'DECODE') {
-    return PROMPTS['DECODE'];
-  }
-  return PROMPTS[toneLevel] || PROMPTS['Work Chat'];
-}
-
-async function callGemini(text, mode, toneLevel, apiKey) {
-  const systemPrompt = buildSystemPrompt(mode, toneLevel);
-  
-  try {
-    const response = await fetch(`${GEMINI_URL}?key=${apiKey}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{
-          parts: [{ text: `${systemPrompt}\n\nMessage:\n${text}` }]
-        }],
-        generationConfig: {
-          maxOutputTokens: 500,
-          temperature: 0.4
-        }
-      })
-    });
-
-    if (response.status === 401 || response.status === 403) {
-      return { success: false, error: 'API key not working. Check it in the popup ↗' };
-    }
-    if (response.status === 429) {
-      return { success: false, error: 'Too many requests. Wait a moment and try again.' };
-    }
-    if (!response.ok) {
-      return { success: false, error: 'Connection issue. Check your internet.' };
-    }
-
-    const data = await response.json();
-    const resultText = data.candidates[0].content.parts[0].text.trim();
-    return { success: true, text: resultText };
-  } catch (error) {
-    console.error('Gemini API Error:', error);
-    return { success: false, error: 'Connection issue. Check your internet.' };
-  }
-}
+// ─── PASTE YOUR CLOUDFLARE WORKER URL HERE ───────────────────
+// After deploying worker.js to Cloudflare, replace the URL below.
+// It will look like: https://tonal.yourname.workers.dev
+const WORKER_URL = "https://tonal-proxy.kwakhare5.workers.dev";
+// ─────────────────────────────────────────────────────────────
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  const apiKeyToUse = request.apiKey || DEFAULT_API_KEY;
-  
-  if (request.type === 'TONAL_CONVERT') {
-    callGemini(request.text, 'CONVERT', request.toneLevel || 'Work Chat', apiKeyToUse)
-      .then(result => sendResponse(result));
-    return true; // Keep message channel open for async response
+  if (request.type !== "TONESHIFT_CONVERT" && request.type !== "TONESHIFT_DECODE") {
+    return;
   }
-  
-  if (request.type === 'TONAL_DECODE') {
-    callGemini(request.text, 'DECODE', null, apiKeyToUse)
-      .then(result => sendResponse(result));
-    return true; // Keep message channel open for async response
-  }
+
+  const payload = {
+    text:      request.text,
+    toneLevel: request.toneLevel || "workChat",
+    mode:      request.type === "TONESHIFT_DECODE" ? "decode" : "convert",
+  };
+
+  fetch(WORKER_URL, {
+    method:  "POST",
+    headers: { "Content-Type": "application/json" },
+    body:    JSON.stringify(payload),
+  })
+    .then(async res => {
+      if (!res.ok) {
+        const errText = await res.text();
+        throw new Error(`Worker Error (${res.status}): ${errText.slice(0, 50)}`);
+      }
+      return res.json();
+    })
+    .then(data => {
+      if (data.success) {
+        sendResponse({ success: true,  text: data.text });
+      } else {
+        sendResponse({ success: false, error: data.error || "AI Generation failed" });
+      }
+    })
+    .catch(err => {
+      console.error("Tonal Fetch Error:", err);
+      sendResponse({ success: false, error: err.message || "Connection failed" });
+    });
+
+  return true; // keeps the async channel open — DO NOT REMOVE
 });

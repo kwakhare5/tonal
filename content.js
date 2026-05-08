@@ -1,350 +1,327 @@
-'use strict';
+/* content.js — Tonal v2.0 (Strict Design System Implementation) */
+(function () {
+  "use strict";
 
-// ── State ─────────────────────────────────────────────────────────────────────
-const processedInputs = new WeakSet();
+  const injected = new WeakSet();
 
-// Map UI labels → background.js prompt keys (keeps background.js untouched)
-const TONE_MAP = {
-  'Casual':    'Texting',
-  'Work Chat': 'Work Chat',
-  'Formal':    'Corporate',
-};
-
-// ── Toast ─────────────────────────────────────────────────────────────────────
-function showToast(message, type = 'info') {
-  let toast = document.getElementById('ts-toast');
-  if (!toast) {
-    toast = document.createElement('div');
-    toast.id = 'ts-toast';
-    document.body.appendChild(toast);
-  }
-  toast.className = `ts-toast-visible ${type}`;
-  toast.textContent = message;
-  clearTimeout(toast._timer);
-  toast._timer = setTimeout(() => { toast.className = ''; }, 3000);
-}
-
-// ── Container finder (platform-aware) ────────────────────────────────────────
-function findContainer(inputEl) {
-  const host = window.location.hostname;
-
-  if (host.includes('mail.google.com')) {
-    return inputEl.closest('.aO7') || inputEl.closest('.Am') || inputEl.parentElement;
-  }
-  if (host.includes('slack.com')) {
-    return inputEl.closest('.c-texty_input_unstyled')
-      || inputEl.closest('[data-qa="texty_input"]')
-      || inputEl.closest('[class*="texty"]')
-      || inputEl.parentElement;
-  }
-  if (host.includes('linkedin.com')) {
-    return inputEl.closest('.msg-form__msg-content-container')
-      || inputEl.closest('.msg-form__container')
-      || inputEl.parentElement;
-  }
-  // WhatsApp Web + fallback
-  return inputEl.parentElement;
-}
-
-// ── Text helpers ──────────────────────────────────────────────────────────────
-function readText(inputEl) {
-  return (inputEl.innerText || inputEl.textContent || '').trim();
-}
-
-function replaceText(inputEl, newText) {
-  inputEl.focus();
-  const inserted = document.execCommand('selectAll', false, null)
-    && document.execCommand('insertText', false, newText);
-  if (!inserted || readText(inputEl) !== newText.trim()) {
-    inputEl.textContent = newText;
-  }
-  ['input', 'change'].forEach(evt =>
-    inputEl.dispatchEvent(new Event(evt, { bubbles: true }))
-  );
-  inputEl.dispatchEvent(new KeyboardEvent('keyup', { bubbles: true }));
-}
-
-// ── Button state manager ──────────────────────────────────────────────────────
-function setButtonState(btn, state) {
-  btn.setAttribute('data-state', state);
-  btn.disabled = false;
-  switch (state) {
-    case 'default':
-      btn.textContent = 'ToneShift';
-      break;
-    case 'loading':
-      btn.textContent = 'Converting';
-      btn.disabled = true;
-      break;
-    case 'undo':
-      btn.textContent = 'Undo';
-      break;
-    case 'error':
-      btn.textContent = 'ToneShift';
-      break;
-  }
-}
-
-// ── Popover builder ───────────────────────────────────────────────────────────
-function buildPopover(inputEl, btn) {
-  const popover = document.createElement('div');
-  popover.className = 'ts-popover ts-hidden';
-
-  const toneOptions = [
-    { label: 'Casual',    active: false },
-    { label: 'Work Chat', active: true  },
-    { label: 'Formal',    active: false },
-  ];
-
-  toneOptions.forEach(({ label, active }) => {
-    const row = document.createElement('div');
-    row.className = 'ts-popover-option' + (active ? ' ts-popover-option--active' : '');
-    row.textContent = label;
-    row.addEventListener('click', () => {
-      popover.classList.add('ts-hidden');
-      runConversion(label, inputEl, btn);
-    });
-    popover.appendChild(row);
-  });
-
-  const divider = document.createElement('div');
-  divider.className = 'ts-popover-divider';
-  popover.appendChild(divider);
-
-  const decodeRow = document.createElement('div');
-  decodeRow.className = 'ts-popover-option ts-decode-row';
-  decodeRow.textContent = 'Decode';
-  decodeRow.addEventListener('click', () => {
-    popover.classList.add('ts-hidden');
-    runConversion('DECODE', inputEl, btn);
-  });
-  popover.appendChild(decodeRow);
-
-  return popover;
-}
-
-// ── Conversion flow ───────────────────────────────────────────────────────────
-function runConversion(uiTone, inputEl, btn) {
-  if (!window.chrome?.runtime?.id) {
-    showToast('Extension reloaded. Please refresh.', 'error');
-    return;
+  function isContextValid() {
+    return typeof chrome !== 'undefined' && !!chrome.runtime && !!chrome.runtime.id;
   }
 
-  const text = readText(inputEl);
-  if (text.length < 10) {
-    showToast('Type more before converting', 'error');
-    return;
+  function getPlatform() {
+    const h = location.hostname;
+    if (h.includes("mail.google.com")) return "gmail";
+    if (h.includes("app.slack.com")) return "slack";
+    if (h.includes("web.whatsapp.com")) return "whatsapp";
+    if (h.includes("linkedin.com")) return "linkedin";
+    return null;
   }
 
-  const originalText = text;
-  const isDecodeMode = uiTone === 'DECODE';
-  const msgType   = isDecodeMode ? 'TONAL_DECODE' : 'TONAL_CONVERT';
-  const toneLevel = isDecodeMode ? null : (TONE_MAP[uiTone] || 'Work Chat');
+  const SELECTORS = {
+    gmail: ['div[aria-label="Message Body"]', '.Am.Al.editable', 'div[g_editable="true"][contenteditable="true"]'],
+    slack: ['.ql-editor[contenteditable="true"]', '[data-lexical-editor="true"]', '.p-rich_text_input__editable'],
+    whatsapp: ['div[contenteditable="true"][data-tab="10"]', 'footer div[contenteditable="true"]'],
+    linkedin: ['.msg-form__contenteditable', '.feed-shared-update-v2__comment-box [contenteditable]']
+  };
 
-  setButtonState(btn, 'loading');
-
-  chrome.storage.sync.get(['apiKey'], (data) => {
-    chrome.runtime.sendMessage(
-      { type: msgType, text, toneLevel, apiKey: data.apiKey },
-      (response) => {
-        if (response?.success) {
-          replaceText(inputEl, response.text);
-          setButtonState(btn, 'undo');
-          btn._originalText = originalText;
-
-          // Auto-reset after 3 seconds
-          clearTimeout(btn._undoTimer);
-          btn._undoTimer = setTimeout(() => {
-            if (btn.getAttribute('data-state') === 'undo') setButtonState(btn, 'default');
-          }, 3000);
-
-          // Reset on next keystroke
-          const resetOnType = () => {
-            if (btn.getAttribute('data-state') === 'undo') {
-              setButtonState(btn, 'default');
-              inputEl.removeEventListener('input', resetOnType);
-            }
-          };
-          inputEl.addEventListener('input', resetOnType);
-        } else {
-          setButtonState(btn, 'error');
-          showToast(response?.error || 'Connection issue. Check your internet.', 'error');
+  function scan() {
+    const platform = getPlatform();
+    if (!platform) return;
+    const selectors = SELECTORS[platform];
+    selectors.forEach(sel => {
+      document.querySelectorAll(sel).forEach(el => {
+        if (!injected.has(el)) {
+          inject(el, platform);
+          injected.add(el);
         }
+      });
+    });
+  }
+
+  function inject(input, platform) {
+    const wrap = document.createElement('div');
+    wrap.className = `t-wrap t-wrap--${platform}`;
+    wrap._tInput = input;
+    
+    const btn = makeButton();
+    wrap.appendChild(btn);
+    
+    document.body.appendChild(wrap);
+    positionPill(btn, input, platform);
+
+    // Reposition on window resize
+    window.addEventListener('resize', () => positionPill(btn, input, platform));
+    
+    // Observer for input changes to update label
+    const observer = new MutationObserver(() => updatePillLabel(btn, input));
+    observer.observe(input, { characterData: true, childList: true, subtree: true });
+
+    // Initial check
+    updatePillLabel(btn, input);
+  }
+
+  function makeButton() {
+    const btn = document.createElement('button');
+    btn.className = 't-pill t-pill--rest';
+    btn.dataset.state = "idle";
+    btn.dataset.tone = "workChat";
+    
+    // Strict SVG from design system (Spec: 13x8px icon)
+    btn.innerHTML = `
+      <span class="pill-icon">
+        <svg width="13" height="8" viewBox="0 0 72 44" fill="none">
+          <rect x="0" y="18" width="72" height="8" rx="4" fill="#444"/>
+          <rect x="0" y="18" width="39" height="8" rx="4" fill="white"/>
+          <circle cx="39" cy="22" r="16" fill="white"/>
+          <circle cx="39" cy="22" r="9" fill="#0F0F0F"/>
+        </svg>
+      </span>
+      <span class="pill-text"></span>
+    `;
+
+    btn.addEventListener("mouseenter", () => {
+      if (btn.dataset.state === "idle") {
+        updatePillLabel(btn, btn.closest(".t-wrap")._tInput); // Refresh text
+        btn.classList.replace("t-pill--rest", "t-pill--expanded");
       }
-    );
-  });
-}
+    });
 
-// ── Main injection ────────────────────────────────────────────────────────────
-function injectButton(inputEl) {
-  if (!window.chrome?.runtime?.id) return;
-  if (processedInputs.has(inputEl)) return;
-  processedInputs.add(inputEl);
-  inputEl.dataset.tsInjected = 'true';
+    btn.addEventListener("mouseleave", () => {
+      if (btn.dataset.state === "idle") {
+        btn.classList.replace("t-pill--expanded", "t-pill--rest");
+      }
+    });
 
-  const container = findContainer(inputEl);
-  if (!container || container === document.body || container === document.documentElement) return;
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const text = getInputText(btn.closest(".t-wrap")._tInput);
+      
+      if (btn.dataset.state === "undo") {
+        handleUndo(btn);
+      } else if (text && text.length > 0) {
+        handleConvert(btn);
+      } else {
+        showPopover(btn);
+      }
+    });
 
-  // Ensure container hosts absolute children
-  if (getComputedStyle(container).position === 'static') {
-    container.style.position = 'relative';
+    btn.addEventListener("contextmenu", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      showPopover(btn);
+    });
+
+    return btn;
   }
 
-  const btn = document.createElement('button');
-  btn.className = 'ts-btn';
-  btn.textContent = 'ToneShift';
-  btn.setAttribute('data-state', 'default');
-
-  const popover = buildPopover(inputEl, btn);
-
-  btn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    // Undo action
-    if (btn.getAttribute('data-state') === 'undo') {
-      if (btn._originalText !== undefined) replaceText(inputEl, btn._originalText);
-      clearTimeout(btn._undoTimer);
-      setButtonState(btn, 'default');
-      return;
+  function updatePillLabel(btn, input) {
+    if (btn.dataset.state !== "idle") return;
+    const text = getInputText(input);
+    const label = btn.querySelector(".pill-text");
+    if (label) {
+      // Logic: Always set text, CSS (opacity/max-width) handles visibility for --rest state
+      const newLabel = (text && text.length > 0) ? "Convert" : "Tonal";
+      if (label.textContent !== newLabel) label.textContent = newLabel;
     }
-    // Toggle popover
-    const wasHidden = popover.classList.contains('ts-hidden');
-    document.querySelectorAll('.ts-popover').forEach(p => p.classList.add('ts-hidden'));
-    if (wasHidden) popover.classList.remove('ts-hidden');
-  });
-
-  // Close popover on outside click
-  document.addEventListener('click', (e) => {
-    if (!popover.contains(e.target) && e.target !== btn) {
-      popover.classList.add('ts-hidden');
-    }
-  });
-
-  container.appendChild(btn);
-  container.appendChild(popover);
-}
-
-// ── Selectors + Observer ──────────────────────────────────────────────────────
-const SELECTORS = [
-  'div[aria-label="Message Body"]',
-  '.Am.Al.editable',
-  '.ql-editor[data-placeholder]',
-  '[data-lexical-editor="true"]',
-  '.p-rich_text_input__editable',
-  '.msg-form__contenteditable',
-  'div[aria-label="Write a message..."]',
-  'div[contenteditable="true"][data-tab="10"]',
-  'div[contenteditable="true"][title="Type a message"]',
-  '#main div[contenteditable="true"]',
-].join(', ');
-
-function scanAndInject() {
-  document.querySelectorAll(SELECTORS).forEach((el) => {
-    if (el.isContentEditable && !el.dataset.tsInjected) injectButton(el);
-  });
-}
-
-function initObserver() {
-  scanAndInject();
-  new MutationObserver(scanAndInject).observe(document.body, { childList: true, subtree: true });
-}
-
-setTimeout(initObserver, 1500);
-
-// ── Selection Decode (for received messages, outside inputs) ──────────────────
-let decodeFloat = null;
-let decodeCard  = null;
-
-function removeDecodeUI() {
-  decodeFloat?.remove(); decodeFloat = null;
-  decodeCard?.remove();  decodeCard  = null;
-}
-
-function isInsideEditable(node) {
-  while (node) {
-    if (node.nodeType === 1 && (node.isContentEditable || node.tagName === 'INPUT' || node.tagName === 'TEXTAREA')) return true;
-    node = node.parentNode;
   }
-  return false;
-}
 
-function showDecodeFloat(selection) {
-  const range = selection.getRangeAt(0);
-  const rect  = range.getBoundingClientRect();
+  function positionPill(btn, input, platform) {
+    const wrap = btn.closest(".t-wrap");
+    const rect = input.getBoundingClientRect();
+    
+    wrap.style.top = `${rect.top + window.scrollY}px`;
+    wrap.style.left = `${rect.left + window.scrollX}px`;
+    wrap.style.width = `${rect.width}px`;
+    wrap.style.height = `${rect.height}px`;
+    
+    // Pill is always absolute right-middle
+    btn.style.position = "absolute";
+    btn.style.right = "8px";
+    btn.style.top = "50%";
+    btn.style.transform = "translateY(-50%)";
+  }
 
-  decodeFloat = document.createElement('button');
-  decodeFloat.className   = 'ts-decode-float';
-  decodeFloat.textContent = 'Decode';
-  decodeFloat.style.top   = `${rect.bottom + window.scrollY + 5}px`;
-  decodeFloat.style.left  = `${Math.max(8, rect.right - 60)}px`;
+  function showPopover(btn) {
+    closePopover();
+    const input = btn.closest(".t-wrap")._tInput;
+    const pop = document.createElement("div");
+    pop.className = "popover";
+    pop.innerHTML = `
+      <button class="popover-item" data-tone="texting">
+        <span class="popover-item-label">Casual</span>
+        <span class="popover-item-sub">texting</span>
+      </button>
+      <div class="popover-divider"></div>
+      <button class="popover-item ${btn.dataset.tone === "workChat" ? "popover-item--active" : ""}" data-tone="workChat">
+        <span class="popover-item-label">Work Chat</span>
+        <span class="popover-item-sub">friendly ✓</span>
+      </button>
+      <div class="popover-divider"></div>
+      <button class="popover-item" data-tone="corporate">
+        <span class="popover-item-label">Formal</span>
+        <span class="popover-item-sub">professional</span>
+      </button>
+      <div class="popover-divider"></div>
+      <button class="popover-item popover-item--decode" data-tone="decode">
+        <span class="popover-item-label">Decode message</span>
+        <span class="popover-item-sub">↓</span>
+      </button>
+    `;
 
-  decodeFloat.addEventListener('click', (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    const selectedText = window.getSelection()?.toString().trim();
-    if (!selectedText) return;
-    if (!window.chrome?.runtime?.id) {
-      showToast('Extension reloaded. Please refresh.', 'error');
-      return;
-    }
-    decodeFloat.textContent = 'Decoding...';
-    chrome.storage.sync.get(['apiKey'], (data) => {
-      chrome.runtime.sendMessage(
-        { type: 'TONAL_DECODE', text: selectedText, apiKey: data.apiKey },
-        (response) => {
-          if (response?.success) showDecodeCard(response.text, rect);
-          else { showToast(response?.error || 'Decoding failed', 'error'); removeDecodeUI(); }
+    pop.querySelectorAll(".popover-item").forEach(item => {
+      item.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const tone = item.dataset.tone;
+        closePopover();
+        if (tone === "decode") {
+          runDecode(btn, input);
+        } else {
+          btn.dataset.tone = tone;
+          handleConvert(btn, tone);
         }
-      );
+      });
     });
-  });
 
-  document.body.appendChild(decodeFloat);
-}
+    document.body.appendChild(pop);
+    const rect = btn.getBoundingClientRect();
+    pop.style.top = `${rect.top - pop.offsetHeight - 8}px`;
+    pop.style.left = `${rect.right - pop.offsetWidth}px`;
 
-function showDecodeCard(decodedText, rect) {
-  decodeFloat?.remove(); decodeFloat = null;
+    setTimeout(() => document.addEventListener("click", closePopover, { once: true }), 10);
+  }
 
-  decodeCard = document.createElement('div');
-  decodeCard.className  = 'ts-decode-card';
-  decodeCard.style.top  = `${rect.bottom + window.scrollY + 10}px`;
-  decodeCard.style.left = `${Math.max(10, Math.min(rect.left, window.innerWidth - 340))}px`;
+  function closePopover() {
+    document.querySelector(".popover")?.remove();
+  }
 
-  const content = document.createElement('div');
-  content.className   = 'ts-decode-content';
-  content.textContent = decodedText;
+  async function handleConvert(btn, toneOverride) {
+    const input = btn.closest(".t-wrap")._tInput;
+    const text = getInputText(input);
+    const tone = toneOverride || btn.dataset.tone || "workChat";
+    
+    btn.dataset.original = text;
+    btn.dataset.state = "loading";
+    btn.classList.add("t-pill--expanded");
+    btn.querySelector(".pill-text").textContent = "Converting";
+    btn.querySelector(".pill-text").classList.add("pill-text--dim");
 
-  const copyBtn = document.createElement('button');
-  copyBtn.className   = 'ts-copy-btn';
-  copyBtn.textContent = 'Copy';
-  copyBtn.addEventListener('click', () => {
-    navigator.clipboard.writeText(decodedText).then(() => {
-      copyBtn.textContent = 'Copied';
-      setTimeout(() => { copyBtn.textContent = 'Copy'; }, 2000);
-    });
-  });
-
-  decodeCard.appendChild(content);
-  decodeCard.appendChild(copyBtn);
-  document.body.appendChild(decodeCard);
-}
-
-document.addEventListener('mouseup', (e) => {
-  if (e.target.closest('.ts-decode-card') || e.target.closest('.ts-decode-float')) return;
-  setTimeout(() => {
-    const sel  = window.getSelection();
-    const text = sel?.toString().trim() || '';
-    if (text.length >= 20 && !isInsideEditable(sel.anchorNode)) {
-      removeDecodeUI();
-      showDecodeFloat(sel);
-    } else if (!e.target.closest('.ts-decode-card')) {
-      removeDecodeUI();
+    try {
+      chrome.runtime.sendMessage({ type: "TONESHIFT_CONVERT", text, toneLevel: tone }, (res) => {
+        if (res?.success) {
+          setInputTextWithHighlight(input, text, res.text);
+          setDone(btn);
+        } else {
+          setIdle(btn);
+          showToast(res?.error || "Failed", "error");
+        }
+      });
+    } catch (e) {
+      setIdle(btn);
     }
-  }, 10);
-});
+  }
 
-document.addEventListener('click', (e) => {
-  if (decodeCard && !e.target.closest('.ts-decode-card')) removeDecodeUI();
-});
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') removeDecodeUI();
-});
+  async function runDecode(btn, input) {
+    const text = getInputText(input);
+    btn.dataset.state = "loading";
+    btn.classList.add("t-pill--expanded");
+    btn.querySelector(".pill-text").textContent = "Decoding";
+
+    chrome.runtime.sendMessage({ type: "TONESHIFT_DECODE", text }, (res) => {
+      setIdle(btn);
+      if (res?.success) showDecodeCard(res.text, btn);
+    });
+  }
+
+  function showDecodeCard(text, btn) {
+    document.querySelector(".card")?.remove();
+    const card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML = `
+      <div class="card-label">Plain English</div>
+      <div class="card-text" style="font-size:14px; line-height:1.6; margin-bottom:20px;">${text}</div>
+      <button class="t-btn-primary">Copy to Clipboard</button>
+    `;
+    document.body.appendChild(card);
+    
+    const rect = btn.getBoundingClientRect();
+    card.style.top = `${rect.top - card.offsetHeight - 12}px`;
+    card.style.left = `${rect.right - card.offsetWidth}px`;
+
+    card.querySelector(".t-btn-primary").addEventListener("click", () => {
+      navigator.clipboard.writeText(text);
+      showToast("Copied!", "success");
+      card.remove();
+    });
+    
+    setTimeout(() => document.addEventListener("click", () => card.remove(), { once: true }), 100);
+  }
+
+  function setDone(btn) {
+    btn.dataset.state = "undo";
+    btn.className = "t-pill t-pill--done";
+    btn.querySelector(".pill-text").textContent = "Undo";
+    btn.querySelector(".pill-text").classList.remove("pill-text--dim");
+    setTimeout(() => { if (btn.dataset.state === "undo") setIdle(btn); }, 5000);
+  }
+
+  function setIdle(btn) {
+    btn.dataset.state = "idle";
+    btn.className = "t-pill t-pill--rest";
+    updatePillLabel(btn, btn.closest(".t-wrap")?._tInput);
+  }
+
+  function handleUndo(btn) {
+    const input = btn.closest(".t-wrap")._tInput;
+    if (btn.dataset.original) setInputText(input, btn.dataset.original);
+    setIdle(btn);
+  }
+
+  function getInputText(el) {
+    return (el.innerText || el.textContent || "").trim();
+  }
+
+  function setInputText(el, text) {
+    if (el.isContentEditable) {
+      el.innerText = text;
+      el.dispatchEvent(new Event('input', { bubbles: true }));
+    } else {
+      el.value = text;
+      el.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+  }
+
+  function setInputTextWithHighlight(el, oldText, newText) {
+    if (!el.isContentEditable) { setInputText(el, newText); return; }
+    
+    const words = newText.split(" ");
+    el.innerHTML = words.map(w => `<span class="t-hl">${w}</span>`).join(" ");
+    el.dispatchEvent(new Event('input', { bubbles: true }));
+    
+    setTimeout(() => {
+      el.querySelectorAll(".t-hl").forEach(h => h.classList.add("t-hl--fade"));
+      setTimeout(() => {
+        el.innerText = newText; // Final clean text
+      }, 2000);
+    }, 1000);
+  }
+
+  function showToast(msg, type) {
+    let t = document.getElementById("t-toast");
+    if (!t) {
+      t = document.createElement("div");
+      t.id = "t-toast";
+      document.body.appendChild(t);
+    }
+    t.textContent = msg;
+    t.className = `t-toast--${type}`;
+    t.classList.add("t-toast--show");
+    setTimeout(() => t.classList.remove("t-toast--show"), 3000);
+  }
+
+  // Init
+  const observer = new MutationObserver(scan);
+  observer.observe(document.body, { childList: true, subtree: true });
+  scan();
+
+})();

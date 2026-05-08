@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tonal — Design System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black:   #0F0F0F;
+    --gray-1:  #1C1C1E;
+    --gray-2:  #2C2C2E;
+    --gray-3:  #3A3A3C;
+    --gray-4:  #636366;
+    --gray-5:  #AEAEB2;
+    --gray-6:  #D1D1D6;
+    --gray-7:  #E5E5EA;
+    --gray-8:  #F2F2F7;
+    --gray-9:  #F5F5F7;
+    --white:   #FFFFFF;
+    --success: #34C759;
+    --font:    'DM Sans', sans-serif;
+    --mono:    'DM Mono', monospace;
+  }
+
+  body {
+    font-family: var(--font);
+    background: var(--gray-9);
+    color: var(--black);
+    padding: 64px;
+    line-height: 1.5;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 80px;
+  }
+
+  .logo-mark {
+    width: 56px;
+    height: 56px;
+    background: var(--black);
+    border-radius: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.18);
+  }
+
+  .logo-mark svg { display: block; }
+
+  .header-text h1 {
+    font-size: 28px;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1;
+  }
+
+  .header-text p {
+    font-size: 14px;
+    color: var(--gray-4);
+    margin-top: 4px;
+    font-weight: 400;
+  }
+
+  /* ── SECTION ── */
+  .section {
+    margin-bottom: 80px;
+  }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gray-5);
+    margin-bottom: 24px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--gray-7);
+  }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; }
+
+  .card {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 28px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+  }
+
+  .card-label {
+    font-size: 11px;
+    color: var(--gray-4);
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  /* ── ICON SECTION ── */
+  .icon-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 28px;
+    flex-wrap: wrap;
+  }
+
+  .icon-item { text-align: center; }
+
+  .icon-box {
+    background: var(--black);
+    border-radius: var(--r);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 10px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.22);
+  }
+
+  .icon-box svg { display: block; }
+
+  .icon-size {
+    font-size: 11px;
+    color: var(--gray-4);
+    font-family: var(--mono);
+  }
+
+  /* ── COLOUR PALETTE ── */
+  .palette { display: flex; gap: 12px; flex-wrap: wrap; }
+
+  .swatch {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .swatch-box {
+    width: 72px;
+    height: 72px;
+    border-radius: 10px;
+    border: 1px solid rgba(0,0,0,0.06);
+  }
+
+  .swatch-name {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--black);
+  }
+
+  .swatch-hex {
+    font-size: 10px;
+    color: var(--gray-4);
+    font-family: var(--mono);
+  }
+
+  /* ── PILL STATES ── */
+  .pill-states {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .pill-item { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+
+  .pill-state-label {
+    font-size: 10px;
+    color: var(--gray-4);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  /* The actual pill component */
+  .t-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--black);
+    border-radius: 100px;
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.15s ease;
+  }
+
+  .t-pill--rest {
+    width: 32px;
+    height: 18px;
+    gap: 0;
+  }
+
+  .t-pill--expanded {
+    padding: 0 10px;
+    height: 26px;
+    gap: 6px;
+  }
+
+  .t-pill--done {
+    padding: 0 10px;
+    height: 26px;
+    background: var(--success);
+  }
+
+  /* Tiny icon inside pill */
+  .pill-icon {
+    width: 12px;
+    height: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .pill-text {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--white);
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+  }
+
+  .pill-text--dim { opacity: 0.55; }
+
+  /* ── POPOVER ── */
+  .popover {
+    width: 188px;
+    background: var(--white);
+    border-radius: 14px;
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.06), 0 8px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06);
+    overflow: hidden;
+  }
+
+  .popover-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 11px 16px;
+    cursor: pointer;
+    transition: background 0.1s;
+  }
+
+  .popover-item:hover { background: var(--gray-9); }
+
+  .popover-item--active { background: var(--gray-8); }
+
+  .popover-item-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--black);
+  }
+
+  .popover-item-sub {
+    font-size: 11px;
+    color: var(--gray-5);
+  }
+
+  .popover-divider {
+    height: 1px;
+    background: var(--gray-7);
+    margin: 0;
+  }
+
+  .popover-item--decode .popover-item-label {
+    color: var(--gray-4);
+    font-weight: 400;
+  }
+
+  /* ── CHATBOX MOCKUPS ── */
+  .mockup-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  .mockup-label {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--gray-4);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  /* WhatsApp */
+  .wa-wrap {
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 8px 24px rgba(0,0,0,0.08);
+    max-width: 540px;
+  }
+
+  .wa-header {
+    background: #128C7E;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .wa-avatar {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.25);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; color: white; font-weight: 600;
+  }
+
+  .wa-name { font-size: 14px; font-weight: 600; color: white; }
+  .wa-status { font-size: 12px; color: rgba(255,255,255,0.7); }
+
+  .wa-chat {
+    background: #ECE5DD url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Cpath d='M0 0h60v60H0z' fill='none'/%3E%3C/svg%3E");
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .wa-bubble {
+    padding: 8px 12px 6px;
+    border-radius: 10px;
+    max-width: 72%;
+    font-size: 13px;
+    line-height: 1.4;
+    position: relative;
+  }
+
+  .wa-bubble--in {
+    background: white;
+    align-self: flex-start;
+    border-top-left-radius: 2px;
+    color: #111;
+  }
+
+  .wa-bubble--out {
+    background: #DCF8C6;
+    align-self: flex-end;
+    border-top-right-radius: 2px;
+    color: #111;
+  }
+
+  .wa-time {
+    font-size: 10px;
+    color: rgba(0,0,0,0.4);
+    display: block;
+    margin-top: 2px;
+    text-align: right;
+  }
+
+  .wa-input-bar {
+    background: #F0F0F0;
+    padding: 10px 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .wa-input-field {
+    flex: 1;
+    background: white;
+    border-radius: 22px;
+    padding: 8px 44px 8px 14px;
+    font-size: 13px;
+    color: #333;
+    position: relative;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    min-height: 38px;
+  }
+
+  .wa-input-text {
+    flex: 1;
+    font-size: 13px;
+    color: #333;
+    font-family: var(--font);
+    line-height: 1.4;
+  }
+
+  /* THE TONAL PILL inside the input */
+  .tonal-pill-in-input {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 28px;
+    height: 15px;
+    background: var(--black);
+    border-radius: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .wa-send {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: #128C7E;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+
+  /* LinkedIn */
+  .li-wrap {
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 8px 24px rgba(0,0,0,0.08);
+    background: white;
+    max-width: 540px;
+  }
+
+  .li-header {
+    background: white;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid var(--gray-7);
+  }
+
+  .li-avatar {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: #0A66C2;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; color: white; font-weight: 600;
+  }
+
+  .li-name { font-size: 14px; font-weight: 600; color: #191919; }
+  .li-title { font-size: 12px; color: var(--gray-4); }
+
+  .li-messages {
+    padding: 16px;
+    background: #F3F2EF;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .li-bubble {
+    padding: 10px 14px;
+    border-radius: 12px;
+    max-width: 80%;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  .li-bubble--in {
+    background: white;
+    align-self: flex-start;
+    color: #191919;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+  }
+
+  .li-input-area {
+    background: white;
+    border-top: 1px solid var(--gray-7);
+    padding: 12px 16px;
+  }
+
+  .li-input-field {
+    border: 1.5px solid var(--gray-7);
+    border-radius: 10px;
+    padding: 10px 44px 10px 14px;
+    font-size: 13px;
+    color: var(--gray-4);
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: 42px;
+    font-family: var(--font);
+  }
+
+  /* ── AFTER CONVERSION — HIGHLIGHT ── */
+  .highlight-demo {
+    background: white;
+    border: 1.5px solid var(--gray-7);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 14px;
+    color: var(--black);
+    line-height: 1.6;
+    position: relative;
+    max-width: 480px;
+  }
+
+  .hl { 
+    background: #F2F2F7;
+    border-radius: 4px;
+    padding: 1px 4px;
+    font-weight: 500;
+    color: var(--black);
+  }
+
+  /* ── TYPE SCALE ── */
+  .type-row {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .type-sample {
+    display: flex;
+    align-items: baseline;
+    gap: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--gray-8);
+  }
+
+  .type-meta {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--gray-5);
+    width: 100px;
+    flex-shrink: 0;
+  }
+
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="logo-mark" style="--r:13px; width:56px; height:56px;">
+    <svg width="32" height="20" viewBox="0 0 32 20" fill="none">
+      <!-- Track inactive -->
+      <rect x="0" y="8" width="32" height="4" rx="2" fill="#2C2C2E"/>
+      <!-- Track active -->
+      <rect x="0" y="8" width="18" height="4" rx="2" fill="#FFFFFF"/>
+      <!-- Thumb -->
+      <circle cx="18" cy="10" r="7" fill="#F0F0F0"/>
+      <circle cx="18" cy="10" r="6.5" fill="white"/>
+      <circle cx="18" cy="10" r="3.5" fill="#1C1C1E"/>
+    </svg>
+  </div>
+  <div class="header-text">
+    <h1>Tonal</h1>
+    <p>Design System · v1.0 · Light Theme</p>
+  </div>
+</div>
+
+<!-- ═══ SECTION: ICON ═══ -->
+<div class="section">
+  <div class="section-label">Extension Icon</div>
+  <div class="card">
+    <div class="icon-row">
+      <!-- 128px -->
+      <div class="icon-item">
+        <div class="icon-box" style="--r:29px; width:128px; height:128px; border-radius:29px;">
+          <svg width="72" height="44" viewBox="0 0 72 44" fill="none">
+            <rect x="0" y="18" width="72" height="8" rx="4" fill="#2C2C2E"/>
+            <rect x="0" y="18" width="39" height="8" rx="4" fill="#FFFFFF"/>
+            <circle cx="39" cy="22" r="16" fill="#F0F0F0"/>
+            <circle cx="39" cy="22" r="15" fill="white"/>
+            <circle cx="39" cy="22" r="9" fill="#1C1C1E"/>
+            <circle cx="39" cy="22" r="4" fill="#3A3A3C"/>
+          </svg>
+        </div>
+        <div class="icon-size">128 × 128</div>
+      </div>
+
+      <!-- 64px -->
+      <div class="icon-item">
+        <div class="icon-box" style="width:64px; height:64px; border-radius:14px;">
+          <svg width="36" height="22" viewBox="0 0 72 44" fill="none">
+            <rect x="0" y="18" width="72" height="8" rx="4" fill="#2C2C2E"/>
+            <rect x="0" y="18" width="39" height="8" rx="4" fill="#FFFFFF"/>
+            <circle cx="39" cy="22" r="16" fill="white"/>
+            <circle cx="39" cy="22" r="9" fill="#1C1C1E"/>
+          </svg>
+        </div>
+        <div class="icon-size">64 × 64</div>
+      </div>
+
+      <!-- 48px -->
+      <div class="icon-item">
+        <div class="icon-box" style="width:48px; height:48px; border-radius:11px;">
+          <svg width="26" height="16" viewBox="0 0 72 44" fill="none">
+            <rect x="0" y="18" width="72" height="8" rx="4" fill="#2C2C2E"/>
+            <rect x="0" y="18" width="39" height="8" rx="4" fill="#FFFFFF"/>
+            <circle cx="39" cy="22" r="16" fill="white"/>
+            <circle cx="39" cy="22" r="9" fill="#1C1C1E"/>
+          </svg>
+        </div>
+        <div class="icon-size">48 × 48</div>
+      </div>
+
+      <!-- 32px -->
+      <div class="icon-item">
+        <div class="icon-box" style="width:32px; height:32px; border-radius:7px;">
+          <svg width="18" height="11" viewBox="0 0 72 44" fill="none">
+            <rect x="0" y="18" width="72" height="8" rx="4" fill="#2C2C2E"/>
+            <rect x="0" y="18" width="39" height="8" rx="4" fill="#FFFFFF"/>
+            <circle cx="39" cy="22" r="16" fill="white"/>
+            <circle cx="39" cy="22" r="9" fill="#1C1C1E"/>
+          </svg>
+        </div>
+        <div class="icon-size">32 × 32</div>
+      </div>
+
+      <!-- 16px -->
+      <div class="icon-item">
+        <div class="icon-box" style="width:16px; height:16px; border-radius:4px;">
+        </div>
+        <div class="icon-size">16 × 16</div>
+      </div>
+
+      <!-- On browser toolbar -->
+      <div class="icon-item" style="margin-left:32px;">
+        <div style="background:#3C3C3C; border-radius:8px; padding:10px 14px; display:flex; align-items:center; gap:10px;">
+          <div style="background:var(--black); border-radius:6px; width:28px; height:28px; display:flex; align-items:center; justify-content:center;">
+            <svg width="15" height="9" viewBox="0 0 72 44" fill="none">
+              <rect x="0" y="18" width="72" height="8" rx="4" fill="#2C2C2E"/>
+              <rect x="0" y="18" width="39" height="8" rx="4" fill="#FFFFFF"/>
+              <circle cx="39" cy="22" r="16" fill="white"/>
+              <circle cx="39" cy="22" r="9" fill="#1C1C1E"/>
+            </svg>
+          </div>
+          <span style="font-size:12px; color:#E5E5EA; font-weight:500;">Tonal</span>
+        </div>
+        <div class="icon-size" style="margin-top:8px;">Chrome toolbar</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SECTION: COLORS ═══ -->
+<div class="section">
+  <div class="section-label">Colour Palette — Monochrome + Surface</div>
+  <div class="card">
+    <div class="palette">
+      <div class="swatch"><div class="swatch-box" style="background:#0F0F0F;"></div><div class="swatch-name">Black</div><div class="swatch-hex">#0F0F0F</div></div>
+      <div class="swatch"><div class="swatch-box" style="background:#1C1C1E;"></div><div class="swatch-name">Gray 1</div><div class="swatch-hex">#1C1C1E</div></div>
+      <div class="swatch"><div class="swatch-box" style="background:#3A3A3C;"></div><div class="swatch-name">Gray 3</div><div class="swatch-hex">#3A3A3C</div></div>
+      <div class="swatch"><div class="swatch-box" style="background:#636366;"></div><div class="swatch-name">Gray 4</div><div class="swatch-hex">#636366</div></div>
+      <div class="swatch"><div class="swatch-box" style="background:#AEAEB2;"></div><div class="swatch-name">Gray 5</div><div class="swatch-hex">#AEAEB2</div></div>
+      <div class="swatch"><div class="swatch-box" style="background:#E5E5EA; border:1px solid #D1D1D6;"></div><div class="swatch-name">Border</div><div class="swatch-hex">#E5E5EA</div></div>
+      <div class="swatch"><div class="swatch-box" style="background:#F2F2F7; border:1px solid #E5E5EA;"></div><div class="swatch-name">Surface</div><div class="swatch-hex">#F2F2F7</div></div>
+      <div class="swatch"><div class="swatch-box" style="background:#FFFFFF; border:1px solid #E5E5EA;"></div><div class="swatch-name">White</div><div class="swatch-hex">#FFFFFF</div></div>
+      <div class="swatch"><div class="swatch-box" style="background:#34C759;"></div><div class="swatch-name">Success</div><div class="swatch-hex">#34C759</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SECTION: PILL COMPONENT ═══ -->
+<div class="section">
+  <div class="section-label">The Tonal Pill — All States</div>
+  <div class="card">
+    <div class="pill-states">
+
+      <!-- Rest state -->
+      <div class="pill-item">
+        <div class="t-pill t-pill--rest">
+          <svg width="12" height="8" viewBox="0 0 72 44" fill="none">
+            <rect x="0" y="18" width="72" height="8" rx="4" fill="#444"/>
+            <rect x="0" y="18" width="39" height="8" rx="4" fill="white"/>
+            <circle cx="39" cy="22" r="16" fill="white"/>
+            <circle cx="39" cy="22" r="9" fill="#0F0F0F"/>
+          </svg>
+        </div>
+        <div class="pill-state-label">Rest</div>
+      </div>
+
+      <!-- Hover / focus state -->
+      <div class="pill-item">
+        <div class="t-pill t-pill--expanded">
+          <svg width="10" height="6" viewBox="0 0 72 44" fill="none">
+            <rect x="0" y="18" width="72" height="8" rx="4" fill="#444"/>
+            <rect x="0" y="18" width="39" height="8" rx="4" fill="white"/>
+            <circle cx="39" cy="22" r="16" fill="white"/>
+            <circle cx="39" cy="22" r="9" fill="#0F0F0F"/>
+          </svg>
+          <span class="pill-text">Tonal</span>
+        </div>
+        <div class="pill-state-label">Hover</div>
+      </div>
+
+      <!-- Loading -->
+      <div class="pill-item">
+        <div class="t-pill t-pill--expanded" style="opacity:0.6;">
+          <span class="pill-text">Converting</span>
+        </div>
+        <div class="pill-state-label">Loading</div>
+      </div>
+
+      <!-- Done / Undo -->
+      <div class="pill-item">
+        <div class="t-pill t-pill--done">
+          <span class="pill-text">Undo</span>
+        </div>
+        <div class="pill-state-label">Done</div>
+      </div>
+
+      <!-- Popover open -->
+      <div class="pill-item" style="margin-left:40px; align-items:flex-end;">
+        <div class="popover">
+          <div class="popover-item">
+            <span class="popover-item-label">Casual</span>
+            <span class="popover-item-sub">texting</span>
+          </div>
+          <div class="popover-divider"></div>
+          <div class="popover-item popover-item--active">
+            <span class="popover-item-label">Work Chat</span>
+            <span class="popover-item-sub">default ✓</span>
+          </div>
+          <div class="popover-divider"></div>
+          <div class="popover-item">
+            <span class="popover-item-label">Formal</span>
+            <span class="popover-item-sub">professional</span>
+          </div>
+          <div class="popover-divider" style="background:#E5E5EA;"></div>
+          <div class="popover-item popover-item--decode">
+            <span class="popover-item-label">Decode message</span>
+            <span class="popover-item-sub" style="font-size:13px;">↓</span>
+          </div>
+        </div>
+        <div style="height:8px; width:1px; background:var(--black); margin:0 auto;"></div>
+        <div class="t-pill t-pill--rest" style="border: 2px solid rgba(255,255,255,0.3);">
+          <svg width="12" height="8" viewBox="0 0 72 44" fill="none">
+            <rect x="0" y="18" width="72" height="8" rx="4" fill="#444"/>
+            <rect x="0" y="18" width="39" height="8" rx="4" fill="white"/>
+            <circle cx="39" cy="22" r="16" fill="white"/>
+            <circle cx="39" cy="22" r="9" fill="#0F0F0F"/>
+          </svg>
+        </div>
+        <div class="pill-state-label">Popover open</div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SECTION: WHATSAPP MOCKUP ═══ -->
+<div class="section">
+  <div class="section-label">In Use — WhatsApp Web</div>
+  <div class="grid-2">
+    <div>
+      <div class="mockup-label">At rest — pill in input corner</div>
+      <div class="wa-wrap">
+        <div class="wa-header">
+          <div class="wa-avatar">R</div>
+          <div>
+            <div class="wa-name">Rahul Sharma</div>
+            <div class="wa-status">online</div>
+          </div>
+        </div>
+        <div class="wa-chat">
+          <div class="wa-bubble wa-bubble--in">
+            hey when's the meeting?
+            <span class="wa-time">10:32</span>
+          </div>
+          <div class="wa-bubble wa-bubble--out">
+            I'll confirm after checking
+            <span class="wa-time">10:34 ✓✓</span>
+          </div>
+        </div>
+        <div class="wa-input-bar">
+          <div class="wa-input-field">
+            <span class="wa-input-text" style="color:#9CA3AF;">hey when is the meeting confirmed</span>
+            <!-- TONAL PILL -->
+            <div class="tonal-pill-in-input">
+              <svg width="13" height="8" viewBox="0 0 72 44" fill="none">
+                <rect x="0" y="18" width="72" height="8" rx="4" fill="#444"/>
+                <rect x="0" y="18" width="39" height="8" rx="4" fill="white"/>
+                <circle cx="39" cy="22" r="16" fill="white"/>
+                <circle cx="39" cy="22" r="9" fill="#0F0F0F"/>
+              </svg>
+            </div>
+          </div>
+          <div class="wa-send">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <path d="M2 12L22 4L14 22L12 13L2 12Z" fill="white"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="mockup-label">On click — popover appears</div>
+      <div class="wa-wrap" style="position:relative;">
+        <div class="wa-header">
+          <div class="wa-avatar">R</div>
+          <div>
+            <div class="wa-name">Rahul Sharma</div>
+            <div class="wa-status">online</div>
+          </div>
+        </div>
+        <div class="wa-chat">
+          <div class="wa-bubble wa-bubble--in">
+            hey when's the meeting?
+            <span class="wa-time">10:32</span>
+          </div>
+          <div class="wa-bubble wa-bubble--out">
+            I'll confirm after checking
+            <span class="wa-time">10:34 ✓✓</span>
+          </div>
+          <!-- POPOVER appears here, above input -->
+          <div style="display:flex; justify-content:flex-end; padding-right:50px;">
+            <div class="popover">
+              <div class="popover-item"><span class="popover-item-label">Casual</span><span class="popover-item-sub">texting</span></div>
+              <div class="popover-divider"></div>
+              <div class="popover-item popover-item--active"><span class="popover-item-label">Work Chat</span><span class="popover-item-sub">default ✓</span></div>
+              <div class="popover-divider"></div>
+              <div class="popover-item"><span class="popover-item-label">Formal</span><span class="popover-item-sub">professional</span></div>
+              <div class="popover-divider" style="background:#E5E5EA;"></div>
+              <div class="popover-item popover-item--decode"><span class="popover-item-label">Decode message</span><span class="popover-item-sub" style="font-size:13px;">↓</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="wa-input-bar">
+          <div class="wa-input-field">
+            <span class="wa-input-text">hey when is the meeting confirmed</span>
+            <div class="tonal-pill-in-input" style="box-shadow:0 0 0 2px rgba(255,255,255,0.4);">
+              <svg width="13" height="8" viewBox="0 0 72 44" fill="none">
+                <rect x="0" y="18" width="72" height="8" rx="4" fill="#444"/>
+                <rect x="0" y="18" width="39" height="8" rx="4" fill="white"/>
+                <circle cx="39" cy="22" r="16" fill="white"/>
+                <circle cx="39" cy="22" r="9" fill="#0F0F0F"/>
+              </svg>
+            </div>
+          </div>
+          <div class="wa-send">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <path d="M2 12L22 4L14 22L12 13L2 12Z" fill="white"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SECTION: LINKEDIN MOCKUP ═══ -->
+<div class="section">
+  <div class="section-label">In Use — LinkedIn Messages</div>
+  <div class="grid-2">
+    <div>
+      <div class="mockup-label">At rest</div>
+      <div class="li-wrap">
+        <div class="li-header">
+          <div class="li-avatar">P</div>
+          <div>
+            <div class="li-name">Priya Mehta · 2nd</div>
+            <div class="li-title">Product Manager at Razorpay</div>
+          </div>
+        </div>
+        <div class="li-messages">
+          <div class="li-bubble li-bubble--in">
+            I wanted to circle back on the deliverables from last week's sync. Could you advise on the timeline moving forward?
+          </div>
+        </div>
+        <div class="li-input-area">
+          <div class="li-input-field" style="position:relative;">
+            <span style="color:var(--gray-4); font-size:13px; font-family:var(--font);">Write a message…</span>
+            <div style="position:absolute; right:10px; top:50%; transform:translateY(-50%); width:26px; height:14px; background:var(--black); border-radius:100px; display:flex; align-items:center; justify-content:center;">
+              <svg width="12" height="7" viewBox="0 0 72 44" fill="none">
+                <rect x="0" y="18" width="72" height="8" rx="4" fill="#444"/>
+                <rect x="0" y="18" width="39" height="8" rx="4" fill="white"/>
+                <circle cx="39" cy="22" r="16" fill="white"/>
+                <circle cx="39" cy="22" r="9" fill="#0F0F0F"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="mockup-label">After conversion — highlight</div>
+      <div class="li-wrap">
+        <div class="li-header">
+          <div class="li-avatar">P</div>
+          <div>
+            <div class="li-name">Priya Mehta · 2nd</div>
+            <div class="li-title">Product Manager at Razorpay</div>
+          </div>
+        </div>
+        <div class="li-messages">
+          <div class="li-bubble li-bubble--in">
+            I wanted to circle back on the deliverables from last week's sync. Could you advise on the timeline moving forward?
+          </div>
+        </div>
+        <div class="li-input-area">
+          <div class="li-input-field" style="position:relative; color:var(--black); align-items:flex-start; padding-top:10px; padding-bottom:10px; height:auto;">
+            <span style="font-size:13px; font-family:var(--font); line-height:1.5;">
+              Thanks for following up. <span class="hl">I'll review</span> the deliverables and <span class="hl">share an updated timeline</span> shortly.
+            </span>
+            <div style="position:absolute; right:10px; top:10px; width:36px; height:16px; background:#34C759; border-radius:100px; display:flex; align-items:center; justify-content:center;">
+              <span style="font-size:10px; font-weight:600; color:white; letter-spacing:0.01em;">Undo</span>
+            </div>
+          </div>
+          <div style="margin-top:8px; font-size:11px; color:var(--gray-5);">Highlighted words changed · fades in 3s</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
