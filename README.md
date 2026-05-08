@@ -4,6 +4,7 @@
 <img src="icons/icon128.png" alt="Tonal Logo" width="128"/>
 <br/>
 <br/>
+
 # Tonal
 
 ### The two-way tone translator for the modern web.
