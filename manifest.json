@@ -3,7 +3,7 @@
   "name": "Tonal",
   "version": "2.0.0",
   "description": "Two-way tone translator. Convert casual to formal, or decode corporate speak — inside Gmail, Slack, LinkedIn and WhatsApp Web.",
-  "permissions": ["storage", "activeTab"],
+  "permissions": ["storage"],
   "host_permissions": [
     "https://mail.google.com/*",
     "https://*.slack.com/*",
@@ -22,7 +22,10 @@
         "https://*.whatsapp.com/*",
         "https://*.linkedin.com/*"
       ],
-      "js": ["content.js"],
+      "js": [
+        "utils.js",
+        "content.js"
+      ],
       "css": ["styles.css"],
       "run_at": "document_idle"
     }

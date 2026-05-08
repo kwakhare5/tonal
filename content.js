@@ -2,73 +2,48 @@
 (function () {
   "use strict";
 
-  const injected = new WeakSet();
-
-  function isContextValid() {
-    return typeof chrome !== 'undefined' && !!chrome.runtime && !!chrome.runtime.id;
-  }
-
-  function getPlatform() {
-    const h = location.hostname;
-    if (h.includes("mail.google.com")) return "gmail";
-    if (h.includes("app.slack.com")) return "slack";
-    if (h.includes("web.whatsapp.com")) return "whatsapp";
-    if (h.includes("linkedin.com")) return "linkedin";
-    return null;
-  }
-
-  const SELECTORS = {
-    gmail: ['div[aria-label="Message Body"]', '.Am.Al.editable', 'div[g_editable="true"][contenteditable="true"]'],
-    slack: ['.ql-editor[contenteditable="true"]', '[data-lexical-editor="true"]', '.p-rich_text_input__editable'],
-    whatsapp: ['div[contenteditable="true"][data-tab="10"]', 'footer div[contenteditable="true"]'],
-    linkedin: ['.msg-form__contenteditable', '.feed-shared-update-v2__comment-box [contenteditable]']
-  };
-
+  let isScanning = false;
   function scan() {
-    const platform = getPlatform();
-    if (!platform) return;
-    const selectors = SELECTORS[platform];
-    selectors.forEach(sel => {
-      document.querySelectorAll(sel).forEach(el => {
-        if (!injected.has(el)) {
-          inject(el, platform);
-          injected.add(el);
-        }
+    if (isScanning) return;
+    isScanning = true;
+
+    try {
+      const platform = getPlatform();
+      if (!platform) return;
+      const selectors = SELECTORS[platform];
+      selectors.forEach(selector => {
+        document.querySelectorAll(selector).forEach(element => {
+          if (element.dataset.tonalInjected !== "true") {
+            element.dataset.tonalInjected = "true";
+            inject(element, platform);
+          }
+        });
       });
-    });
+    } finally {
+      isScanning = false;
+    }
   }
 
   function inject(input, platform) {
-    const wrap = document.createElement('div');
-    wrap.className = `t-wrap t-wrap--${platform}`;
-    wrap._tInput = input;
+    const wrapper = document.createElement('div');
+    wrapper.className = `t-wrap t-wrap--${platform}`;
+    wrapper._tInput = input;
     
-    const btn = makeButton();
-    wrap.appendChild(btn);
+    const pillButton = makeButton();
+    wrapper.appendChild(pillButton);
     
-    // Append to documentElement (<html>) to bypass all container clipping
-    document.documentElement.appendChild(wrap);
-    positionPill(btn, input, platform);
-
-    // Reposition on window resize
-    window.addEventListener('resize', () => positionPill(btn, input, platform));
-    
-    // Observer for input changes to update label
-    const observer = new MutationObserver(() => updatePillLabel(btn, input));
-    observer.observe(input, { characterData: true, childList: true, subtree: true });
-
-    // Initial check
-    updatePillLabel(btn, input);
+    document.documentElement.appendChild(wrapper);
+    positionPill(pillButton, input, true);
+    updatePillLabel(pillButton, input);
   }
 
   function makeButton() {
-    const btn = document.createElement('button');
-    btn.className = 't-pill t-pill--rest';
-    btn.dataset.state = "idle";
-    btn.dataset.tone = "workChat";
+    const pillButton = document.createElement('button');
+    pillButton.className = 't-pill t-pill--rest';
+    pillButton.dataset.state = "idle";
+    pillButton.dataset.tone = "workChat";
     
-    // Strict SVG from design system (Spec: 13x8px icon)
-    btn.innerHTML = `
+    pillButton.innerHTML = `
       <span class="pill-icon">
         <svg width="13" height="8" viewBox="0 0 72 44" fill="none">
           <rect x="0" y="18" width="72" height="8" rx="4" fill="#444"/>
@@ -85,150 +60,141 @@
       </span>
     `;
 
-    btn.addEventListener("mouseenter", () => {
-      if (btn.dataset.state === "idle") {
-        updatePillLabel(btn, btn.closest(".t-wrap")._tInput); // Refresh text
-        btn.classList.replace("t-pill--rest", "t-pill--expanded");
-      }
-    });
-
-    btn.addEventListener("mouseleave", (e) => {
-      if (btn.dataset.state === "idle") {
-        // Delay collapse to see if we move into the popover
-        setTimeout(() => {
-          const isOverPopover = document.querySelector(".popover:hover");
-          const isOverPill = btn.matches(":hover");
-          if (!isOverPopover && !isOverPill) {
-            btn.classList.replace("t-pill--expanded", "t-pill--rest");
-            closePopover();
-          }
-        }, 100);
-      }
-    });
-
-    btn.addEventListener("click", (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      const text = getInputText(btn.closest(".t-wrap")._tInput);
+    pillButton.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
       
-      if (btn.dataset.state === "undo") {
-        handleUndo(btn);
-      } else if (text && text.length > 0) {
-        handleConvert(btn);
-      } else {
-        showPopover(btn);
-      }
-    });
-
-    const caret = btn.querySelector('.pill-caret');
-    caret.addEventListener('click', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      showPopover(btn);
-    });
-
-    btn.addEventListener("contextmenu", (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      showPopover(btn);
-    });
-
-    return btn;
-  }
-
-  function updatePillLabel(btn, input) {
-    if (btn.dataset.state !== "idle") return;
-    const text = getInputText(input);
-    const label = btn.querySelector(".pill-text");
-    if (label) {
-      const names = { texting: "Casual", corporate: "Formal", workChat: "Work Chat" };
-      const toneName = names[btn.dataset.tone] || "Work Chat";
-      
-      // If text is present, we show the action "Convert". 
-      // If empty, we show the active "Tone Name".
-      const newLabel = (text && text.length > 0) ? "Convert" : toneName;
-      
-      if (label.textContent !== newLabel) label.textContent = newLabel;
-    }
-  }
-
-  function positionPill(btn, input, isFirstLoad = false) {
-    const wrap = btn.closest(".t-wrap");
-    const rect = input.getBoundingClientRect();
-    
-    const isVisible = rect.width > 0 && rect.height > 0;
-    if (!isVisible) {
-      wrap.style.display = "none";
-      return;
-    }
-    
-    wrap.style.display = "block";
-    const targetY = rect.top + (rect.height / 2);
-    const targetX = rect.left + rect.width;
-
-    // Magnetic Smoothing (Lerp)
-    if (isFirstLoad || !wrap._lastX) {
-      wrap._lastX = targetX;
-      wrap._lastY = targetY;
-    } else {
-      // 0.15 factor gives it a "magnetic spring" feel
-      wrap._lastX += (targetX - wrap._lastX) * 0.15;
-      wrap._lastY += (targetY - wrap._lastY) * 0.15;
-    }
-
-    wrap.style.top = `${wrap._lastY}px`;
-    wrap.style.left = `${wrap._lastX}px`;
-    wrap.style.width = "0px";
-    wrap.style.height = "0px";
-    
-    btn.style.position = "absolute";
-    btn.style.right = "8px"; 
-    btn.style.top = "0";
-    btn.style.transform = "translateY(-50%)";
-  }
-
-  function watchdog() {
-    const wraps = document.querySelectorAll(".t-wrap");
-    wraps.forEach(wrap => {
-      const input = wrap._tInput;
-      const btn = wrap.querySelector(".t-pill");
-      
-      // 1. Is the textbox dead or removed?
-      if (!input || !document.contains(input)) {
-        wrap.remove();
+      const isCaret = event.target.closest('.pill-caret');
+      if (isCaret) {
+        showPopover(pillButton);
         return;
       }
 
-      // 2. Sync position (handles scrolling and dynamic layout shifts)
-      positionPill(btn, input, false); 
+      if (pillButton.dataset.state === "undo") {
+        handleUndo(pillButton);
+      } else if (pillButton.dataset.state === "idle") {
+        const text = getInputText(pillButton.closest(".t-wrap")._tInput);
+        if (text && text.length > 0) {
+          handleConvert(pillButton);
+        } else {
+          showPopover(pillButton);
+        }
+      }
     });
+
+    pillButton.addEventListener("contextmenu", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      showPopover(pillButton);
+    });
+
+    return pillButton;
+  }
+
+  const PULL_RADIUS   = 100;
+  const EXPAND_RADIUS = 70;
+  const BASE_TRANSFORM = "translateY(-50%)";
+  
+  document.addEventListener("mousemove", (event) => {
+    const pills = document.querySelectorAll(".t-pill");
+    pills.forEach(pillButton => {
+      if (pillButton.dataset.state === "loading") {
+        pillButton.style.transform = BASE_TRANSFORM;
+        return;
+      }
+
+      const rect = pillButton.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      
+      const dx = event.clientX - centerX;
+      const dy = event.clientY - centerY;
+      const distance = Math.sqrt(dx*dx + dy*dy);
+
+      if (distance < PULL_RADIUS) {
+        const power = (PULL_RADIUS - distance) / PULL_RADIUS;
+        const pullX = dx * power * 0.45;
+        const pullY = dy * power * 0.45;
+        
+        pillButton.style.transform = `${BASE_TRANSFORM} translate(${pullX}px, ${pullY}px) scale(${1 + power * 0.05})`;
+        pillButton.style.zIndex = "2147483647";
+
+        if (distance < EXPAND_RADIUS) {
+          if (pillButton.classList.contains("t-pill--rest")) {
+            pillButton.classList.replace("t-pill--rest", "t-pill--expanded");
+            updatePillLabel(pillButton, pillButton.closest(".t-wrap")._tInput);
+          }
+        }
+      } else {
+        pillButton.style.transform = BASE_TRANSFORM;
+        pillButton.style.zIndex = "";
+        
+        if (pillButton.classList.contains("t-pill--expanded")) {
+          if (!document.querySelector(".popover:hover") && !pillButton.matches(":hover")) {
+             pillButton.classList.replace("t-pill--expanded", "t-pill--rest");
+             updatePillLabel(pillButton, pillButton.closest(".t-wrap")?._tInput);
+          }
+        }
+      }
+    });
+  });
+
+  function updatePillLabel(pillButton, input) {
+    if (pillButton.dataset.state !== "idle") return;
+    const label = pillButton.querySelector(".pill-text");
+    if (label) {
+      const names = { casual: "Casual", workChat: "Work Chat", formal: "Formal" };
+      const toneName = names[pillButton.dataset.tone] || "Work Chat";
+      if (label.textContent !== toneName) label.textContent = toneName;
+    }
+  }
+
+  function watchdog() {
+    const wrappers = document.querySelectorAll(".t-wrap");
+    wrappers.forEach(wrapper => {
+      const input = wrapper._tInput;
+      const pillButton = wrapper.querySelector(".t-pill");
+      
+      if (!input || !document.contains(input)) {
+        wrapper.remove();
+        return;
+      }
+
+      positionPill(pillButton, input, false); 
+    });
+    
+    if (!window._tLastScan || Date.now() - window._tLastScan > 2000) {
+      scan();
+      window._tLastScan = Date.now();
+    }
+    
     requestAnimationFrame(watchdog);
   }
 
-  function showPopover(btn) {
-    if (btn.classList.contains("t-pill--popover-open")) {
+  function showPopover(pillButton) {
+    if (pillButton.classList.contains("t-pill--popover-open")) {
       closePopover();
       return;
     }
     closePopover();
-    btn.classList.add("t-pill--popover-open");
-    const input = btn.closest(".t-wrap")._tInput;
-    const pop = document.createElement("div");
-    pop.className = "popover";
-    pop.innerHTML = `
-      <button class="popover-item ${btn.dataset.tone === "texting" ? "popover-item--active" : ""}" data-tone="texting">
+    pillButton.classList.add("t-pill--popover-open");
+    const input = pillButton.closest(".t-wrap")._tInput;
+    const popoverElement = document.createElement("div");
+    popoverElement.className = "popover";
+    popoverElement.innerHTML = `
+      <button class="popover-item ${pillButton.dataset.tone === "casual" ? "popover-item--active" : ""}" data-tone="casual">
         <span class="popover-item-label">Casual</span>
-        <span class="popover-item-sub">texting ${btn.dataset.tone === "texting" ? "✓" : ""}</span>
+        <span class="popover-item-sub">${pillButton.dataset.tone === "casual" ? "✓" : ""}</span>
       </button>
       <div class="popover-divider"></div>
-      <button class="popover-item ${(!btn.dataset.tone || btn.dataset.tone === "workChat") ? "popover-item--active" : ""}" data-tone="workChat">
+      <button class="popover-item ${(!pillButton.dataset.tone || pillButton.dataset.tone === "workChat") ? "popover-item--active" : ""}" data-tone="workChat">
         <span class="popover-item-label">Work Chat</span>
-        <span class="popover-item-sub">default ${(!btn.dataset.tone || btn.dataset.tone === "workChat") ? "✓" : ""}</span>
+        <span class="popover-item-sub">${(!pillButton.dataset.tone || pillButton.dataset.tone === "workChat") ? "✓" : ""}</span>
       </button>
       <div class="popover-divider"></div>
-      <button class="popover-item ${btn.dataset.tone === "corporate" ? "popover-item--active" : ""}" data-tone="corporate">
+      <button class="popover-item ${pillButton.dataset.tone === "formal" ? "popover-item--active" : ""}" data-tone="formal">
         <span class="popover-item-label">Formal</span>
-        <span class="popover-item-sub">professional ${btn.dataset.tone === "corporate" ? "✓" : ""}</span>
+        <span class="popover-item-sub">${pillButton.dataset.tone === "formal" ? "✓" : ""}</span>
       </button>
       <div class="popover-divider"></div>
       <button class="popover-item popover-item--decode" data-tone="decode">
@@ -237,48 +203,43 @@
       </button>
     `;
 
-    pop.querySelectorAll(".popover-item").forEach(item => {
-      item.addEventListener("click", (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        e.stopImmediatePropagation();
+    popoverElement.querySelectorAll(".popover-item").forEach(item => {
+      item.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        event.stopImmediatePropagation();
         const tone = item.dataset.tone;
         closePopover();
         if (tone === "decode") {
-          runDecode(btn, input);
+          runDecode(pillButton, input);
         } else {
-          btn.dataset.tone = tone;
+          pillButton.dataset.tone = tone;
           const text = getInputText(input);
           if (text && text.trim().length > 0) {
-            handleConvert(btn, tone);
+            handleConvert(pillButton, tone);
           } else {
-            // Pre-selection: Just update the label
-            updatePillLabel(btn, input);
+            updatePillLabel(pillButton, input);
           }
         }
       });
     });
 
-    pop.addEventListener("mouseleave", () => {
+    popoverElement.addEventListener("mouseleave", () => {
       setTimeout(() => {
-        const isOverPill = btn.matches(":hover");
-        const isOverPopover = pop.matches(":hover");
+        const isOverPill = pillButton.matches(":hover");
+        const isOverPopover = popoverElement.matches(":hover");
         if (!isOverPill && !isOverPopover) {
-          btn.classList.replace("t-pill--expanded", "t-pill--rest");
+          pillButton.classList.replace("t-pill--expanded", "t-pill--rest");
           closePopover();
         }
       }, 100);
     });
 
-    const wrap = btn.closest(".t-wrap");
-    const rect = btn.getBoundingClientRect();
-    
-    document.documentElement.appendChild(pop);
-    
-    // Position UPWARDS
-    const popHeight = pop.offsetHeight;
-    pop.style.top = `${rect.top - popHeight - 8}px`;
-    pop.style.left = `${rect.right - 200}px`;
+    const rect = pillButton.getBoundingClientRect();
+    document.documentElement.appendChild(popoverElement);
+    const popHeight = popoverElement.offsetHeight;
+    popoverElement.style.top = `${rect.top - popHeight - 8}px`;
+    popoverElement.style.left = `${rect.right - 200}px`;
 
     setTimeout(() => document.addEventListener("click", closePopover, { once: true }), 10);
   }
@@ -288,65 +249,72 @@
     document.querySelector(".popover")?.remove();
   }
 
-  async function handleConvert(btn, toneOverride) {
-    const input = btn.closest(".t-wrap")._tInput;
+  async function handleConvert(pillButton, toneOverride) {
+    const input = pillButton.closest(".t-wrap")._tInput;
     const text = getInputText(input);
-    const tone = toneOverride || btn.dataset.tone || "workChat";
+    const tone = toneOverride || pillButton.dataset.tone || "workChat";
     
-    btn.dataset.original = text;
-    btn.dataset.state = "loading";
-    btn.className = "t-pill t-pill--loading";
-    btn.querySelector(".pill-text").textContent = "Converting";
-    btn.querySelector(".pill-text").classList.add("pill-text--dim");
+    pillButton.dataset.original = text;
+    pillButton.dataset.state = "loading";
+    pillButton.className = "t-pill t-pill--loading";
+    pillButton.querySelector(".pill-text").textContent = "Converting";
+    pillButton.querySelector(".pill-text").classList.add("pill-text--dim");
+
+    const { maskedText, mapping } = maskPII(text);
 
     try {
-      chrome.runtime.sendMessage({ type: "TONESHIFT_CONVERT", text, toneLevel: tone }, (res) => {
-        if (res?.success) {
-          setInputTextWithHighlight(input, text, res.text);
-          setDone(btn);
+      chrome.runtime.sendMessage({ type: "TONESHIFT_CONVERT", text: maskedText, toneLevel: tone }, (response) => {
+        if (chrome.runtime.lastError) {
+          setIdle(pillButton);
+          return;
+        }
+        if (response?.success) {
+          const finalOutput = unmaskPII(response.text, mapping);
+          setInputTextWithHighlight(input, text, finalOutput);
+          setDone(pillButton);
         } else {
-          setError(btn, res?.error);
+          setError(pillButton, response?.error);
         }
       });
-    } catch (e) {
-      setIdle(btn);
+    } catch (error) {
+      setIdle(pillButton);
     }
   }
 
-  const HUMAN_ERRORS = {
-    "NO_TEXT": "Type something first",
-    "AI_FAILED": "Couldn't rewrite this",
-    "AI_BUSY": "AI is busy. Try again soon.",
-    "RATE_LIMIT": "Taking a break. Try in 1 min.",
-    "NETWORK_ERROR": "Check your internet",
-    "SERVER_ERROR": "Something went wrong"
-  };
-
-  function setError(btn, errorKey) {
+  function setError(pillButton, errorKey) {
     const msg = HUMAN_ERRORS[errorKey] || HUMAN_ERRORS.SERVER_ERROR;
-    btn.dataset.state = "error";
-    btn.className = "t-pill t-pill--error";
-    btn.querySelector(".pill-text").textContent = msg;
-    btn.querySelector(".pill-text").classList.remove("pill-text--dim");
+    pillButton.dataset.state = "error";
+    pillButton.className = "t-pill t-pill--error";
+    pillButton.querySelector(".pill-text").textContent = msg;
+    pillButton.querySelector(".pill-text").classList.remove("pill-text--dim");
     
     setTimeout(() => {
-      if (btn.dataset.state === "error") setIdle(btn);
+      if (pillButton.dataset.state === "error") setIdle(pillButton);
     }, 3000);
   }
 
-  async function runDecode(btn, input) {
+  async function runDecode(pillButton, input) {
     const text = getInputText(input);
-    btn.dataset.state = "loading";
-    btn.classList.add("t-pill--expanded");
-    btn.querySelector(".pill-text").textContent = "Decoding";
+    pillButton.dataset.state = "loading";
+    pillButton.classList.add("t-pill--expanded");
+    pillButton.querySelector(".pill-text").textContent = "Decoding";
 
-    chrome.runtime.sendMessage({ type: "TONESHIFT_DECODE", text }, (res) => {
-      setIdle(btn);
-      if (res?.success) showDecodeCard(res.text, btn);
+    const { maskedText, mapping } = maskPII(text);
+
+    chrome.runtime.sendMessage({ type: "TONESHIFT_DECODE", text: maskedText }, (response) => {
+      if (chrome.runtime.lastError) {
+        setIdle(pillButton);
+        return;
+      }
+      setIdle(pillButton);
+      if (response?.success) {
+        const finalOutput = unmaskPII(response.text, mapping);
+        showDecodeCard(finalOutput, pillButton);
+      }
     });
   }
 
-  function showDecodeCard(text, btn) {
+  function showDecodeCard(text, pillButton) {
     document.querySelector(".card")?.remove();
     const card = document.createElement("div");
     card.className = "card";
@@ -357,7 +325,7 @@
     `;
     document.body.appendChild(card);
     
-    const rect = btn.getBoundingClientRect();
+    const rect = pillButton.getBoundingClientRect();
     card.style.top = `${rect.top - card.offsetHeight - 12}px`;
     card.style.left = `${rect.right - card.offsetWidth}px`;
 
@@ -370,171 +338,87 @@
     setTimeout(() => document.addEventListener("click", () => card.remove(), { once: true }), 100);
   }
 
-  function setDone(btn) {
-    btn.dataset.state = "undo";
-    btn.className = "t-pill t-pill--done";
-    btn.querySelector(".pill-text").textContent = "Undo";
-    btn.querySelector(".pill-text").classList.remove("pill-text--dim");
-    setTimeout(() => { if (btn.dataset.state === "undo") setIdle(btn); }, 5000);
+  function setDone(pillButton) {
+    pillButton.dataset.state = "undo";
+    pillButton.className = "t-pill t-pill--done";
+    pillButton.querySelector(".pill-text").textContent = "Undo";
+    pillButton.querySelector(".pill-text").classList.remove("pill-text--dim");
+    setTimeout(() => { if (pillButton.dataset.state === "undo") setIdle(pillButton); }, 5000);
   }
 
-  function setIdle(btn) {
-    btn.dataset.state = "idle";
-    btn.className = "t-pill t-pill--rest";
-    updatePillLabel(btn, btn.closest(".t-wrap")?._tInput);
+  function setIdle(pillButton) {
+    pillButton.dataset.state = "idle";
+    pillButton.className = "t-pill t-pill--rest";
+    updatePillLabel(pillButton, pillButton.closest(".t-wrap")?._tInput);
   }
 
-  function handleUndo(btn) {
-    const input = btn.closest(".t-wrap")._tInput;
-    if (btn.dataset.original) setInputText(input, btn.dataset.original);
-    setIdle(btn);
-  }
-
-  function getInputText(el) {
-    // Platform-specific filter: On WhatsApp, ignore quoted messages (replies)
-    const clone = el.cloneNode(true);
-    // WhatsApp quoted text usually resides in a div with data-testid="quoted-message" or similar
-    // We remove elements that look like quotes to only get the NEWLY typed text
-    clone.querySelectorAll('[data-testid*="quote"], [class*="quoted"], [class*="copyable-text"]').forEach(q => q.remove());
-    
-    return (clone.innerText || clone.textContent || "").trim();
-  }
-
-  function setInputText(el, text) {
-    if (el.isContentEditable) {
-      // Precise selection lock
-      const range = document.createRange();
-      range.selectNodeContents(el);
-      const sel = window.getSelection();
-      sel.removeAllRanges();
-      sel.addRange(range);
-      
-      document.execCommand('insertText', false, text);
-      el.dispatchEvent(new InputEvent('input', { bubbles: true }));
-    } else {
-      el.value = text;
-      el.dispatchEvent(new Event('input', { bubbles: true }));
+  function handleUndo(pillButton) {
+    const input = pillButton.closest(".t-wrap")._tInput;
+    if (pillButton.dataset.original) {
+      setInputTextWithHighlight(input, null, pillButton.dataset.original, true);
     }
+    setIdle(pillButton);
   }
 
-  function setInputTextWithHighlight(el, oldText, newText) {
-    if (!el.isContentEditable) { setInputText(el, newText); return; }
-    
-    // 1. Precise Focus
-    el.focus();
-    
-    // 2. Native Insert (Zero-HTML Strategy)
-    // We clear and insert using ONLY native text commands. 
-    // This satisfies LinkedIn/Slack/Gmail internal state models.
-    const range = document.createRange();
-    range.selectNodeContents(el);
-    const sel = window.getSelection();
-    sel.removeAllRanges();
-    sel.addRange(range);
-    
-    document.execCommand('delete', false, null);
-    
-    // Insert the pure text
-    document.execCommand('insertText', false, newText);
-    
-    // 3. Native Highlighting
-    // We color the text WITHOUT adding <span> tags. 
-    // This is invisible to the site's "Illegal HTML" detectors.
-    range.selectNodeContents(el);
-    sel.removeAllRanges();
-    sel.addRange(range);
-    document.execCommand('hiliteColor', false, 'rgba(255, 233, 153, 0.45)');
-    
-    // Move cursor to the end
-    sel.collapseToEnd();
-    
-    // 4. Force state sync
-    el.dispatchEvent(new InputEvent('input', { bubbles: true, inputType: 'insertReplacementText' }));
-    
-    // 5. STICKY CLEANUP (The Native Way)
-    const cleanup = (e) => {
-      // Ignore functional keys (Ctrl, Shift, etc.)
-      if (e.key && e.key.length === 1) {
-        // Selection lock for the whole text
-        const fullRange = document.createRange();
-        fullRange.selectNodeContents(el);
-        const fullSel = window.getSelection();
-        fullSel.removeAllRanges();
-        fullSel.addRange(fullRange);
-        
-        // Remove formatting and background color
-        document.execCommand('hiliteColor', false, 'transparent');
-        document.execCommand('removeFormat', false, null);
-        
-        // Move cursor back to the end so typing continues normally
-        fullSel.collapseToEnd();
-        
-        el.removeEventListener('keydown', cleanup);
-        el._tCleanupActive = false;
-      }
-    };
-
-    if (el._tCleanupActive) el.removeEventListener('keydown', el._tCleanup);
-    el._tCleanup = cleanup;
-    el._tCleanupActive = true;
-    el.addEventListener('keydown', cleanup);
-  }
-
-  function positionPill(btn, input, isFirstLoad = false) {
-    const wrap = btn.closest(".t-wrap");
-    if (!wrap) return;
+  function positionPill(pillButton, input, isFirstLoad = false) {
+    const wrapper = pillButton.closest(".t-wrap");
+    if (!wrapper) return;
     
     const rect = input.getBoundingClientRect();
     const isVisible = rect.width > 0 && rect.height > 0;
     
     if (!isVisible) {
-      wrap.style.display = "none";
+      wrapper.style.display = "none";
       return;
     }
     
-    wrap.style.display = "block";
-    
-    // Magnetic Logic
+    wrapper.style.display = "block";
     const targetY = rect.top + (rect.height / 2);
-    // Inner-Right Pivot with Safety Offset
     const targetX = rect.left + rect.width - 15;
 
-    if (isFirstLoad || !wrap._lastX) {
-      wrap._lastX = targetX;
-      wrap._lastY = targetY;
+    if (isFirstLoad || !wrapper._lastX) {
+      wrapper._lastX = targetX;
+      wrapper._lastY = targetY;
     } else {
-      // High-performance magnetic drift
-      wrap._lastX += (targetX - wrap._lastX) * 0.25;
-      wrap._lastY += (targetY - wrap._lastY) * 0.25;
+      wrapper._lastX += (targetX - wrapper._lastX) * 0.25;
+      wrapper._lastY += (targetY - wrapper._lastY) * 0.25;
     }
 
-    wrap.style.top = `${wrap._lastY}px`;
-    wrap.style.left = `${wrap._lastX}px`;
-    wrap.style.zIndex = "2147483647"; // Absolute top
+    wrapper.style.top = `${wrapper._lastY}px`;
+    wrapper.style.left = `${wrapper._lastX}px`;
+    wrapper.style.zIndex = "2147483647";
     
-    btn.style.position = "absolute";
-    btn.style.right = "8px"; 
-    btn.style.top = "0";
-    btn.style.transform = "translateY(-50%)";
+    pillButton.style.position = "absolute";
+    pillButton.style.right = "8px"; 
+    pillButton.style.top = "0";
+    pillButton.style.transform = "translateY(-50%)";
   }
 
   function showToast(msg, type) {
-    let t = document.getElementById("t-toast");
-    if (!t) {
-      t = document.createElement("div");
-      t.id = "t-toast";
-      document.body.appendChild(t);
+    let toastElement = document.getElementById("t-toast");
+    if (!toastElement) {
+      toastElement = document.createElement("div");
+      toastElement.id = "t-toast";
+      document.body.appendChild(toastElement);
     }
-    t.textContent = msg;
-    t.className = `t-toast--${type}`;
-    t.classList.add("t-toast--show");
-    setTimeout(() => t.classList.remove("t-toast--show"), 3000);
+    toastElement.textContent = msg;
+    toastElement.className = `t-toast--${type}`;
+    toastElement.classList.add("t-toast--show");
+    setTimeout(() => toastElement.classList.remove("t-toast--show"), 3000);
   }
 
-  // Init
-  const observer = new MutationObserver(scan);
-  observer.observe(document.body, { childList: true, subtree: true });
   scan();
   watchdog();
 
+  const observer = new MutationObserver(() => {
+    if (!window._tLastScan || Date.now() - window._tLastScan > 500) {
+      scan();
+      window._tLastScan = Date.now();
+    }
+  });
+
+  observer.observe(document.body, { 
+    childList: true, 
+    subtree: true 
+  });
 })();

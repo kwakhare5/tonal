@@ -1,9 +1,10 @@
 {
   "name": "tonal",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "The two-way tone translator for the modern web.",
   "scripts": {
     "kill": "npx kill-port 3000 3001 3002 8080",
-    "save": "git add -A && git commit -m 'checkpoint: [timestamp]' && git push"
+    "save": "git add -A && git commit -m \"feat: synchronized documentation and architecture\" && git push",
+    "deploy": "wrangler deploy"
   }
 }

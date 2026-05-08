@@ -11,50 +11,66 @@
 // ─────────────────────────────────────────────────────────────
 
 const PROMPTS = {
-  texting: `STRICT RULE: You are a writing tool, NOT a chatbot. Your ONLY job is to REWRITE the user's message in a casual text style.
+  casual: `IDENTITY: Mechanical String Transformer.
+TASK: Rewrite text into "Casual" tone.
 
-STRICT STRUCTURAL INTEGRITY: 
-1. Maintain the exact same number of lines and paragraph breaks.
-2. If the user used bullet points, maintain the same bullet style.
-3. PRESERVE CASING: If the input is ALL CAPS, output ALL CAPS. If lowercase, stay lowercase.
-4. DO NOT change or remove: Links, emails, phone numbers, percentages (%), dollar amounts ($), or placeholders like [Name].
-5. KEEP emojis in their original relative positions.
+EXAMPLES:
+- Input: "I apologize for the delay in responding." -> Output: "sry for the late reply"
+- Input: "Could you please send the documentation?" -> Output: "can u send that doc?"
+- Input: "I am unable to attend the meeting today." -> Output: "cant make the meeting today"
 
-TONE: Very casual, like texting a friend. Use short sentences and contractions.
-CRITICAL: NEVER answer questions asked in the message. NEVER reply to the user. ONLY output the rewritten text.`,
+CONSTRAINTS:
+- REWRITE the text inside [[SOURCE]].
+- DO NOT add greetings, questions, or context.
+- DO NOT sympathize or reply to the text.
+- MAINTAIN the original POV and meaning.
 
-  workChat: `STRICT RULE: You are a writing tool, NOT a chatbot. Your ONLY job is to REWRITE the user's message to sound like a friendly coworker.
+[[SOURCE]]:
+{TEXT}`,
 
-STRICT STRUCTURAL INTEGRITY: 
-1. Maintain the exact same number of lines and paragraph breaks.
-2. If the user used bullet points, maintain the same bullet style.
-3. PRESERVE CASING: If the input is ALL CAPS, output ALL CAPS.
-4. DO NOT change or remove: Links, emails, phone numbers, percentages (%), dollar amounts ($), or placeholders like [Name].
-5. KEEP emojis in their original relative positions.
+  workChat: `IDENTITY: Mechanical String Transformer.
+TASK: Rewrite text into "Work Chat" tone.
 
-TONE: Casual professional. Friendly but clear. Not stiff, not too casual. Do not use corporate jargon.
-CRITICAL: NEVER answer questions asked in the message. NEVER reply to the user. ONLY output the rewritten text.`,
+EXAMPLES:
+- Input: "hey i cant make it sry" -> Output: "I won't be able to make it today, sorry about that."
+- Input: "send me the doc" -> Output: "Could you please send over that document when you have a chance?"
+- Input: "the server is down" -> Output: "The server is currently down; we're working on getting it back up."
 
-  corporate: `STRICT RULE: You are a writing tool, NOT a chatbot. Your ONLY job is to REWRITE the user's message in a formal corporate tone.
+CONSTRAINTS:
+- REWRITE the text inside [[SOURCE]].
+- DO NOT add greetings, questions, or context.
+- DO NOT sympathize or reply to the text.
+- MAINTAIN the original POV and meaning.
 
-STRICT STRUCTURAL INTEGRITY: 
-1. Maintain the exact same number of lines and paragraph breaks.
-2. If the user used bullet points, maintain the same bullet style.
-3. PRESERVE CASING: If the input is ALL CAPS, output ALL CAPS.
-4. DO NOT change or remove: Links, emails, phone numbers, percentages (%), dollar amounts ($), or placeholders like [Name].
-5. KEEP emojis in their original relative positions.
+[[SOURCE]]:
+{TEXT}`,
 
-TONE: Formal and professional. Complete sentences, proper punctuation, polite vocabulary. No slang.
-CRITICAL: NEVER answer questions asked in the message. NEVER reply to the user. ONLY output the rewritten text.`,
+  formal: `IDENTITY: Mechanical String Transformer.
+TASK: Rewrite text into "Formal" tone.
 
-  decode: `STRICT RULE: You are a writing tool, NOT a chatbot. Your ONLY job is to translate corporate jargon into plain English.
+EXAMPLES:
+- Input: "hey im late" -> Output: "Please accept my apologies for the delay in my arrival."
+- Input: "can u help?" -> Output: "I would appreciate your assistance with this matter."
+- Input: "fix the server asap" -> Output: "Immediate attention is required to resolve the current server downtime."
 
-STRICT STRUCTURAL INTEGRITY: 
-1. Maintain the original structure (if input is a list, output a list).
-2. DO NOT remove data like links, names, or dates.
+CONSTRAINTS:
+- REWRITE the text inside [[SOURCE]].
+- DO NOT add greetings, questions, or context.
+- DO NOT sympathize or reply to the text.
+- MAINTAIN the original POV and meaning.
 
-TONE: Plain English, direct, and blunt. Tell the user what it actually means.
-CRITICAL: NEVER answer questions. NEVER add a preamble. ONLY output the translated meaning.`,
+[[SOURCE]]:
+{TEXT}`,
+
+  decode: `IDENTITY: Mechanical String Transformer.
+TASK: Translate corporate jargon into plain English.
+
+CONSTRAINTS:
+- REWRITE the text inside [[SOURCE]].
+- START immediately with plain English. NO preamble.
+
+[[SOURCE]]:
+{TEXT}`,
 };
 
 const CORS_HEADERS = {
@@ -64,7 +80,7 @@ const CORS_HEADERS = {
 };
 
 export default {
-  async fetch(request, env) {
+  async fetch(request, environment) {
 
     // CORS preflight
     if (request.method === "OPTIONS") {
@@ -93,31 +109,44 @@ export default {
     const promptKey = mode === "decode" ? "decode" : (toneLevel || "workChat");
     const systemPrompt = PROMPTS[promptKey] || PROMPTS.workChat;
 
-    // Call Cloudflare AI (Native & Permanent)
+    // Call Groq API (High Performance Rephrasing)
     try {
-      const response = await env.AI.run("@cf/meta/llama-3.1-8b-instruct", {
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: text.trim() }
-        ],
-        max_tokens: 600,
-        temperature: 0.1
+      const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${environment.GROQ_API_KEY}`,
+          "Content-Type":  "application/json",
+        },
+        body: JSON.stringify({
+          model: "llama-3.3-70b-versatile",
+          messages: [
+            { role: "system", content: systemPrompt },
+            { role: "user",   content: text.trim() }
+          ],
+          temperature: 0.2, // Low temperature for consistent tone
+          max_tokens:  800,
+        }),
       });
 
-      const result = response.response || response.text;
+      const payload = await response.json();
+      
+      if (!response.ok) {
+        return json({ error: payload.error?.message || "Groq API error" }, response.status);
+      }
+
+      const result = payload.choices?.[0]?.message?.content;
       if (!result) return json({ error: "AI failed to generate response" }, 502);
 
       return json({ success: true, text: result.trim() });
 
-    } catch (err) {
-      console.error(err);
-      return json({ error: "AI Service error — try again shortly" }, 502);
+    } catch (error) {
+      return json({ error: "Service error — try again shortly" }, 502);
     }
   },
 };
 
-function json(data, status = 200) {
-  return new Response(JSON.stringify(data), {
+function json(payload, status = 200) {
+  return new Response(JSON.stringify(payload), {
     status,
     headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
   });

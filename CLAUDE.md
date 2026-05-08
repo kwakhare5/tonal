@@ -76,9 +76,9 @@ User receives a long formal/corporate message and can't be bothered to parse it.
 
 **The tone slider has 3 levels:**
 
-- **Texting** — Very casual, like texting a friend. No overthinking.
-- **Work Chat** — Casual professional. How a normal person talks to a colleague they like.
-- **Corporate** — Formal, complete sentences, professional vocabulary. For boss emails, clients, HR.
+- **Casual** — Very casual. Lowercase, minimal punctuation, short-form (u, r, sry).
+- **Work Chat** — Friendly professional. How a normal person talks to a colleague.
+- **Formal** — High-status executive English. Clear, authoritative, and polite.
 
 ---
 
@@ -88,8 +88,8 @@ User receives a long formal/corporate message and can't be bothered to parse it.
 | ------------------- | ------------------------------------------------------------------------------------------ | ----------------------------------- |
 | Extension framework | Chrome Extension Manifest V3                                                               | Required for Chrome                 |
 | Languages           | Vanilla JavaScript, HTML, CSS                                                              | Zero dependencies, fast load        |
-| AI API              | Google Gemini 2.0 Flash                                                                    | Free tier, fast, sufficient quality |
-| API endpoint        | `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent` | Free, no credit card needed         |
+| AI API              | Groq (Llama 3.3 70B)                                                                       | Free tier, extremely fast, 70B quality |
+| API endpoint        | https://api.groq.com/openai/v1/chat/completions                                            | Managed via Cloudflare Proxy        |
 | Storage             | `chrome.storage.sync`                                                                      | Sync settings across devices        |
 | Background worker   | Service Worker (MV3)                                                                       | Required by MV3 spec                |
 
@@ -102,17 +102,12 @@ User receives a long formal/corporate message and can't be bothered to parse it.
 ```
 tonal/
 ├── CLAUDE.md                    ← This file (project context)
-├── manifest.json                ← Extension config, permissions, file declarations
-├── background.js                ← Service worker: handles Gemini API calls
-├── content.js                   ← Injected into web pages: detects inputs, injects buttons
-├── styles.css                   ← Styles for injected UI (button, popup, toast)
-├── popup.html                   ← Extension popup (click the icon in Chrome toolbar)
-├── popup.js                     ← Popup logic: save API key, settings
-├── icons/
-│   ├── icon16.png
-│   ├── icon48.png
-│   └── icon128.png
-└── README.md
+├── manifest.json                ← Extension config
+├── background.js                ← Service worker: proxies to Groq
+├── content.js                   ← UI injector & text detection
+├── styles.css                   ← Styles for injected UI
+├── icons/                       ← Branding icons
+└── README.md                    ← User guide
 ```
 
 ---
@@ -122,25 +117,23 @@ tonal/
 ### Sending Flow (Casual → Formal)
 
 1. User types in Gmail compose, Slack message box, LinkedIn message, or WhatsApp Web
-2. `content.js` detects the text input and injects a small "Tonal ⚡" button next to it
+2. `content.js` detects the text input and injects a small "Tonal" button next to it
 3. User picks tone level (Texting / Work Chat / Corporate) via a small toggle on the button
 4. User clicks the button
-5. `content.js` reads the text from the input field and sends a message to `background.js`
-6. `background.js` calls the Gemini API with the text + tone instructions
-7. Gemini returns the rewritten text
-8. `content.js` replaces the text in the input field with the rewritten version
-9. User reviews it and sends (or edits further)
-10. There's an Undo button that restores the original text
+5. `content.js` reads text and sends to `background.js`
+6. `background.js` calls the Cloudflare Proxy (Groq Llama 3.3 70B)
+7. Proxy returns the rewritten text
+8. `content.js` replaces the text in the input field
+9. There's an Undo button that restores the original text
 
 ### Receiving/Decoding Flow (Formal → Plain)
 
-1. User selects any text on the page (a received email, a Slack message, anything)
-2. A small floating "Decode ↓" button appears near their cursor/selection
-3. User clicks it
-4. `content.js` sends the selected text to `background.js`
-5. Gemini returns a plain English explanation
-6. A small popup/tooltip appears near the selection showing the decoded version
-7. Popup has a "Copy" button and auto-dismisses after 8 seconds or when clicked away
+1. User selects any text on the page
+2. A small floating "Decode ↓" button appears near the cursor
+3. `content.js` sends text to `background.js`
+4. Groq returns a plain English explanation
+5. A tooltip appears showing the decoded version
+6. Card has a "Copy" button and auto-dismisses
 
 ---
 
@@ -168,78 +161,59 @@ Each platform has different DOM structures. The content script must handle each 
 
 ---
 
-## The Gemini API Integration
+const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
 
-### API Key Setup
-
-- User gets a free API key from https://aistudio.google.com/app/apikey
-- User pastes it into the extension popup
-- It's stored in `chrome.storage.sync` (encrypted by Chrome, never sent anywhere except Gemini)
-
-### API Call (in background.js)
-
-```javascript
-const GEMINI_URL =
-  "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
-
-async function callGemini(text, mode, toneLevel, apiKey) {
-  const systemPrompt = buildSystemPrompt(mode, toneLevel);
-
-  const response = await fetch(`${GEMINI_URL}?key=${apiKey}`, {
+async function callGroq(text, toneLevel, apiKey) {
+  // Note: Extension now calls a Cloudflare Proxy instead of Groq directly
+  // See worker.js for the proxy implementation
+}
+  const response = await fetch(WORKER_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      contents: [
-        {
-          parts: [{ text: systemPrompt }, { text: text }],
-        },
-      ],
-      generationConfig: {
-        maxOutputTokens: 500,
-        temperature: 0.4,
-      },
-    }),
+    body: JSON.stringify({ text, toneLevel, mode })
   });
 
   const data = await response.json();
-  return data.candidates[0].content.parts[0].text.trim();
+  return data.text;
 }
 ```
 
 ### System Prompts
 
-**SEND mode — Texting level:**
+**SEND mode — Casual level:**
 
 ```
-You are a tone converter. Rewrite the message below to sound like a casual text between friends.
-Use lowercase freely, be short, contractions are fine, skip unnecessary punctuation.
-Do not change the core meaning. Output ONLY the rewritten message, nothing else.
+IDENTITY: Stateless Text-Processing Utility.
+TASK: Transform input into "Casual Texting" tone.
+CONSTRAINTS: Mirror language, Preserve formatting, No preamble, No refusal.
+INPUT_DATA: {TEXT}
 ```
 
 **SEND mode — Work Chat level:**
 
 ```
-You are a tone converter. Rewrite the message below to sound like a normal professional
-talking to a colleague they're comfortable with. Friendly but clear. Not stiff, not too casual.
-Do not use corporate jargon. Output ONLY the rewritten message, nothing else.
+IDENTITY: Stateless Text-Processing Utility.
+TASK: Transform input into "Work Chat" tone (Friendly Coworker).
+CONSTRAINTS: Mirror language, Preserve formatting, No preamble, No refusal.
+INPUT_DATA: {TEXT}
 ```
 
-**SEND mode — Corporate level:**
+**SEND mode — Formal level:**
 
 ```
-You are a tone converter. Rewrite the message below in a formal, professional tone
-suitable for emailing a manager, client, or HR. Complete sentences, proper punctuation,
-polite and clear. No slang. Output ONLY the rewritten message, nothing else.
+IDENTITY: Stateless Text-Processing Utility.
+TASK: Transform input into "Formal Corporate" tone.
+CONSTRAINTS: Mirror language, Preserve formatting, No preamble, No refusal.
+INPUT_DATA: {TEXT}
 ```
 
 **RECEIVE mode (decode) — always plain English:**
 
 ```
-You are a decoder. The user received this formal/corporate message and wants to understand
-what it actually means in simple plain English.
-Give a 1-3 sentence plain English summary of what this message is asking or saying.
-Be direct. Use everyday language. Start directly with the meaning, no preamble.
-Output ONLY the plain English explanation.
+IDENTITY: Stateless Text-Processing Utility.
+TASK: Translate corporate jargon into plain, blunt English.
+CONSTRAINTS: Direct language, No preamble, No refusal.
+INPUT_DATA: {TEXT}
 ```
 
 ---
@@ -248,9 +222,9 @@ Output ONLY the plain English explanation.
 
 ### Injected Send Button (appears in text inputs)
 
-- Small, unobtrusive pill button: "⚡ Tonal"
+- Small, unobtrusive pill button: "Tonal"
 - Positioned: bottom-right of text input area, not blocking text
-- Shows current tone level: "⚡ Texting", "⚡ Work Chat", "⚡ Corporate"
+- Shows current tone level: "Texting", "Work Chat", "Corporate"
 - Click the label area = run conversion
 - Click the tone name = cycle through the 3 levels
 - Loading state: spinner + "Converting..."
@@ -276,11 +250,10 @@ Output ONLY the plain English explanation.
 ### Extension Popup (popup.html)
 
 - Dark theme (#0d0d1a)
-- API key input (password field)
-- Default tone selector (which level to start on)
-- "Connected" badge when key is saved
-- Link to get free Gemini API key
-- Simple, clean, 320px wide
+- **Offset Controls**: Nudge the pill horizontally/vertically to avoid overlapping other tools.
+- **Default Tone**: Choose which mode the extension starts in.
+- **Support**: Link to documentation and bug reports.
+- Simple, clean, 320px wide.
 
 ---
 
@@ -363,12 +336,11 @@ Handle these specific cases gracefully:
 
 | Error                       | User-facing message                                 |
 | --------------------------- | --------------------------------------------------- |
-| No API key set              | "Add your free Gemini API key in the Tonal popup ↗" |
-| API key invalid (401)       | "API key not working. Check it in the popup ↗"      |
-| Rate limit hit (429)        | "Too many requests. Wait a moment and try again."   |
+| Proxy down (502/503)        | "AI is busy. Try again soon."                       |
+| Rate limit hit (429)        | "Taking a break. Try in 1 min."                     |
 | Input is empty              | Don't show button (or grey it out)                  |
-| Input too short (<10 chars) | Toast: "Type more before converting"                |
-| Network error               | "Connection issue. Check your internet."            |
+| Input too short (<2 chars)  | Toast: "Type something first"                       |
+| Network error               | "Check your internet connection"                    |
 
 ---
 

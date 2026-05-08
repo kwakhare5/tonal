@@ -55,3 +55,7 @@
 ### 14. Magnetic Positioning Engine
 **Decisions**: Implemented a Linear Interpolation (Lerp) smoothing factor of `0.15` in the Watchdog loop.
 **Why**: Previously, the pill "jumped" to its position. Now, it glides with a fluid, magnetic attraction to the textbox. This makes the UI feel "alive" and premium, reducing visual jarring during window resizing or fast scrolling.
+
+### 15. Groq Llama 3.3 70B Migration
+**Decisions**: Replaced the native Cloudflare AI (`llama-3.1-8b`) with the high-performance **Groq API** (`llama-3.3-70b-versatile`).
+**Why**: The 8B model was too small for reliable tone rephrasing, often "chatting" back or ignoring the 3-tone distinction. The 70B model via Groq provides state-of-the-art rephrasing quality with near-zero latency, ensuring the extension follows the "Stateless Utility" rules (no preambles, no refusals) and correctly handles the nuances of Casual, Work Chat, and Formal tones.

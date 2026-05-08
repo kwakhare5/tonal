@@ -29,7 +29,7 @@
 
 ## 🧩 What is Tonal?
 
-Tonal is a **two-way AI tone translator** Chrome extension built with **Vanilla JS** and powered by **Cloudflare Workers AI (Llama 3.1 8B)**.
+Tonal is a **two-way AI tone translator** Chrome extension built with **Vanilla JS** and powered by **Groq AI (Llama 3.3 70B)**.
 
 It was created to solve **the friction of modern digital communication**. Whether you need to turn a quick "k thanks" into a polished professional response, or you need to "decode" a passive-aggressive corporate email into plain English, Tonal handles it directly inside your chat box. Unlike existing solutions that require expensive subscriptions or clunky copy-pasting, Tonal uses a **Privacy-First AI Pill** that lives right where you type.
 
@@ -39,10 +39,10 @@ It was created to solve **the friction of modern digital communication**. Whethe
 
 - ✅ **One-Click Conversion** — Instantly shift between Casual (Texting), Friendly (Work Chat), and Formal (Corporate).
 - ✅ **The Decoder** — Translate corporate jargon and passive-aggressive "Manager-speak" into blunt, plain English.
-- ✅ **Grammarly-Style UI** — A beautiful, floating pill that anchors to any text box without breaking the page's layout.
-- ✅ **Shadow DOM Support** — Works on complex platforms like LinkedIn, Gmail, Slack, and WhatsApp.
-- ✅ **Privacy Masking** — Automatically redacts PII (emails/phones) before AI processing and restores them locally.
-- ✅ **Custom Positioning** — Nudge the UI if it overlaps with other extensions like Grammarly or Loom.
+- ✅ **Zero-Key Security** — No API keys required from the user. Powered by a secure Cloudflare Worker.
+- ✅ **Privacy-First (Local Masking)** — Automatically redacts PII (emails/phones) locally before AI processing and restores them instantly.
+- ✅ **Ghost-Free Injection** — Uses native browser commands to work seamlessly on Gmail, LinkedIn, Slack, and WhatsApp.
+- ✅ **Apple-Grade Motion** — High-fidelity transitions and glassmorphic materials for a premium experience.
 
 ---
 
@@ -85,10 +85,11 @@ cd Tonal
 
 ### Configuration (AI Backend)
 
-1. Deploy the `worker.js` file to your **Cloudflare Workers** account.
+1. Deploy the `worker.js` file to your **Cloudflare Workers** account: `npm run deploy`.
 2. Copy your Worker's URL (e.g., `https://tonal-proxy.name.workers.dev`).
 3. Open `background.js` and paste your URL into the `WORKER_URL` constant.
-4. Refresh your browser tabs.
+4. Load the extension in Chrome (Developer Mode → Load Unpacked).
+5. Open Gmail, Slack, or LinkedIn and start typing!
 
 ---
 

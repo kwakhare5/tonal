@@ -35,28 +35,41 @@
   border-radius: 100px;
   cursor: pointer;
   user-select: none;
-  /* Apple Signature Deceleration Curve (Refined Ease-Out) */
+  /* Magnetic Deacceleration Curve */
   transition: 
-    transform 0.5s cubic-bezier(0.25, 1, 0.5, 1),
-    width 0.5s cubic-bezier(0.25, 1, 0.5, 1),
-    max-width 0.5s cubic-bezier(0.25, 1, 0.5, 1),
-    padding 0.5s cubic-bezier(0.25, 1, 0.5, 1),
+    transform 0.3s cubic-bezier(0.23, 1, 0.32, 1),
+    width 0.4s cubic-bezier(0.25, 1, 0.5, 1),
+    max-width 0.4s cubic-bezier(0.25, 1, 0.5, 1),
+    padding 0.4s cubic-bezier(0.25, 1, 0.5, 1),
     background 0.4s ease,
     box-shadow 0.4s ease;
-  will-change: transform, width, max-width, opacity;
-  contain: layout paint; /* Isolate rendering from the rest of the DOM */
-  backface-visibility: hidden; /* Force GPU layer on Chrome */
-  border: 1px solid rgba(255, 255, 255, 0.08); /* Subtle highlight ring */
+  will-change: transform, width;
+  contain: layout paint; 
+  backface-visibility: hidden; 
+  border: 1px solid rgba(255, 255, 255, 0.08); 
   outline: none;
   font-family: var(--font);
   pointer-events: auto;
-  overflow: hidden;
+  overflow: visible; /* Needed for the magnetic hitbox */
   white-space: nowrap;
   box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+  position: relative;
+}
+
+/* ── MAGNETIC HITBOX (Expansion Area) ── */
+.t-pill::before {
+  content: '';
+  position: absolute;
+  top: -30px;
+  left: -30px;
+  right: -30px;
+  bottom: -30px;
+  background: transparent;
+  z-index: -1;
+  pointer-events: auto; /* Triggers mousemove/mouseenter from distance */
 }
 
 .t-pill:hover {
-  transform: scale(1.02);
   background: rgba(15, 15, 15, 0.95);
   box-shadow: 0 12px 32px rgba(0,0,0,0.2), 0 0 0 1px rgba(255,255,255,0.15);
 }
@@ -85,7 +98,12 @@
 .t-pill--loading {
   height: 26px;
   padding: 0 12px;
-  opacity: 0.6;
+  animation: t-pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes t-pulse {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 0.35; }
 }
 
 .t-pill--loading .pill-icon,

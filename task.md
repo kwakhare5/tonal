@@ -16,4 +16,5 @@
 - [x] Enable Sticky Highlights (Pre-Keydown Cleanup to stop bleed)
 - [x] Implement Magnetic Pill (Refined fluid motion)
 - [x] Fix WhatsApp Accidental Reply (Event Isolation)
+- [x] Migrate backend to Groq Llama 3.3 70B (Superior rephrasing)
 - [ ] Final UI sanity check on all platforms (Gmail, Slack, etc.)
