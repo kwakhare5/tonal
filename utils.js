@@ -157,33 +157,4 @@ function setInputTextWithHighlight(element, oldText, newText, isUndo = false) {
     element.focus();
   });
   
-  if (!isUndo) {
-    range.selectNodeContents(element);
-    selection.removeAllRanges();
-    selection.addRange(range);
-    document.execCommand('hiliteColor', false, 'rgba(255, 233, 153, 0.45)');
-    selection.collapseToEnd();
-    
-    const cleanup = (event) => {
-      const isInteraction = event.type === 'mousedown' || event.type === 'focus' || (event.key && event.key.length === 1);
-      if (isInteraction) {
-        document.execCommand('hiliteColor', false, 'transparent');
-        document.execCommand('removeFormat', false, null);
-        element.removeEventListener('keydown', cleanup);
-        element.removeEventListener('mousedown', cleanup);
-        element.removeEventListener('focus', cleanup);
-        element._tCleanupActive = false;
-      }
-    };
-    if (element._tCleanupActive) {
-      element.removeEventListener('keydown', element._tCleanup);
-      element.removeEventListener('mousedown', element._tCleanup);
-      element.removeEventListener('focus', element._tCleanup);
-    }
-    element._tCleanup = cleanup;
-    element._tCleanupActive = true;
-    element.addEventListener('keydown', cleanup);
-    element.addEventListener('mousedown', cleanup);
-    element.addEventListener('focus', cleanup);
-  }
 }

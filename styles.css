@@ -381,16 +381,3 @@
 .t-toast--success { color: var(--success) !important; }
 .t-toast--error { color: #FF3B30 !important; }
 
-/* ── HIGHLIGHT ───────────────────────────────────────────────── */
-.t-hl {
-  background: rgba(255, 233, 153, 0.45); /* Premium Gold Highlight */
-  border-radius: 2px;
-  padding: 0 1px;
-  transition: background 1.5s ease-out, color 1.5s ease-out;
-  color: var(--black);
-  display: inline;
-}
-
-.t-hl--fade { 
-  background: transparent !important; 
-}
