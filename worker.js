@@ -111,6 +111,7 @@ export default {
 
     // Call Groq API (High Performance Rephrasing)
     try {
+      const finalSystemPrompt = systemPrompt.replace('{TEXT}', text.trim());
       const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
         method: "POST",
         headers: {
@@ -120,7 +121,7 @@ export default {
         body: JSON.stringify({
           model: "llama-3.3-70b-versatile",
           messages: [
-            { role: "system", content: systemPrompt },
+            { role: "system", content: finalSystemPrompt },
             { role: "user",   content: text.trim() }
           ],
           temperature: 0.2, // Low temperature for consistent tone

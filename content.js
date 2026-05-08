@@ -302,14 +302,16 @@
     const { maskedText, mapping } = maskPII(text);
 
     chrome.runtime.sendMessage({ type: "TONESHIFT_DECODE", text: maskedText }, (response) => {
-      if (chrome.runtime.lastError) {
-        setIdle(pillButton);
+      setIdle(pillButton);
+      if (chrome.runtime.lastError || !response) {
+        setError(pillButton, "NETWORK_ERROR");
         return;
       }
-      setIdle(pillButton);
       if (response?.success) {
         const finalOutput = unmaskPII(response.text, mapping);
         showDecodeCard(finalOutput, pillButton);
+      } else {
+        setError(pillButton, response?.error);
       }
     });
   }

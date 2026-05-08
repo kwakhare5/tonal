@@ -98,12 +98,13 @@ function getInputText(element) {
 function setInputText(element, text) {
   if (element.isContentEditable) {
     element.focus();
+    const selection = window.getSelection();
     const range = document.createRange();
     range.selectNodeContents(element);
-    const selection = window.getSelection();
     selection.removeAllRanges();
     selection.addRange(range);
     
+    document.execCommand('delete', false, null);
     document.execCommand('insertText', false, text);
     element.dispatchEvent(new InputEvent('input', { bubbles: true }));
   } else {
