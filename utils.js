@@ -155,6 +155,7 @@ function setInputTextWithHighlight(element, oldText, newText, isUndo = false) {
     element.dispatchEvent(new Event('change', { bubbles: true }));
     element.dispatchEvent(new Event('blur', { bubbles: true }));
     element.focus();
+    window.getSelection().removeAllRanges();
   });
   
 }
