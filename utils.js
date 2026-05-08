@@ -119,9 +119,11 @@ function setInputTextWithHighlight(element, oldText, newText, isUndo = false) {
   }
   
   element.focus();
+  
+  // Use SelectAll + InsertText for a cleaner replacement in React/Lexical editors
+  const selection = window.getSelection();
   const range = document.createRange();
   range.selectNodeContents(element);
-  const selection = window.getSelection();
   selection.removeAllRanges();
   selection.addRange(range);
   
@@ -129,15 +131,12 @@ function setInputTextWithHighlight(element, oldText, newText, isUndo = false) {
   document.execCommand('insertText', false, newText);
   
   requestAnimationFrame(() => {
-    const events = ['beforeinput', 'input', 'change'];
-    events.forEach(eventName => {
-      element.dispatchEvent(new InputEvent(eventName, { 
-        bubbles: true, 
-        cancelable: true,
-        inputType: 'insertReplacementText',
-        data: newText
-      }));
-    });
+    // Only dispatch 'input' - multiple events (beforeinput/change) cause duplication in React
+    element.dispatchEvent(new InputEvent('input', { 
+      bubbles: true, 
+      cancelable: true,
+      data: newText
+    }));
     
     element.dispatchEvent(new Event('blur', { bubbles: true }));
     element.focus();
