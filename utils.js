@@ -70,6 +70,18 @@ function maskPII(text) {
     return placeholder;
   });
 
+  // Credit Cards (Broad detection for Visa, MC, Amex, Discover)
+  const ccRegex = /\b(?:\d[ -]?){13,16}\d\b/g;
+  maskedText = maskedText.replace(ccRegex, (match) => {
+    const cleanCC = match.replace(/[- ]/g, "");
+    if (cleanCC.length >= 13 && cleanCC.length <= 19) {
+      const placeholder = `${PREFIX}CC_${counter++}__`;
+      mapping.set(placeholder, match);
+      return placeholder;
+    }
+    return match;
+  });
+
   return { maskedText, mapping };
 }
 
@@ -139,6 +151,8 @@ function setInputTextWithHighlight(element, oldText, newText, isUndo = false) {
       data: newText
     }));
     
+    // Hammer the state for deep React/Lexical editors
+    element.dispatchEvent(new Event('change', { bubbles: true }));
     element.dispatchEvent(new Event('blur', { bubbles: true }));
     element.focus();
   });
@@ -151,16 +165,25 @@ function setInputTextWithHighlight(element, oldText, newText, isUndo = false) {
     selection.collapseToEnd();
     
     const cleanup = (event) => {
-      if (event.key && event.key.length === 1) {
+      const isInteraction = event.type === 'mousedown' || event.type === 'focus' || (event.key && event.key.length === 1);
+      if (isInteraction) {
         document.execCommand('hiliteColor', false, 'transparent');
         document.execCommand('removeFormat', false, null);
         element.removeEventListener('keydown', cleanup);
+        element.removeEventListener('mousedown', cleanup);
+        element.removeEventListener('focus', cleanup);
         element._tCleanupActive = false;
       }
     };
-    if (element._tCleanupActive) element.removeEventListener('keydown', element._tCleanup);
+    if (element._tCleanupActive) {
+      element.removeEventListener('keydown', element._tCleanup);
+      element.removeEventListener('mousedown', element._tCleanup);
+      element.removeEventListener('focus', element._tCleanup);
+    }
     element._tCleanup = cleanup;
     element._tCleanupActive = true;
     element.addEventListener('keydown', cleanup);
+    element.addEventListener('mousedown', cleanup);
+    element.addEventListener('focus', cleanup);
   }
 }

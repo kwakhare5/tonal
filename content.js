@@ -41,10 +41,15 @@
     const pillButton = document.createElement('button');
     pillButton.className = 't-pill t-pill--rest';
     pillButton.dataset.state = "idle";
-    pillButton.dataset.tone = "workChat";
+    
+    // Load default tone from storage
+    chrome.storage.sync.get(['defaultTone'], (result) => {
+      pillButton.dataset.tone = result.defaultTone || "workChat";
+      updatePillLabel(pillButton, pillButton.closest(".t-wrap")?._tInput);
+    });
     
     pillButton.innerHTML = `
-      <span class="pill-icon">
+      <span class="t-pill-icon">
         <svg width="13" height="8" viewBox="0 0 72 44" fill="none">
           <rect x="0" y="18" width="72" height="8" rx="4" fill="#444"/>
           <rect x="0" y="18" width="39" height="8" rx="4" fill="white"/>
@@ -52,8 +57,8 @@
           <circle cx="39" cy="22" r="9" fill="#0F0F0F"/>
         </svg>
       </span>
-      <span class="pill-text"></span>
-      <span class="pill-caret">
+      <span class="t-pill-text"></span>
+      <span class="t-pill-caret">
         <svg width="8" height="5" viewBox="0 0 8 5" fill="none">
           <path d="M1.5 1.5L4 3.5L6.5 1.5" stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
@@ -64,7 +69,7 @@
       event.preventDefault();
       event.stopPropagation();
       
-      const isCaret = event.target.closest('.pill-caret');
+      const isCaret = event.target.closest('.t-pill-caret');
       if (isCaret) {
         showPopover(pillButton);
         return;
@@ -91,8 +96,8 @@
     return pillButton;
   }
 
-  const PULL_RADIUS   = 100;
-  const EXPAND_RADIUS = 70;
+  const PULL_RADIUS   = 45;
+  const EXPAND_RADIUS = 35;
   const BASE_TRANSFORM = "translateY(-50%)";
   
   document.addEventListener("mousemove", (event) => {
@@ -130,7 +135,7 @@
         pillButton.style.zIndex = "";
         
         if (pillButton.classList.contains("t-pill--expanded")) {
-          if (!document.querySelector(".popover:hover") && !pillButton.matches(":hover")) {
+          if (!document.querySelector(".t-popover:hover") && !pillButton.matches(":hover")) {
              pillButton.classList.replace("t-pill--expanded", "t-pill--rest");
              updatePillLabel(pillButton, pillButton.closest(".t-wrap")?._tInput);
           }
@@ -141,7 +146,7 @@
 
   function updatePillLabel(pillButton, input) {
     if (pillButton.dataset.state !== "idle") return;
-    const label = pillButton.querySelector(".pill-text");
+    const label = pillButton.querySelector(".t-pill-text");
     if (label) {
       const names = { casual: "Casual", workChat: "Work Chat", formal: "Formal" };
       const toneName = names[pillButton.dataset.tone] || "Work Chat";
@@ -163,11 +168,6 @@
       positionPill(pillButton, input, false); 
     });
     
-    if (!window._tLastScan || Date.now() - window._tLastScan > 2000) {
-      scan();
-      window._tLastScan = Date.now();
-    }
-    
     requestAnimationFrame(watchdog);
   }
 
@@ -180,30 +180,30 @@
     pillButton.classList.add("t-pill--popover-open");
     const input = pillButton.closest(".t-wrap")._tInput;
     const popoverElement = document.createElement("div");
-    popoverElement.className = "popover";
+    popoverElement.className = "t-popover";
     popoverElement.innerHTML = `
-      <button class="popover-item ${pillButton.dataset.tone === "casual" ? "popover-item--active" : ""}" data-tone="casual">
-        <span class="popover-item-label">Casual</span>
-        <span class="popover-item-sub">${pillButton.dataset.tone === "casual" ? "✓" : ""}</span>
+      <button class="t-popover-item ${pillButton.dataset.tone === "casual" ? "t-popover-item--active" : ""}" data-tone="casual">
+        <span class="t-popover-item-label">Casual</span>
+        <span class="t-popover-item-sub">${pillButton.dataset.tone === "casual" ? "✓" : ""}</span>
       </button>
-      <div class="popover-divider"></div>
-      <button class="popover-item ${(!pillButton.dataset.tone || pillButton.dataset.tone === "workChat") ? "popover-item--active" : ""}" data-tone="workChat">
-        <span class="popover-item-label">Work Chat</span>
-        <span class="popover-item-sub">${(!pillButton.dataset.tone || pillButton.dataset.tone === "workChat") ? "✓" : ""}</span>
+      <div class="t-popover-divider"></div>
+      <button class="t-popover-item ${(!pillButton.dataset.tone || pillButton.dataset.tone === "workChat") ? "t-popover-item--active" : ""}" data-tone="workChat">
+        <span class="t-popover-item-label">Work Chat</span>
+        <span class="t-popover-item-sub">${(!pillButton.dataset.tone || pillButton.dataset.tone === "workChat") ? "✓" : ""}</span>
       </button>
-      <div class="popover-divider"></div>
-      <button class="popover-item ${pillButton.dataset.tone === "formal" ? "popover-item--active" : ""}" data-tone="formal">
-        <span class="popover-item-label">Formal</span>
-        <span class="popover-item-sub">${pillButton.dataset.tone === "formal" ? "✓" : ""}</span>
+      <div class="t-popover-divider"></div>
+      <button class="t-popover-item ${pillButton.dataset.tone === "formal" ? "t-popover-item--active" : ""}" data-tone="formal">
+        <span class="t-popover-item-label">Formal</span>
+        <span class="t-popover-item-sub">${pillButton.dataset.tone === "formal" ? "✓" : ""}</span>
       </button>
-      <div class="popover-divider"></div>
-      <button class="popover-item popover-item--decode" data-tone="decode">
-        <span class="popover-item-label">Decode message</span>
-        <span class="popover-item-sub">↓</span>
+      <div class="t-popover-divider"></div>
+      <button class="t-popover-item t-popover-item--decode" data-tone="decode">
+        <span class="t-popover-item-label">Decode message</span>
+        <span class="t-popover-item-sub">↓</span>
       </button>
     `;
 
-    popoverElement.querySelectorAll(".popover-item").forEach(item => {
+    popoverElement.querySelectorAll(".t-popover-item").forEach(item => {
       item.addEventListener("click", (event) => {
         event.preventDefault();
         event.stopPropagation();
@@ -214,6 +214,7 @@
           runDecode(pillButton, input);
         } else {
           pillButton.dataset.tone = tone;
+          chrome.storage.sync.set({ defaultTone: tone });
           const text = getInputText(input);
           if (text && text.trim().length > 0) {
             handleConvert(pillButton, tone);
@@ -246,7 +247,7 @@
 
   function closePopover() {
     document.querySelectorAll(".t-pill--popover-open").forEach(b => b.classList.remove("t-pill--popover-open"));
-    document.querySelector(".popover")?.remove();
+    document.querySelector(".t-popover")?.remove();
   }
 
   async function handleConvert(pillButton, toneOverride) {
@@ -257,8 +258,8 @@
     pillButton.dataset.original = text;
     pillButton.dataset.state = "loading";
     pillButton.className = "t-pill t-pill--loading";
-    pillButton.querySelector(".pill-text").textContent = "Converting";
-    pillButton.querySelector(".pill-text").classList.add("pill-text--dim");
+    pillButton.querySelector(".t-pill-text").textContent = "Converting";
+    pillButton.querySelector(".t-pill-text").classList.add("t-pill-text--dim");
 
     const { maskedText, mapping } = maskPII(text);
 
@@ -285,8 +286,8 @@
     const msg = HUMAN_ERRORS[errorKey] || HUMAN_ERRORS.SERVER_ERROR;
     pillButton.dataset.state = "error";
     pillButton.className = "t-pill t-pill--error";
-    pillButton.querySelector(".pill-text").textContent = msg;
-    pillButton.querySelector(".pill-text").classList.remove("pill-text--dim");
+    pillButton.querySelector(".t-pill-text").textContent = msg;
+    pillButton.querySelector(".t-pill-text").classList.remove("t-pill-text--dim");
     
     setTimeout(() => {
       if (pillButton.dataset.state === "error") setIdle(pillButton);
@@ -297,7 +298,7 @@
     const text = getInputText(input);
     pillButton.dataset.state = "loading";
     pillButton.classList.add("t-pill--expanded");
-    pillButton.querySelector(".pill-text").textContent = "Decoding";
+    pillButton.querySelector(".t-pill-text").textContent = "Decoding";
 
     const { maskedText, mapping } = maskPII(text);
 
@@ -317,12 +318,12 @@
   }
 
   function showDecodeCard(text, pillButton) {
-    document.querySelector(".card")?.remove();
+    document.querySelector(".t-card")?.remove();
     const card = document.createElement("div");
-    card.className = "card";
+    card.className = "t-card";
     card.innerHTML = `
-      <div class="card-label">Plain English</div>
-      <div class="card-text" style="font-size:14px; line-height:1.6; margin-bottom:20px;">${text}</div>
+      <div class="t-card-label">Plain English</div>
+      <div class="t-card-text">${text}</div>
       <button class="t-btn-primary">Copy to Clipboard</button>
     `;
     document.body.appendChild(card);
@@ -343,8 +344,8 @@
   function setDone(pillButton) {
     pillButton.dataset.state = "undo";
     pillButton.className = "t-pill t-pill--done";
-    pillButton.querySelector(".pill-text").textContent = "Undo";
-    pillButton.querySelector(".pill-text").classList.remove("pill-text--dim");
+    pillButton.querySelector(".t-pill-text").textContent = "Undo";
+    pillButton.querySelector(".t-pill-text").classList.remove("t-pill-text--dim");
     setTimeout(() => { if (pillButton.dataset.state === "undo") setIdle(pillButton); }, 5000);
   }
 
@@ -369,14 +370,17 @@
     const rect = input.getBoundingClientRect();
     const isVisible = rect.width > 0 && rect.height > 0;
     
-    if (!isVisible) {
+    // Check if box is actually in viewport (clipping)
+    const inViewport = rect.top < window.innerHeight && rect.bottom > 0 && rect.left < window.innerWidth && rect.right > 0;
+
+    if (!isVisible || !inViewport) {
       wrapper.style.display = "none";
       return;
     }
     
     wrapper.style.display = "block";
-    const targetY = rect.top + (rect.height / 2);
-    const targetX = rect.left + rect.width - 15;
+    const targetY = rect.bottom - 12; // Pin to bottom with offset
+    const targetX = rect.right - 12; // Pin to right with offset
 
     if (isFirstLoad || !wrapper._lastX) {
       wrapper._lastX = targetX;

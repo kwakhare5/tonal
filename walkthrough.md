@@ -1,4 +1,15 @@
-# Session Walkthrough — Interaction & Design Finalization
+# Session: WhatsApp Fix & Code Audit
+**Date**: 2026-05-08
+
+### Decisions Made:
+- **Event Reduction**: Switched to a single `input` event for WhatsApp to prevent React duplication.
+- **Prompt Hardening**: Implemented `{TEXT}` placeholder replacement in `worker.js` to ensure the AI correctly identifies source content.
+- **Error Robustness**: Added explicit error state handling in `runDecode` to prevent UI lock-up on network failure.
+
+### Verified:
+- [x] Text duplication in WhatsApp resolved.
+- [x] AUDIT.md generated with score 88/100.
+- [x] Fixes deployed to local files and GitHub.
 
 ### 1. Smart Hover Union
 **Decisions**: Implemented a `100ms` debounce union between the pill and its popover.
@@ -47,6 +58,11 @@
 ### 12. WhatsApp Accidental Reply (Event Isolation)
 **Decisions**: Enforced `e.stopImmediatePropagation()` and `e.preventDefault()` on all Tone Menu interactions.
 **Why**: WhatsApp has background listeners that capture clicks to trigger its "Reply" UI. By completely isolating our clicks, we ensure WhatsApp never "sees" the interaction with the Tonal pill, preventing accidental replies or message selections.
+- [x] WhatsApp Fix: Debug `setInputTextWithHighlight`
+- [x] Re-sync with Global Rules & Skills
+- [x] Full Code Audit (@AUDIT)
+- [x] Implement Audit Fixes (worker.js, content.js, utils.js)
+- [ ] Regression Testing (Gmail, Slack, WhatsApp)
 
 ### 13. Sticky Highlights
 **Decisions**: Removed the automatic 2s fade timer.

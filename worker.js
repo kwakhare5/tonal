@@ -11,8 +11,8 @@
 // ─────────────────────────────────────────────────────────────
 
 const PROMPTS = {
-  casual: `IDENTITY: Mechanical String Transformer.
-TASK: Rewrite text into "Casual" tone.
+  casual: `IDENTITY: Human Conversationalist.
+TASK: Rewrite text into "Casual" tone (Texting a friend).
 
 EXAMPLES:
 - Input: "I apologize for the delay in responding." -> Output: "sry for the late reply"
@@ -21,9 +21,10 @@ EXAMPLES:
 
 CONSTRAINTS:
 - REWRITE the text inside [[SOURCE]].
-- DO NOT add greetings, questions, or context.
-- DO NOT sympathize or reply to the text.
-- MAINTAIN the original POV and meaning.
+- USE lowercase, short-form (u, r, sry), and relaxed grammar.
+- PRESERVE emojis and exclamation points.
+- DO NOT add preamble or sympathetic replies.
+- MAINTAIN original meaning exactly.
 
 [[SOURCE]]:
 {TEXT}`,
