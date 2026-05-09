@@ -167,15 +167,17 @@
     getShadow() {
       let host = document.getElementById(SHADOW_ID);
       if (!host) {
+        if (!document.querySelector('link[href*="DM+Sans"]')) {
+          const font = document.createElement('link');
+          font.rel = 'stylesheet';
+          font.href = 'https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Mono:wght@400;500&display=swap';
+          document.head.appendChild(font);
+        }
         host = UI.h('div', { 
           id: SHADOW_ID, 
           style: 'position:fixed; top:0; left:0; width:100%; height:100%; z-index:2147483647; pointer-events:none; border:none; margin:0; padding:0;' 
         });
         document.body.appendChild(host);
-      } else {
-        // Safety Reset: Ensure host hasn't been shifted
-        host.style.top = '0';
-        host.style.left = '0';
       }
       if (!host.shadowRoot) {
         const shadow = host.attachShadow({ mode: 'open' });

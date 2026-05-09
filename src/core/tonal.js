@@ -11,14 +11,17 @@ window.Tonal = (function() {
   };
 
   const CSS = `
-    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=DM+Mono:wght@400;500&display=swap');
-
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Mono:wght@400;500&display=swap');
+    
     :host {
       all: initial;
       --black: #0F0F0F; --white: #FFFFFF; --green: #34C759; --red: #FF3B30;
       --gray-1: #1C1C1E; --gray-2: #2C2C2E; --gray-3: #3A3A3C; --gray-4: #636366;
       --gray-5: #AEAEB2; --gray-6: #D1D1D6; --gray-7: #E5E5EA; --gray-8: #F2F2F7; --gray-9: #F5F5F7;
       --font: 'DM Sans', -apple-system, sans-serif;
+      --mono: 'DM Mono', 'SF Mono', monospace;
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.5;
       --r-sm: 6px; --r-md: 10px; --r-lg: 14px; --r-xl: 20px; --r-pill: 100px;
       --sh-xs: 0 1px 2px rgba(0, 0, 0, .06);
       --sh-sm: 0 4px 12px rgba(0, 0, 0, .06);
@@ -42,7 +45,7 @@ window.Tonal = (function() {
     .t-pill--done { height: 24px; padding: 0 11px; background: var(--green); }
     .t-pill--error { height: 24px; padding: 0 10px; background: var(--red); }
 
-    .pill-text { font-size: 10px; font-weight: 700; color: var(--white); letter-spacing: 0.02em; white-space: nowrap; }
+    .pill-text { font-size: 10px; font-weight: 700; color: var(--white); letter-spacing: 0.01em; white-space: nowrap; }
     .pill-chev-wrap { 
       display: flex; align-items: center; justify-content: center; 
       width: 24px; height: 24px; margin-right: -9px; 

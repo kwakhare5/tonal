@@ -18,6 +18,16 @@
 - [x] **Loading Skeletons**: Literal Section 15 shimmer loading state before injection.
 - [x] **Coach Marks**: Literal Section 15 first-run onboarding prompt.
 - [x] **Cleanup**: Deleted all redundant/old UI code and standardized on semantic classes.
+- [x] **Font Synchronization**: Achieved 1:1 parity with DM Sans/Mono and removed fallbacks.
+- [x] **Deep Audit**: Identified 8 critical architectural issues across target platforms (LinkedIn, Gmail, Slack, WhatsApp).
+- [x] **Audit Documentation**: Delivered AUDIT.md and ARCHITECT_AUDIT.md in project root.
+
+### 🛠️ Active TODOs
+- [ ] **Fix Ghost Text Bug**: Implement React/Lexical state-syncing for LinkedIn and WhatsApp.
+- [ ] **Fix Battery Drain**: Replace infinite RAF loop with ResizeObserver + throttled scroll listeners.
+- [ ] **Fix Settings Desync**: Wire up `chrome.storage.sync` listeners in content script.
+- [ ] **Fix Rich Text Destruction**: Implement HTML-aware text replacement for Gmail and Slack.
+- [ ] **Harden Background State**: Persist SW state in chrome.storage.session.
 - [x] **Hardened Sync**: Implemented the `Triple Handshake` sequence in production for LinkedIn/Gmail stability.
 
 ---
