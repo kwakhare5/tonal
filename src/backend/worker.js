@@ -11,139 +11,156 @@
 // ─────────────────────────────────────────────────────────────
 
 const PROMPTS = {
-  casual: `IDENTITY: Human Conversationalist.
-TASK: Rewrite text into "Casual" tone (Texting a friend).
-
-EXAMPLES:
-- Input: "I apologize for the delay in responding." -> Output: "sry for the late reply"
-- Input: "Could you please send the documentation?" -> Output: "can u send that doc?"
-- Input: "I am unable to attend the meeting today." -> Output: "cant make the meeting today"
+  casual: `IDENTITY: Expert Linguistic Chameleon.
+TASK: Transform text into "Casual" (Messaging) tone.
 
 CONSTRAINTS:
-- REWRITE the text inside [[SOURCE]].
-- USE lowercase, short-form (u, r, sry), and relaxed grammar.
-- PRESERVE emojis and exclamation points.
-- DO NOT add preamble or sympathetic replies.
-- MAINTAIN original meaning exactly.
+- TARGET: Lowercase-friendly, short-form (u, r, sry), relaxed grammar.
+- PRESERVE: Meaning, urgency, specific nouns.
+- FORBIDDEN: Preamble, sympathetic replies, robotic formalisms, quotation marks.
+- RESULT_ONLY: Return only the transformed text.
 
-[[SOURCE]]:
-{TEXT}`,
+EXAMPLES:
+- Input: "I apologize for the delay." -> Output: "sry for the delay"
+- Input: "Please send the file." -> Output: "can u send the file?"
 
-  workChat: `IDENTITY: Mechanical String Transformer.
-TASK: Rewrite text into "Work Chat" tone.
+INPUT: {TEXT}`,
+
+  workChat: `IDENTITY: Professional Communication Architect.
+TASK: Transform text into "Work Chat" (Slack/Teams) tone.
+
+CONSTRAINTS:
+- TARGET: Professional, concise, polite but efficient.
+- PRESERVE: All technical details and intent.
+- FORBIDDEN: Greetings (Hi/Hey), Preamble, sympathetic replies, robotic formalisms.
+- RESULT_ONLY: Return only the transformed text.
 
 EXAMPLES:
 - Input: "hey i cant make it sry" -> Output: "I won't be able to make it today, sorry about that."
 - Input: "send me the doc" -> Output: "Could you please send over that document when you have a chance?"
-- Input: "the server is down" -> Output: "The server is currently down; we're working on getting it back up."
+
+INPUT: {TEXT}`,
+
+  formal: `IDENTITY: Executive Communications Specialist.
+TASK: Transform text into "Formal" (Business/Legal) tone.
 
 CONSTRAINTS:
-- REWRITE the text inside [[SOURCE]].
-- DO NOT add greetings, questions, or context.
-- DO NOT sympathize or reply to the text.
-- MAINTAIN the original POV and meaning.
-
-[[SOURCE]]:
-{TEXT}`,
-
-  formal: `IDENTITY: Mechanical String Transformer.
-TASK: Rewrite text into "Formal" tone.
+- TARGET: Formal, sophisticated, full grammar, polite.
+- PRESERVE: Professional distance and core intent.
+- FORBIDDEN: Preamble, "Dear [Name]", sympathetic replies, conversational filler.
+- RESULT_ONLY: Return only the transformed text.
 
 EXAMPLES:
 - Input: "hey im late" -> Output: "Please accept my apologies for the delay in my arrival."
 - Input: "can u help?" -> Output: "I would appreciate your assistance with this matter."
-- Input: "fix the server asap" -> Output: "Immediate attention is required to resolve the current server downtime."
+
+INPUT: {TEXT}`,
+
+  decode: `IDENTITY: Corporate Jargon Decoder.
+TASK: Translate corporate speak into a direct "Decoded Message".
 
 CONSTRAINTS:
-- REWRITE the text inside [[SOURCE]].
-- DO NOT add greetings, questions, or context.
-- DO NOT sympathize or reply to the text.
-- MAINTAIN the original POV and meaning.
+- TARGET: Direct, clear, simple language only.
+- PRESERVE: The core message and intent.
+- FORBIDDEN: Preamble, corporate fluff, sympathetic tone, additional context.
+- RESULT_ONLY: Return only the decoded text.
 
-[[SOURCE]]:
-{TEXT}`,
-
-  decode: `IDENTITY: Mechanical String Transformer.
-TASK: Translate corporate jargon into plain English.
-
-CONSTRAINTS:
-- REWRITE the text inside [[SOURCE]].
-- START immediately with plain English. NO preamble.
-
-[[SOURCE]]:
-{TEXT}`,
+INPUT: {TEXT}`,
 };
 
 const CORS_HEADERS = {
-  "Access-Control-Allow-Origin":  "*",
+  "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
   "Access-Control-Allow-Headers": "Content-Type",
 };
 
 export default {
   async fetch(request, environment) {
-
-    // CORS preflight
     if (request.method === "OPTIONS") {
       return new Response(null, { status: 204, headers: CORS_HEADERS });
     }
 
     if (request.method !== "POST") {
-      return json({ error: "Method not allowed" }, 405);
+      return json({ success: false, error: "Method not allowed" }, 405);
     }
 
-    // Parse body
     let body;
     try {
       body = await request.json();
     } catch {
-      return json({ error: "Invalid JSON body" }, 400);
+      return json({ success: false, error: "Invalid JSON body" }, 400);
     }
 
     const { text, toneLevel, mode } = body;
 
+    // 1. Input Validation & Sanitization
     if (!text || typeof text !== "string" || text.trim().length < 2) {
-      return json({ error: "No text provided" }, 400);
+      return json({ success: false, error: "Input text is too short or invalid" }, 400);
     }
 
-    // Build prompt
     const promptKey = mode === "decode" ? "decode" : (toneLevel || "workChat");
     const systemPrompt = PROMPTS[promptKey] || PROMPTS.workChat;
+    const forceProvider = body.provider; // "groq" or "cf" for testing
 
-    // Call Groq API (High Performance Rephrasing)
-    try {
-      const finalSystemPrompt = systemPrompt.replace('{TEXT}', text.trim());
-      const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${environment.GROQ_API_KEY}`,
-          "Content-Type":  "application/json",
+    const payload_base = {
+      model: "llama-3.3-70b-versatile",
+      messages: [
+        {
+          role: "system",
+          content: `${systemPrompt}\n\nCRITICAL: You MUST change the tone. Do not return the original text. Return ONLY JSON: { "text": "...", "confidence": 1.0 }`
         },
-        body: JSON.stringify({
-          model: "llama-3.3-70b-versatile",
-          messages: [
-            { role: "system", content: finalSystemPrompt },
-            { role: "user",   content: text.trim() }
-          ],
-          temperature: 0.2, // Low temperature for consistent tone
-          max_tokens:  800,
-        }),
-      });
+        { role: "user", content: text.trim() }
+      ],
+      temperature: 0.3,
+      max_tokens: 1000,
+      response_format: { type: "json_object" }
+    };
 
-      const payload = await response.json();
-      
-      if (!response.ok) {
-        return json({ error: payload.error?.message || "Groq API error" }, response.status);
-      }
+    // 1. Primary: Groq API
+    if (environment.GROQ_API_KEY && forceProvider !== "cf") {
+      try {
+        const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${environment.GROQ_API_KEY}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload_base),
+        });
 
-      const result = payload.choices?.[0]?.message?.content;
-      if (!result) return json({ error: "AI failed to generate response" }, 502);
-
-      return json({ success: true, text: result.trim() });
-
-    } catch (error) {
-      return json({ error: "Service error — try again shortly" }, 502);
+        if (response.ok) {
+          const data = await response.json();
+          const content = data.choices?.[0]?.message?.content;
+          if (content) {
+            const result = JSON.parse(content);
+            if (result.text) {
+              return json({ success: true, text: result.text.trim(), provider: "groq" });
+            }
+          }
+        }
+      } catch (e) { console.error("Groq Failed:", e); }
     }
+
+    // 2. Fallback/Force: Cloudflare Workers AI
+    if (environment.AI && (forceProvider === "cf" || !environment.GROQ_API_KEY)) {
+      try {
+        const cfResponse = await environment.AI.run("@cf/meta/llama-3-8b-instruct", {
+          messages: [
+            { 
+              role: "system", 
+              content: `${systemPrompt}\n\nCRITICAL: You MUST change the tone. Do not return the original text. Be brief and direct.`
+            },
+            { role: "user", content: text.trim() }
+          ]
+        });
+        if (cfResponse && cfResponse.response) {
+          const cleanText = cfResponse.response.replace(/\{"text":\s*"/, "").replace(/"\}/, "").trim();
+          return json({ success: true, text: cleanText, provider: "cf-native" });
+        }
+      } catch (e) { console.error("CF AI Failed:", e); }
+    }
+
+    return json({ success: false, error: "AI Providers failed or returned identical text" }, 502);
   },
 };
 

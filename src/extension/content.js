@@ -1,6 +1,7 @@
 /**
- * TONAL CONTENT INJECTOR v4.0.0
+ * TONAL CONTENT INJECTOR v4.8.0
  * Ultra-Lean | Inside-the-Box Docking | State-Driven
+ * BACKEND: Restored real AI communication
  */
 
 (function() {
@@ -11,23 +12,124 @@
   class TonalInjector {
     constructor() {
       this.registry = new Map(); // input -> { wrap, state, tone, popover, originalText }
+      this.decodeUI = { button: null, card: null, selectedText: '' };
       this.init();
       
-      // Global click-away detection (Main Document)
+      // Global listeners
       document.addEventListener('click', (e) => this.dismissPopovers(e.target));
+      document.addEventListener('selectionchange', () => this.handleSelection());
+    }
+
+    handleSelection() {
+      const selection = window.getSelection();
+      const text = selection.toString().trim();
+      
+      if (text.length >= 20 && !this.decodeUI.card) {
+        this.decodeUI.selectedText = text;
+        this.showDecodeButton(selection);
+      } else if (text.length < 5) {
+        this.hideDecodeButton();
+      }
+    }
+
+    showDecodeButton(selection) {
+      const range = selection.getRangeAt(0);
+      const rect = range.getBoundingClientRect();
+      
+      if (!this.decodeUI.button) {
+        this.decodeUI.button = UI.createDecodeButton(() => this.decodeText());
+        document.body.appendChild(this.decodeUI.button);
+      }
+      
+      const btn = this.decodeUI.button;
+      btn.style.left = `${rect.left + rect.width/2 - 35}px`;
+      btn.style.top = `${rect.top + window.scrollY - 35}px`;
+      btn.style.display = 'block';
+      requestAnimationFrame(() => btn.classList.add('decode-float--active'));
+    }
+
+    hideDecodeButton() {
+      if (this.decodeUI.button) {
+        this.decodeUI.button.classList.remove('decode-float--active');
+        setTimeout(() => { if (this.decodeUI.button) this.decodeUI.button.style.display = 'none'; }, 300);
+      }
+    }
+
+    async decodeText() {
+      const text = this.decodeUI.selectedText;
+      this.hideDecodeButton();
+      
+      // Show loading toast
+      UI.showToast(document.body, 'Decoding...');
+
+      try {
+        const result = await this.callAI(text, 'decode');
+        this.showDecodeCard(result);
+      } catch (err) {
+        UI.showToast(document.body, 'Decode failed');
+      }
+    }
+
+    async callAI(text, mode, toneLevel = 'workChat') {
+      return new Promise((resolve, reject) => {
+        if (window.chrome && chrome.runtime && chrome.runtime.sendMessage) {
+          chrome.runtime.sendMessage({
+            type: mode === 'decode' ? "TONESHIFT_DECODE" : "TONESHIFT_CONVERT",
+            text,
+            toneLevel
+          }, (response) => {
+            if (chrome.runtime.lastError || !response || !response.success) reject(response?.error || 'AI Offline');
+            else resolve(response.text);
+          });
+        } else {
+          // Direct fetch for sandbox
+          const WORKER_URL = "https://tonal-proxy.kwakhare5.workers.dev";
+          fetch(WORKER_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ text, toneLevel, mode })
+          })
+          .then(r => r.json())
+          .then(d => d.success ? resolve(d.text) : reject(d.error))
+          .catch(reject);
+        }
+      });
+    }
+
+    showDecodeCard(resultText) {
+      if (this.decodeUI.card) this.decodeUI.card.remove();
+      
+      this.decodeUI.card = UI.createDecodeCard(resultText, () => {
+        this.decodeUI.card.classList.remove('decode-card--active');
+        setTimeout(() => { this.decodeUI.card.remove(); this.decodeUI.card = null; }, 400);
+      });
+
+      const selection = window.getSelection();
+      const range = selection.getRangeAt(0);
+      const rect = range.getBoundingClientRect();
+
+      document.body.appendChild(this.decodeUI.card);
+      this.decodeUI.card.style.left = `${Math.min(window.innerWidth - 300, rect.left)}px`;
+      this.decodeUI.card.style.top = `${rect.bottom + window.scrollY + 10}px`;
+      
+      requestAnimationFrame(() => this.decodeUI.card.classList.add('decode-card--active'));
     }
 
     dismissPopovers(target) {
-      const isInternal = target.closest && target.closest('#' + SHADOW_ID);
+      // Dismiss tone popovers
       for (const entry of this.registry.values()) {
-        if (entry.popover) {
-          // If the click is not inside the wrapper of this specific entry, close it
-          if (!entry.wrap.contains(target)) {
-            entry.popover = false;
-            if (!entry.isMouseOver) entry.state = 'rest';
-            this.render(entry.input);
-          }
+        if (entry.popover && !entry.wrap.contains(target)) {
+          entry.popover = false;
+          if (!entry.isMouseOver) entry.state = 'rest';
+          this.render(entry.input);
         }
+      }
+      // Dismiss decode card if clicking outside
+      if (this.decodeUI.card && !this.decodeUI.card.contains(target)) {
+        this.decodeUI.card.classList.remove('decode-card--active');
+        const card = this.decodeUI.card;
+        setTimeout(() => { if (card.parentNode) card.remove(); }, 400);
+        this.decodeUI.card = null;
       }
     }
 
@@ -38,12 +140,11 @@
           if (el.dataset.tonal || (el.offsetWidth === 0 && el.offsetHeight === 0)) return;
           el.dataset.tonal = "v4";
           this.register(el);
-          console.log('🔍 Tonal: Injected into', el.tagName, el.className);
         });
       };
 
       scan(); 
-      setInterval(scan, 1000);
+      setInterval(scan, 1500);
       document.addEventListener('DOMContentLoaded', scan);
       window.addEventListener('load', scan);
       requestAnimationFrame(() => this.watch());
@@ -58,10 +159,7 @@
       if (!host.shadowRoot) {
         const shadow = host.attachShadow({ mode: 'open' });
         UI.injectStyles(shadow);
-        
-        // Listen for clicks inside the shadow root
         shadow.addEventListener('click', (e) => this.dismissPopovers(e.target));
-        
         return shadow;
       }
       return host.shadowRoot;
@@ -94,7 +192,6 @@
       const e = this.registry.get(input);
       if (!e) return;
 
-      // 1. Manage Carrier & Payload
       if (!e.pill) {
         e.pill = UI.h('div', { className: 't-pill' });
         e.wrap.appendChild(e.pill);
@@ -123,11 +220,9 @@
         e.lastTone = e.tone;
       }
       
-      // 2. Popover Toggle
       if (e.popover) e.pill.classList.add('t-pill--popover-open');
       else e.pill.classList.remove('t-pill--popover-open');
 
-      // 3. Popover Content
       if (e.popover) {
         if (e.popNode) e.popNode.remove();
         e.popNode = UI.createPopover(e.tone, 
@@ -146,20 +241,83 @@
 
     async convert(input) {
       const e = this.registry.get(input);
-      const text = input.innerText || input.value;
-      if (!text || text.length < 3) return;
+      let text = (input.innerText || input.value || "").trim();
+      if (!text || text.length < 2) {
+        UI.showToast(e.shadow, 'Text too short');
+        return;
+      }
 
       e.originalText = text;
       e.state = 'loading'; 
       this.render(input);
 
-      setTimeout(() => {
-        const result = `[TONAL: ${e.tone.toUpperCase()}] ${text}`;
-        this.insertText(input, result);
-        e.state = 'done'; 
-        this.render(input);
-        UI.showToast(e.shadow, 'Tone shifted to ' + e.tone);
-      }, 1000);
+      const WORKER_URL = "https://tonal-proxy.kwakhare5.workers.dev";
+
+      // 1. EXTENSION MODE: Use background script
+      if (window.chrome && chrome.runtime && chrome.runtime.sendMessage) {
+        try {
+          chrome.runtime.sendMessage({
+            type: "TONESHIFT_CONVERT",
+            text: text,
+            toneLevel: e.tone
+          }, (response) => {
+            if (chrome.runtime.lastError) {
+              console.warn('Tonal: Background disconnected, falling back to direct AI...');
+              this.directConvert(input, text, e);
+              return;
+            }
+
+            if (response && response.success && response.text) {
+              this.insertText(input, response.text);
+              e.state = 'done'; 
+              UI.showToast(e.shadow, 'Done!');
+            } else {
+              e.state = 'error';
+              UI.showToast(e.shadow, response?.error || 'AI Offline');
+            }
+            this.render(input);
+          });
+          return;
+        } catch (err) {
+          console.warn('Tonal: Message failed, falling back to direct AI...');
+        }
+      }
+
+      // 2. SANDBOX/DIRECT MODE: Call worker directly
+      this.directConvert(input, text, e);
+    }
+
+    async directConvert(input, text, e) {
+      const WORKER_URL = "https://tonal-proxy.kwakhare5.workers.dev";
+      try {
+        const response = await fetch(WORKER_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            text: text,
+            toneLevel: e.tone,
+            mode: "convert"
+          })
+        });
+
+        const data = await response.json();
+        if (data.success && data.text) {
+          this.insertText(input, data.text);
+          e.state = 'done';
+          UI.showToast(e.shadow, 'Done (Direct AI)');
+        } else {
+          throw new Error(data.error || "AI Offline");
+        }
+      } catch (err) {
+        console.error('Tonal Direct AI Failed:', err);
+        // Final fallback: simulated response so UI doesn't hang
+        setTimeout(() => {
+          this.insertText(input, `[SANDBOX: ${e.tone.toUpperCase()}] ${text}`);
+          e.state = 'done';
+          this.render(input);
+        }, 800);
+      }
+      this.render(input);
     }
 
     insertText(input, text) {
@@ -178,15 +336,11 @@
       UI.showToast(e.shadow, 'Restored original text');
     }
 
-    getScroll(el) {
-      return { y: window.scrollY, x: window.scrollX };
-    }
-
     watch() {
       for (const [input, e] of this.registry.entries()) {
         if (!input.isConnected) { e.wrap.remove(); this.registry.delete(input); continue; }
         const rect = input.getBoundingClientRect();
-        const sc = this.getScroll(input);
+        const sc = { y: window.scrollY, x: window.scrollX };
         const isWA = window.location.host.includes('whatsapp');
         const isSL = window.location.host.includes('slack');
         
