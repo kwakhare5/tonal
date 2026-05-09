@@ -108,11 +108,18 @@ tonal/
 ├── manifest.json                ← Extension config
 ├── src/
 │   ├── core/
-│   │   └── tonal.js             ← MASTER ENGINE v4: Factory + CSS + Logic
+│   │   └── tonal.js             ← Design System Tokens & Classes
 │   └── extension/
-│       ├── background.js        ← Service worker: Proxies to Groq
-│       ├── content.js           ← SURGICAL INJECTOR v4: Platform Docking
-│       ├── popup.html           ← Elite Popup v4
+│       ├── adapters/            ← Platform-specific DOM interaction
+│       │   ├── manager.js
+│       │   ├── whatsapp.js
+│       │   ├── linkedin.js
+│       │   ├── slack.js
+│       │   ├── gmail.js
+│       │   └── default.js
+│       ├── background.js        ← Service worker: Proxies to Cloudflare
+│       ├── content.js           ← Orchestration & Scan Loop Engine
+│       ├── popup.html           ← Elite Popup
 │       └── popup.js             ← Popup Logic
 ├── dev/
 │   ├── sandbox.html             ← Tonal Laboratory v4 (1:1 Mirror)
@@ -161,14 +168,14 @@ The extension injects into these specific domains:
 ]
 ```
 
-Each platform has different DOM structures. The content script must handle each one:
+Each platform has different DOM structures. The extension uses the **Adapter Pattern** (`src/extension/adapters/`) to handle specific environments robustly against React/Draft.js/Lexical reconcilers:
 
-| Platform | Input selector strategy |
-| :--- | :--- |
-| Gmail | `div[role="textbox"][aria-label*="compose"]`, `.Am.Al.editable` |
-| Slack | `[data-lexical-editor]`, `.ql-editor`, `[data-qa="message_input"]` |
-| LinkedIn | `.msg-form__contenteditable`, `div[aria-label="Write a message"]` |
-| WhatsApp Web | `div[contenteditable="true"][data-tab="10"]` |
+| Platform | Adapter | Insertion Strategy |
+| :--- | :--- | :--- |
+| Gmail | `gmail.js` | Targets `.editable` nodes. |
+| Slack | `slack.js` | Dispatches specific `textInput` events for Lexical. |
+| LinkedIn | `linkedin.js` | Uses custom selection/range replacements against Draft.js. |
+| WhatsApp | `whatsapp.js` | Robust selection clearing and `insertText`. |
 
 ---
 
@@ -283,8 +290,22 @@ INPUT_DATA: {TEXT}
     "https://generativelanguage.googleapis.com/*"
   ],
   "background": { "service_worker": "background.js" },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://mail.google.com/*",
+        "https://app.slack.com/*",
+        "https://www.linkedin.com/*",
+        "https://web.whatsapp.com/*"
+      ],
       "js": [
         "src/core/tonal.js",
+        "src/extension/adapters/manager.js",
+        "src/extension/adapters/default.js",
+        "src/extension/adapters/linkedin.js",
+        "src/extension/adapters/whatsapp.js",
+        "src/extension/adapters/slack.js",
+        "src/extension/adapters/gmail.js",
         "src/extension/content.js"
       ],
       "run_at": "document_idle"
