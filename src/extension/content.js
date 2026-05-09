@@ -7,18 +7,63 @@
 (function() {
   const UI = window.Tonal;
   const SHADOW_ID = 'tonal-v4-root';
-  const SELECTORS = ['[contenteditable="true"]', 'textarea', '[role="textbox"]', '.ql-editor'].join(',');
+  const SELECTORS = ['[contenteditable="true"]', 'textarea', '.msg-form__msg-content-container', '.ql-editor'].join(',');
   const WORKER_URL = "https://tonal-proxy.kwakhare5.workers.dev";
 
   class TonalInjector {
     constructor() {
       this.registry = new Map(); // input -> { wrap, state, tone, popover, originalText }
       this.decodeUI = { button: null, card: null, selectedText: '', selectedRect: null };
+      this.defaultTone = 'workChat'; // Fallback
+      
+      this.initStorage();
+      this.initObservers();
       this.init();
       
       // Global listeners
       document.addEventListener('click', (e) => this.dismissPopovers(e.target));
       document.addEventListener('selectionchange', () => this.handleSelection());
+    }
+
+    initObservers() {
+      this.resizeObserver = new ResizeObserver(() => this.requestPositionUpdate());
+      
+      const onScrollOrResize = () => this.requestPositionUpdate();
+      window.addEventListener('resize', onScrollOrResize, { passive: true });
+      document.addEventListener('scroll', onScrollOrResize, { passive: true, capture: true });
+    }
+
+    requestPositionUpdate() {
+      if (!this._updatePending) {
+        this._updatePending = true;
+        requestAnimationFrame(() => {
+          this.updatePositions();
+          this._updatePending = false;
+        });
+      }
+    }
+
+    initStorage() {
+      if (!window.chrome || !chrome.storage) return;
+      
+      // Load initial
+      chrome.storage.sync.get({ defaultTone: 'workChat' }, (settings) => {
+        this.defaultTone = settings.defaultTone;
+      });
+
+      // Listen for popup changes
+      chrome.storage.onChanged.addListener((changes, area) => {
+        if (area === 'sync' && changes.defaultTone) {
+          this.defaultTone = changes.defaultTone.newValue;
+          // Update any resting pills
+          for (const [input, e] of this.registry.entries()) {
+            if (e.state === 'rest') {
+              e.tone = this.defaultTone;
+              this.render(input);
+            }
+          }
+        }
+      });
     }
 
     handleSelection() {
@@ -48,8 +93,11 @@
       const btn = this.decodeUI.button;
       const safeRect = this.getSafeRect(rect);
       
-      btn.style.left = `${safeRect.left + safeRect.width/2 - 35}px`;
-      btn.style.top = `${safeRect.top - 40}px`;
+      const finalLeft = Math.max(10, Math.min(safeRect.left + safeRect.width/2 - 35, window.innerWidth - 80));
+      const finalTop = Math.max(60, safeRect.top - 40);
+
+      btn.style.left = `${finalLeft}px`;
+      btn.style.top = `${finalTop}px`;
       btn.style.display = 'block';
       requestAnimationFrame(() => btn.classList.add('decode-float--active'));
     }
@@ -114,8 +162,10 @@
       
       // Calculate precise viewport coordinates relative to host
       const safeRect = this.getSafeRect(rect);
-      const finalLeft = safeRect.left + safeRect.width / 2 - 35;
-      const finalTop = safeRect.top - 40;
+      
+      // Constrain to viewport
+      const finalLeft = Math.max(10, Math.min(safeRect.left + safeRect.width / 2 - 144, window.innerWidth - 300));
+      const finalTop = Math.max(60, safeRect.top - 40); // At least 60px to clear headers
 
       // Force absolute positioning inside our fixed full-screen host
       Object.assign(this.decodeUI.card.style, {
@@ -152,16 +202,26 @@
         const elements = document.querySelectorAll(SELECTORS);
         elements.forEach(el => {
           if (el.dataset.tonal || (el.offsetWidth === 0 && el.offsetHeight === 0)) return;
+          
+          // Prevent registering child elements if their parent is already registered
+          let parent = el.parentElement;
+          let isNested = false;
+          while (parent) {
+            if (parent.dataset.tonal) { isNested = true; break; }
+            parent = parent.parentElement;
+          }
+          if (isNested) return;
+
           el.dataset.tonal = "v4";
           this.register(el);
         });
       };
 
       scan(); 
-      setInterval(scan, 1500);
+      setInterval(scan, 500);
       document.addEventListener('DOMContentLoaded', scan);
       window.addEventListener('load', scan);
-      requestAnimationFrame(() => this.watch());
+      this.requestPositionUpdate();
     }
 
     getShadow() {
@@ -219,14 +279,16 @@
         wrap, 
         shadow, 
         state: 'rest', 
-        tone: 'workChat', 
+        tone: this.defaultTone, 
         popover: false,
         originalText: '',
         pill: null,
         pop: null
       };
       this.registry.set(input, entry);
+      this.resizeObserver.observe(input);
       this.render(input);
+      this.requestPositionUpdate();
     }
 
     render(input) {
@@ -282,7 +344,8 @@
 
     async convert(input) {
       const e = this.registry.get(input);
-      let text = (input.innerText || input.value || "").trim();
+      e.isRichText = input.isContentEditable;
+      let text = (input.innerText || input.textContent || input.value || "").trim();
       if (!text || text.length < 2) {
         UI.showToast(e.shadow, 'Text too short');
         return;
@@ -307,7 +370,7 @@
             }
 
             if (response && response.success && response.text) {
-              this.insertText(input, response.text);
+              this.insertText(input, response.text, e.isRichText);
               e.state = 'done'; 
               UI.showToast(e.shadow, 'Done!');
             } else {
@@ -340,7 +403,7 @@
 
         const data = await response.json();
         if (data.success && data.text) {
-          this.insertText(input, data.text);
+          this.insertText(input, data.text, e.isRichText);
           e.state = 'done';
           UI.showToast(e.shadow, 'Done (Direct AI)');
         } else {
@@ -350,7 +413,7 @@
         console.error('Tonal Direct AI Failed:', err);
         // Final fallback: simulated response so UI doesn't hang
         setTimeout(() => {
-          this.insertText(input, `[SANDBOX: ${e.tone.toUpperCase()}] ${text}`);
+          this.insertText(input, `[SANDBOX: ${e.tone.toUpperCase()}] ${text}`, e.isRichText);
           e.state = 'done';
           this.render(input);
         }, 800);
@@ -358,39 +421,53 @@
       this.render(input);
     }
 
-    insertText(input, text) {
-      input.focus();
-      document.execCommand('selectAll', false, null);
-      document.execCommand('insertText', false, text);
-      ['input', 'change', 'blur'].forEach(name => input.dispatchEvent(new Event(name, { bubbles: true })));
+    insertText(input, text, isRichText = false) {
+      if (window.TonalAdapters && window.TonalAdapters.manager) {
+        window.TonalAdapters.manager.insertText(input, text, isRichText);
+      } else {
+        console.error("Tonal Adapters not loaded!");
+        // Fallback if adapters failed to load
+        input.focus();
+        document.execCommand('selectAll', false, null);
+        document.execCommand('insertText', false, text);
+      }
     }
 
     undo(input) {
       const e = this.registry.get(input);
       if (!e.originalText) return;
-      this.insertText(input, e.originalText);
+      this.insertText(input, e.originalText, e.isRichText);
       e.state = 'rest';
       this.render(input);
       UI.showToast(e.shadow, 'Restored original text');
     }
 
-    watch() {
+    updatePositions() {
       for (const [input, e] of this.registry.entries()) {
-        if (!input.isConnected) { e.wrap.remove(); this.registry.delete(input); continue; }
+        if (!input.isConnected) { 
+          e.wrap.remove(); 
+          this.resizeObserver.unobserve(input);
+          this.registry.delete(input); 
+          continue; 
+        }
         const rect = input.getBoundingClientRect();
+        // Skip hidden elements to prevent jumping
+        if (rect.width === 0 && rect.height === 0) continue;
+        
         const safeRect = this.getSafeRect(rect);
         const isWA = window.location.host.includes('whatsapp');
         const isSL = window.location.host.includes('slack');
         
         if (isWA || isSL) {
+          // Inside Docking (WhatsApp / Slack)
           e.wrap.style.top = `${safeRect.top + (safeRect.height - 32) / 2}px`;
           e.wrap.style.left = `${safeRect.left + safeRect.width - 210}px`;
         } else {
+          // Outside Docking (LinkedIn / Gmail / Sandbox)
           e.wrap.style.top = `${safeRect.top + safeRect.height + 4}px`;
           e.wrap.style.left = `${safeRect.left + safeRect.width - 200}px`;
         }
       }
-      requestAnimationFrame(() => this.watch());
     }
   }
 

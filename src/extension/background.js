@@ -12,6 +12,21 @@ const CONFIG = {
 let stats = { requests: 0, failures: 0, lastReset: Date.now() };
 let circuitOpen = false;
 
+// Restore state when Service Worker wakes up
+if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.session) {
+  chrome.storage.session.get(['stats', 'circuitOpen'], (data) => {
+    if (data.stats) stats = data.stats;
+    if (data.circuitOpen !== undefined) circuitOpen = data.circuitOpen;
+  });
+}
+
+// Helper to save state
+function saveState() {
+  if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.session) {
+    chrome.storage.session.set({ stats, circuitOpen });
+  }
+}
+
 /**
  * Gatekeeper: Validates and Routes AI Requests
  */
@@ -58,6 +73,7 @@ async function handleAITask(request, sendResponse) {
     
     if (data.success && data.text) {
       stats.failures = 0; // Reset failure count on success
+      saveState();
       sendResponse({ success: true, text: data.text, confidence: data.confidence || 1.0 });
     } else {
       throw new Error(data.error || "AI_SERVICE_EMPTY_RESPONSE");
@@ -109,6 +125,7 @@ function isRateLimited() {
     stats.lastReset = now;
   }
   stats.requests++;
+  saveState();
   return stats.requests > CONFIG.RATE_LIMIT;
 }
 
@@ -117,12 +134,15 @@ function isRateLimited() {
  */
 function recordFailure() {
   stats.failures++;
+  saveState();
   if (stats.failures > 5) {
     circuitOpen = true;
+    saveState();
     console.warn('⚠️ [GATEWAY] Circuit Breaker OPENED');
     setTimeout(() => {
       circuitOpen = false;
       stats.failures = 0;
+      saveState();
       console.log('✅ [GATEWAY] Circuit Breaker CLOSED');
     }, 30000); // Wait 30s before trying again
   }

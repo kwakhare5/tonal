@@ -23,11 +23,11 @@
 - [x] **Audit Documentation**: Delivered AUDIT.md and ARCHITECT_AUDIT.md in project root.
 
 ### 🛠️ Active TODOs
-- [ ] **Fix Ghost Text Bug**: Implement React/Lexical state-syncing for LinkedIn and WhatsApp.
-- [ ] **Fix Battery Drain**: Replace infinite RAF loop with ResizeObserver + throttled scroll listeners.
-- [ ] **Fix Settings Desync**: Wire up `chrome.storage.sync` listeners in content script.
-- [ ] **Fix Rich Text Destruction**: Implement HTML-aware text replacement for Gmail and Slack.
-- [ ] **Harden Background State**: Persist SW state in chrome.storage.session.
+- [x] **Fix Ghost Text Bug**: Implement React/Lexical state-syncing for LinkedIn and WhatsApp.
+- [x] **Fix Battery Drain**: Replace infinite RAF loop with ResizeObserver + throttled scroll listeners.
+- [x] **Fix Settings Desync**: Wire up `chrome.storage.sync` listeners in content script.
+- [x] **Fix Rich Text Destruction**: Implement HTML-aware text replacement for Gmail and Slack.
+- [x] **Harden Background State**: Persist SW state in chrome.storage.session.
 - [x] **Hardened Sync**: Implemented the `Triple Handshake` sequence in production for LinkedIn/Gmail stability.
 
 ---
