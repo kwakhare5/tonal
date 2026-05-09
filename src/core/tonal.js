@@ -213,6 +213,7 @@ window.Tonal = (function() {
       container.onclick = (e) => {
         if (!e.target.closest('.pill-chev-wrap')) callbacks.onClick();
       };
+      container.onmousedown = (e) => e.preventDefault();
       container.onmouseenter = () => callbacks.onHover && callbacks.onHover(true);
       container.onmouseleave = () => callbacks.onHover && callbacks.onHover(false);
     },
@@ -220,6 +221,7 @@ window.Tonal = (function() {
     createPopover(activeId, onSelect, onClose) {
       const pop = h('div', { 
         className: 'popover',
+        onmousedown: (e) => e.preventDefault(),
         onmouseleave: () => onClose && onClose()
       });
       TONES.forEach((tone, idx) => {
@@ -245,6 +247,7 @@ window.Tonal = (function() {
       return h('div', { 
         className: 'decode-float', 
         textContent: 'Decode',
+        onmousedown: (e) => e.preventDefault(),
         onclick: (e) => { e.stopPropagation(); onClick(); }
       });
     },

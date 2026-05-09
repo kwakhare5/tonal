@@ -7,7 +7,7 @@
 (function() {
   const UI = window.Tonal;
   const SHADOW_ID = 'tonal-v4-root';
-  const SELECTORS = ['[contenteditable="true"]', 'textarea', '[role="textbox"]', '.ql-editor'].join(',');
+  const SELECTORS = ['[contenteditable="true"]', 'textarea', '.msg-form__msg-content-container', '.ql-editor'].join(',');
   const WORKER_URL = "https://tonal-proxy.kwakhare5.workers.dev";
 
   class TonalInjector {
@@ -93,8 +93,11 @@
       const btn = this.decodeUI.button;
       const safeRect = this.getSafeRect(rect);
       
-      btn.style.left = `${safeRect.left + safeRect.width/2 - 35}px`;
-      btn.style.top = `${safeRect.top - 40}px`;
+      const finalLeft = Math.max(10, Math.min(safeRect.left + safeRect.width/2 - 35, window.innerWidth - 80));
+      const finalTop = Math.max(60, safeRect.top - 40);
+
+      btn.style.left = `${finalLeft}px`;
+      btn.style.top = `${finalTop}px`;
       btn.style.display = 'block';
       requestAnimationFrame(() => btn.classList.add('decode-float--active'));
     }
@@ -159,8 +162,10 @@
       
       // Calculate precise viewport coordinates relative to host
       const safeRect = this.getSafeRect(rect);
-      const finalLeft = safeRect.left + safeRect.width / 2 - 35;
-      const finalTop = safeRect.top - 40;
+      
+      // Constrain to viewport
+      const finalLeft = Math.max(10, Math.min(safeRect.left + safeRect.width / 2 - 144, window.innerWidth - 300));
+      const finalTop = Math.max(60, safeRect.top - 40); // At least 60px to clear headers
 
       // Force absolute positioning inside our fixed full-screen host
       Object.assign(this.decodeUI.card.style, {
@@ -197,13 +202,23 @@
         const elements = document.querySelectorAll(SELECTORS);
         elements.forEach(el => {
           if (el.dataset.tonal || (el.offsetWidth === 0 && el.offsetHeight === 0)) return;
+          
+          // Prevent registering child elements if their parent is already registered
+          let parent = el.parentElement;
+          let isNested = false;
+          while (parent) {
+            if (parent.dataset.tonal) { isNested = true; break; }
+            parent = parent.parentElement;
+          }
+          if (isNested) return;
+
           el.dataset.tonal = "v4";
           this.register(el);
         });
       };
 
       scan(); 
-      setInterval(scan, 1500);
+      setInterval(scan, 500);
       document.addEventListener('DOMContentLoaded', scan);
       window.addEventListener('load', scan);
       this.requestPositionUpdate();
@@ -330,7 +345,7 @@
     async convert(input) {
       const e = this.registry.get(input);
       e.isRichText = input.isContentEditable;
-      let text = (e.isRichText ? input.innerHTML : input.value || input.innerText || "").trim();
+      let text = (input.innerText || input.textContent || input.value || "").trim();
       if (!text || text.length < 2) {
         UI.showToast(e.shadow, 'Text too short');
         return;
@@ -407,53 +422,15 @@
     }
 
     insertText(input, text, isRichText = false) {
-      input.focus();
-      document.execCommand('selectAll', false, null);
-
-      // 1. Synthetic Paste Event
-      const dataTransfer = new DataTransfer();
-      dataTransfer.setData('text/plain', text);
-      if (isRichText) dataTransfer.setData('text/html', text);
-      
-      const pasteEvent = new ClipboardEvent('paste', {
-        clipboardData: dataTransfer,
-        bubbles: true,
-        cancelable: true
-      });
-      input.dispatchEvent(pasteEvent);
-
-      // If framework handled the paste, stop to prevent duplication.
-      if (pasteEvent.defaultPrevented) {
-        input.blur(); input.focus();
-        return;
+      if (window.TonalAdapters && window.TonalAdapters.manager) {
+        window.TonalAdapters.manager.insertText(input, text, isRichText);
+      } else {
+        console.error("Tonal Adapters not loaded!");
+        // Fallback if adapters failed to load
+        input.focus();
+        document.execCommand('selectAll', false, null);
+        document.execCommand('insertText', false, text);
       }
-
-      // 2. Synthetic beforeinput Event
-      const beforeInputEvent = new InputEvent('beforeinput', {
-        inputType: isRichText ? 'insertFromPaste' : 'insertText',
-        data: text,
-        bubbles: true,
-        cancelable: true
-      });
-      input.dispatchEvent(beforeInputEvent);
-
-      // If framework handled beforeinput, stop.
-      if (beforeInputEvent.defaultPrevented) {
-        input.blur(); input.focus();
-        return;
-      }
-
-      // 3. Native DOM Mutation (Fallback for basic inputs like Sandbox)
-      const command = isRichText ? 'insertHTML' : 'insertText';
-      document.execCommand(command, false, text);
-        
-      // Notify basic listeners
-      input.dispatchEvent(new Event('input', { bubbles: true }));
-      input.dispatchEvent(new Event('change', { bubbles: true }));
-
-      // Force framework re-render flush
-      input.blur();
-      input.focus();
     }
 
     undo(input) {
@@ -482,9 +459,11 @@
         const isSL = window.location.host.includes('slack');
         
         if (isWA || isSL) {
+          // Inside Docking (WhatsApp / Slack)
           e.wrap.style.top = `${safeRect.top + (safeRect.height - 32) / 2}px`;
           e.wrap.style.left = `${safeRect.left + safeRect.width - 210}px`;
         } else {
+          // Outside Docking (LinkedIn / Gmail / Sandbox)
           e.wrap.style.top = `${safeRect.top + safeRect.height + 4}px`;
           e.wrap.style.left = `${safeRect.left + safeRect.width - 200}px`;
         }
