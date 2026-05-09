@@ -1,9 +1,11 @@
-# Walkthrough: Tonal UI Engine v4.0.0 Refinement
+# Walkthrough: Tonal UI Engine v4.9.0 Hardening
 
-Successfully transitioned the Tonal Chrome extension to a premium, hover-responsive experience with strict Design System parity.
+Successfully transitioned the Tonal Chrome extension to a premium, hover-responsive experience with strict Design System parity and hardened font loading.
 
 ## Key Accomplishments
 
+- **1:1 Font Parity**: Standardized on DM Sans (opsz/wght) and DM Mono with Design System fallbacks and -webkit-font-smoothing.
+- **Audit Delivery**: Completed a deep architectural audit identifying 8 critical issues for v5.0 production readiness.
 - **Hover-to-Expand Interaction**: Implemented a fluid, CSS-driven transition for the Tonal pill.
 - **Surgical Render Logic**: Optimized the injector to update UI elements independently, preventing flicker.
 - **Micro-Interaction Polish**: Added 180-degree chevron rotation on popover open with cubic-bezier timing.
