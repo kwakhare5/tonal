@@ -14,11 +14,56 @@
     constructor() {
       this.registry = new Map(); // input -> { wrap, state, tone, popover, originalText }
       this.decodeUI = { button: null, card: null, selectedText: '', selectedRect: null };
+      this.defaultTone = 'workChat'; // Fallback
+      
+      this.initStorage();
+      this.initObservers();
       this.init();
       
       // Global listeners
       document.addEventListener('click', (e) => this.dismissPopovers(e.target));
       document.addEventListener('selectionchange', () => this.handleSelection());
+    }
+
+    initObservers() {
+      this.resizeObserver = new ResizeObserver(() => this.requestPositionUpdate());
+      
+      const onScrollOrResize = () => this.requestPositionUpdate();
+      window.addEventListener('resize', onScrollOrResize, { passive: true });
+      document.addEventListener('scroll', onScrollOrResize, { passive: true, capture: true });
+    }
+
+    requestPositionUpdate() {
+      if (!this._updatePending) {
+        this._updatePending = true;
+        requestAnimationFrame(() => {
+          this.updatePositions();
+          this._updatePending = false;
+        });
+      }
+    }
+
+    initStorage() {
+      if (!window.chrome || !chrome.storage) return;
+      
+      // Load initial
+      chrome.storage.sync.get({ defaultTone: 'workChat' }, (settings) => {
+        this.defaultTone = settings.defaultTone;
+      });
+
+      // Listen for popup changes
+      chrome.storage.onChanged.addListener((changes, area) => {
+        if (area === 'sync' && changes.defaultTone) {
+          this.defaultTone = changes.defaultTone.newValue;
+          // Update any resting pills
+          for (const [input, e] of this.registry.entries()) {
+            if (e.state === 'rest') {
+              e.tone = this.defaultTone;
+              this.render(input);
+            }
+          }
+        }
+      });
     }
 
     handleSelection() {
@@ -161,7 +206,7 @@
       setInterval(scan, 1500);
       document.addEventListener('DOMContentLoaded', scan);
       window.addEventListener('load', scan);
-      requestAnimationFrame(() => this.watch());
+      this.requestPositionUpdate();
     }
 
     getShadow() {
@@ -219,14 +264,16 @@
         wrap, 
         shadow, 
         state: 'rest', 
-        tone: 'workChat', 
+        tone: this.defaultTone, 
         popover: false,
         originalText: '',
         pill: null,
         pop: null
       };
       this.registry.set(input, entry);
+      this.resizeObserver.observe(input);
       this.render(input);
+      this.requestPositionUpdate();
     }
 
     render(input) {
@@ -282,7 +329,8 @@
 
     async convert(input) {
       const e = this.registry.get(input);
-      let text = (input.innerText || input.value || "").trim();
+      e.isRichText = input.isContentEditable;
+      let text = (e.isRichText ? input.innerHTML : input.value || input.innerText || "").trim();
       if (!text || text.length < 2) {
         UI.showToast(e.shadow, 'Text too short');
         return;
@@ -307,7 +355,7 @@
             }
 
             if (response && response.success && response.text) {
-              this.insertText(input, response.text);
+              this.insertText(input, response.text, e.isRichText);
               e.state = 'done'; 
               UI.showToast(e.shadow, 'Done!');
             } else {
@@ -340,7 +388,7 @@
 
         const data = await response.json();
         if (data.success && data.text) {
-          this.insertText(input, data.text);
+          this.insertText(input, data.text, e.isRichText);
           e.state = 'done';
           UI.showToast(e.shadow, 'Done (Direct AI)');
         } else {
@@ -350,7 +398,7 @@
         console.error('Tonal Direct AI Failed:', err);
         // Final fallback: simulated response so UI doesn't hang
         setTimeout(() => {
-          this.insertText(input, `[SANDBOX: ${e.tone.toUpperCase()}] ${text}`);
+          this.insertText(input, `[SANDBOX: ${e.tone.toUpperCase()}] ${text}`, e.isRichText);
           e.state = 'done';
           this.render(input);
         }, 800);
@@ -358,26 +406,80 @@
       this.render(input);
     }
 
-    insertText(input, text) {
+    insertText(input, text, isRichText = false) {
       input.focus();
       document.execCommand('selectAll', false, null);
-      document.execCommand('insertText', false, text);
-      ['input', 'change', 'blur'].forEach(name => input.dispatchEvent(new Event(name, { bubbles: true })));
+
+      // 1. Synthetic Paste Event (Critical for Lexical / Draft.js / WhatsApp)
+      const dataTransfer = new DataTransfer();
+      dataTransfer.setData('text/plain', text);
+      if (isRichText) dataTransfer.setData('text/html', text);
+      const pasteEvent = new ClipboardEvent('paste', {
+        clipboardData: dataTransfer,
+        bubbles: true,
+        cancelable: true
+      });
+      input.dispatchEvent(pasteEvent);
+
+      // 2. Synthetic beforeinput Event (Critical for React 18+ / LinkedIn)
+      const beforeInputEvent = new InputEvent('beforeinput', {
+        inputType: isRichText ? 'insertFromPaste' : 'insertText',
+        data: text,
+        bubbles: true,
+        cancelable: true
+      });
+      input.dispatchEvent(beforeInputEvent);
+
+      // 3. Native DOM Mutation
+      const command = isRichText ? 'insertHTML' : 'insertText';
+      document.execCommand(command, false, text);
+
+      // 4. Synthetic input/change Events (Critical for React 16/17)
+      const inputEvent = new InputEvent('input', {
+        inputType: 'insertText',
+        data: text,
+        bubbles: true,
+        cancelable: false
+      });
+      input.dispatchEvent(inputEvent);
+      input.dispatchEvent(new Event('change', { bubbles: true }));
+
+      // 5. Synthetic keyup Event (Critical for listeners waiting for keyboard end)
+      const keyupEvent = new KeyboardEvent('keyup', {
+        key: 'Space',
+        code: 'Space',
+        keyCode: 32,
+        bubbles: true,
+        cancelable: true
+      });
+      input.dispatchEvent(keyupEvent);
+
+      // Force framework re-render flush
+      input.blur();
+      input.focus();
     }
 
     undo(input) {
       const e = this.registry.get(input);
       if (!e.originalText) return;
-      this.insertText(input, e.originalText);
+      this.insertText(input, e.originalText, e.isRichText);
       e.state = 'rest';
       this.render(input);
       UI.showToast(e.shadow, 'Restored original text');
     }
 
-    watch() {
+    updatePositions() {
       for (const [input, e] of this.registry.entries()) {
-        if (!input.isConnected) { e.wrap.remove(); this.registry.delete(input); continue; }
+        if (!input.isConnected) { 
+          e.wrap.remove(); 
+          this.resizeObserver.unobserve(input);
+          this.registry.delete(input); 
+          continue; 
+        }
         const rect = input.getBoundingClientRect();
+        // Skip hidden elements to prevent jumping
+        if (rect.width === 0 && rect.height === 0) continue;
+        
         const safeRect = this.getSafeRect(rect);
         const isWA = window.location.host.includes('whatsapp');
         const isSL = window.location.host.includes('slack');
@@ -390,7 +492,6 @@
           e.wrap.style.left = `${safeRect.left + safeRect.width - 200}px`;
         }
       }
-      requestAnimationFrame(() => this.watch());
     }
   }
 
