@@ -7,7 +7,8 @@
     "deploy": "cd src/backend && wrangler deploy",
     "dev": "cd src/backend && wrangler dev",
     "zip": "powershell compress-archive -Path manifest.json, src, icons -DestinationPath tonal-v2.1.0.zip",
-    "kill": "npx kill-port 3000 3001 3002 8080"
+    "kill": "npx kill-port 3000 3001 3002 8080",
+    "save": "git add -A && git commit -m \"checkpoint: [timestamp]\" && git push"
   },
   "devDependencies": {
     "wrangler": "^3.0.0"
