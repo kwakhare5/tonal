@@ -32,28 +32,34 @@ window.Tonal = (function() {
         width: auto; height: 24px; padding: 0 9px; gap: 5px; 
         justify-content: flex-start; max-width: 140px; 
       }
-      .t-pill--loading { height: 24px; padding: 0 9px; opacity: 0.5; justify-content: flex-start; width: 100px; }
+      .t-pill--loading { width: 92px; height: 24px; padding: 0 10px; opacity: 0.5; justify-content: center; }
       .t-pill--done { 
-        height: 24px; padding: 0 10px; background: var(--green); 
-        justify-content: center; box-shadow: 0 1px 4px rgba(52, 199, 89, .35); width: 64px;
+        width: 64px; height: 24px; padding: 0 10px; background: var(--green); 
+        justify-content: center; box-shadow: 0 1px 4px rgba(52, 199, 89, .35); 
       }
       
       .t-label { 
         font-size: 10px; font-weight: 700; color: white; white-space: nowrap; 
-        font-family: var(--font); transition: opacity .3s var(--ease-out);
+        font-family: var(--font); transition: opacity .3s var(--ease-out), width .3s var(--ease-out);
+        overflow: hidden;
       }
       
       /* Element Visibility Matrix */
-      .t-icon-logo, .t-label, .t-icon-chev { display: none; }
+      .t-icon-logo, .t-label, .t-icon-chev { display: flex; align-items: center; justify-content: center; }
       
-      .t-pill--rest .t-icon-logo { display: flex; opacity: 1; }
-      .t-pill--rest .t-label, .t-pill--rest .t-icon-chev { display: flex; opacity: 0; pointer-events: none; }
-      .t-pill--rest:hover .t-label, .t-pill--rest:hover .t-icon-chev { opacity: 1; pointer-events: auto; }
+      /* REST STATE: Logo only, label/chev are zero-width */
+      .t-pill--rest .t-icon-logo { opacity: 1; margin: 0; }
+      .t-pill--rest .t-label, .t-pill--rest .t-icon-chev { width: 0; opacity: 0; margin: 0; pointer-events: none; }
+      
+      /* HOVER/EXPANDED: All elements grow in */
+      .t-pill--rest:hover .t-icon-logo, .t-pill--expanded .t-icon-logo { opacity: 1; }
+      .t-pill--rest:hover .t-label, .t-pill--expanded .t-label { width: auto; opacity: 1; }
+      .t-pill--rest:hover .t-icon-chev, .t-pill--expanded .t-icon-chev { width: auto; opacity: 1; pointer-events: auto; }
 
-      .t-pill--expanded .t-icon-logo, .t-pill--expanded .t-label, .t-pill--expanded .t-icon-chev { display: flex; opacity: 1; }
-      
-      .t-pill--loading .t-label { display: flex; opacity: 1; }
-      .t-pill--done .t-label { display: flex; opacity: 1; }
+      /* LOADING/DONE: Hide logo/chev surgically */
+      .t-pill--loading .t-icon-logo, .t-pill--loading .t-icon-chev { display: none; }
+      .t-pill--done .t-icon-logo, .t-pill--done .t-icon-chev { display: none; }
+      .t-pill--loading .t-label, .t-pill--done .t-label { width: auto; opacity: 1; }
 
       .t-icon-logo { display: flex; align-items: center; min-width: 13px; height: 8px; }
       .t-icon-chev { 
