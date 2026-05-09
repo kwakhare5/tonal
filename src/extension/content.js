@@ -8,11 +8,12 @@
   const UI = window.Tonal;
   const SHADOW_ID = 'tonal-v4-root';
   const SELECTORS = ['[contenteditable="true"]', 'textarea', '[role="textbox"]', '.ql-editor'].join(',');
+  const WORKER_URL = "https://tonal-proxy.kwakhare5.workers.dev";
 
   class TonalInjector {
     constructor() {
       this.registry = new Map(); // input -> { wrap, state, tone, popover, originalText }
-      this.decodeUI = { button: null, card: null, selectedText: '' };
+      this.decodeUI = { button: null, card: null, selectedText: '', selectedRect: null };
       this.init();
       
       // Global listeners
@@ -24,26 +25,31 @@
       const selection = window.getSelection();
       const text = selection.toString().trim();
       
-      if (text.length >= 20 && !this.decodeUI.card) {
+      if (text.length > 0 && !this.decodeUI.card) {
         this.decodeUI.selectedText = text;
-        this.showDecodeButton(selection);
-      } else if (text.length < 5) {
+        this.decodeUI.selectedRect = selection.getRangeAt(0).getBoundingClientRect();
+        this.showDecodeButton();
+      } else if (text.length === 0) {
         this.hideDecodeButton();
       }
     }
 
-    showDecodeButton(selection) {
-      const range = selection.getRangeAt(0);
-      const rect = range.getBoundingClientRect();
-      
+    showDecodeButton() {
+      const rect = this.decodeUI.selectedRect;
+      if (!rect) return;
+
       if (!this.decodeUI.button) {
-        this.decodeUI.button = UI.createDecodeButton(() => this.decodeText());
-        document.body.appendChild(this.decodeUI.button);
+        this.decodeUI.button = UI.createDecodeButton(() => {
+          this.decodeText();
+        });
+        this.getShadow().appendChild(this.decodeUI.button);
       }
       
       const btn = this.decodeUI.button;
-      btn.style.left = `${rect.left + rect.width/2 - 35}px`;
-      btn.style.top = `${rect.top + window.scrollY - 35}px`;
+      const safeRect = this.getSafeRect(rect);
+      
+      btn.style.left = `${safeRect.left + safeRect.width/2 - 35}px`;
+      btn.style.top = `${safeRect.top - 40}px`;
       btn.style.display = 'block';
       requestAnimationFrame(() => btn.classList.add('decode-float--active'));
     }
@@ -56,17 +62,18 @@
     }
 
     async decodeText() {
+      const rect = this.decodeUI.selectedRect;
       const text = this.decodeUI.selectedText;
-      this.hideDecodeButton();
+      if (!rect || !text) return;
       
-      // Show loading toast
-      UI.showToast(document.body, 'Decoding...');
+      this.hideDecodeButton();
+      UI.showToast(this.getShadow(), 'Decoding...', 'info');
 
       try {
         const result = await this.callAI(text, 'decode');
-        this.showDecodeCard(result);
+        this.showDecodeCard(result, rect);
       } catch (err) {
-        UI.showToast(document.body, 'Decode failed');
+        UI.showToast(this.getShadow(), 'Decode failed', 'error');
       }
     }
 
@@ -83,7 +90,6 @@
           });
         } else {
           // Direct fetch for sandbox
-          const WORKER_URL = "https://tonal-proxy.kwakhare5.workers.dev";
           fetch(WORKER_URL, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -96,7 +102,7 @@
       });
     }
 
-    showDecodeCard(resultText) {
+    showDecodeCard(resultText, rect) {
       if (this.decodeUI.card) this.decodeUI.card.remove();
       
       this.decodeUI.card = UI.createDecodeCard(resultText, () => {
@@ -104,14 +110,22 @@
         setTimeout(() => { this.decodeUI.card.remove(); this.decodeUI.card = null; }, 400);
       });
 
-      const selection = window.getSelection();
-      const range = selection.getRangeAt(0);
-      const rect = range.getBoundingClientRect();
-
-      document.body.appendChild(this.decodeUI.card);
-      this.decodeUI.card.style.left = `${Math.min(window.innerWidth - 300, rect.left)}px`;
-      this.decodeUI.card.style.top = `${rect.bottom + window.scrollY + 10}px`;
+      const shadow = this.getShadow();
       
+      // Calculate precise viewport coordinates relative to host
+      const safeRect = this.getSafeRect(rect);
+      const finalLeft = safeRect.left + safeRect.width / 2 - 35;
+      const finalTop = safeRect.top - 40;
+
+      // Force absolute positioning inside our fixed full-screen host
+      Object.assign(this.decodeUI.card.style, {
+        position: 'absolute',
+        left: `${finalLeft}px`,
+        top: `${finalTop}px`,
+        display: 'block'
+      });
+      
+      shadow.appendChild(this.decodeUI.card);
       requestAnimationFrame(() => this.decodeUI.card.classList.add('decode-card--active'));
     }
 
@@ -153,8 +167,15 @@
     getShadow() {
       let host = document.getElementById(SHADOW_ID);
       if (!host) {
-        host = UI.h('div', { id: SHADOW_ID, style: 'position:absolute; top:0; left:0; width:0; height:0; z-index:2147483647;' });
+        host = UI.h('div', { 
+          id: SHADOW_ID, 
+          style: 'position:fixed; top:0; left:0; width:100%; height:100%; z-index:2147483647; pointer-events:none; border:none; margin:0; padding:0;' 
+        });
         document.body.appendChild(host);
+      } else {
+        // Safety Reset: Ensure host hasn't been shifted
+        host.style.top = '0';
+        host.style.left = '0';
       }
       if (!host.shadowRoot) {
         const shadow = host.attachShadow({ mode: 'open' });
@@ -163,6 +184,24 @@
         return shadow;
       }
       return host.shadowRoot;
+    }
+
+    getSafeRect(rect) {
+      const host = document.getElementById(SHADOW_ID);
+      if (!host) return rect;
+      const hRect = host.getBoundingClientRect();
+      
+      // Account for Visual Viewport offsets (Zoom/DPI)
+      const vv = window.visualViewport;
+      const vx = vv ? vv.offsetLeft : 0;
+      const vy = vv ? vv.offsetTop : 0;
+
+      return {
+        left: rect.left - hRect.left + vx,
+        top: rect.top - hRect.top + vy,
+        width: rect.width,
+        height: rect.height
+      };
     }
 
     register(input) {
@@ -251,8 +290,6 @@
       e.state = 'loading'; 
       this.render(input);
 
-      const WORKER_URL = "https://tonal-proxy.kwakhare5.workers.dev";
-
       // 1. EXTENSION MODE: Use background script
       if (window.chrome && chrome.runtime && chrome.runtime.sendMessage) {
         try {
@@ -288,7 +325,6 @@
     }
 
     async directConvert(input, text, e) {
-      const WORKER_URL = "https://tonal-proxy.kwakhare5.workers.dev";
       try {
         const response = await fetch(WORKER_URL, {
           method: "POST",
@@ -340,16 +376,16 @@
       for (const [input, e] of this.registry.entries()) {
         if (!input.isConnected) { e.wrap.remove(); this.registry.delete(input); continue; }
         const rect = input.getBoundingClientRect();
-        const sc = { y: window.scrollY, x: window.scrollX };
+        const safeRect = this.getSafeRect(rect);
         const isWA = window.location.host.includes('whatsapp');
         const isSL = window.location.host.includes('slack');
         
         if (isWA || isSL) {
-          e.wrap.style.top = `${rect.top + sc.y + (rect.height - 32) / 2}px`;
-          e.wrap.style.left = `${rect.right + sc.x - 210}px`;
+          e.wrap.style.top = `${safeRect.top + (safeRect.height - 32) / 2}px`;
+          e.wrap.style.left = `${safeRect.left + safeRect.width - 210}px`;
         } else {
-          e.wrap.style.top = `${rect.bottom + sc.y + 4}px`;
-          e.wrap.style.left = `${rect.right + sc.x - 200}px`;
+          e.wrap.style.top = `${safeRect.top + safeRect.height + 4}px`;
+          e.wrap.style.left = `${safeRect.left + safeRect.width - 200}px`;
         }
       }
       requestAnimationFrame(() => this.watch());

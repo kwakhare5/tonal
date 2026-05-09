@@ -15,9 +15,13 @@ window.Tonal = (function() {
 
     :host {
       --black: #0F0F0F; --white: #FFFFFF; --green: #34C759; --red: #FF3B30;
+      --gray-1: #1C1C1E; --gray-2: #2C2C2E; --gray-3: #3A3A3C; --gray-4: #636366;
+      --gray-5: #AEAEB2; --gray-6: #D1D1D6; --gray-7: #E5E5EA; --gray-8: #F2F2F7; --gray-9: #F5F5F7;
       --font: 'DM Sans', -apple-system, sans-serif;
-      --r-pill: 100px; --r-lg: 14px;
-      --sh-lg: 0 8px 32px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.04);
+      --r-sm: 6px; --r-md: 10px; --r-lg: 14px; --r-xl: 20px; --r-pill: 100px;
+      --sh-xs: 0 1px 2px rgba(0, 0, 0, .06);
+      --sh-sm: 0 4px 12px rgba(0, 0, 0, .06);
+      --sh-lg: 0 24px 64px rgba(0, 0, 0, .12), 0 1px 4px rgba(0, 0, 0, .06);
       --ease-out: cubic-bezier(0.2, 0, 0, 1);
       --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
     }
@@ -82,42 +86,69 @@ window.Tonal = (function() {
     @keyframes dots { 0% { content: ''; } 25% { content: '.'; } 50% { content: '..'; } 75% { content: '...'; } }
 
     .decode-float {
-      position: fixed; background: var(--black); color: var(--white);
-      padding: 6px 14px; border-radius: var(--r-pill); font-size: 11px;
-      font-weight: 700; cursor: pointer; z-index: 2147483647;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15); font-family: var(--font);
-      opacity: 0; transform: translateY(10px); transition: all 0.3s var(--spring);
+      position: absolute; background: var(--black); color: var(--white);
+      padding: 6px 13px; border-radius: var(--r-pill); font-size: 11px;
+      font-weight: 600; cursor: pointer; z-index: 2147483647;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, .18); font-family: var(--font);
+      letter-spacing: .01em; opacity: 0; transform: translateY(10px); 
+      transition: all 0.3s var(--spring); pointer-events: auto;
     }
     .decode-float--active { opacity: 1; transform: translateY(0); }
     .decode-float:active { transform: scale(0.95); }
 
     .decode-card {
-      position: fixed; width: 280px; background: var(--white);
-      border-radius: var(--r-lg); border: 1px solid #F2F2F7;
-      box-shadow: 0 24px 64px rgba(0,0,0,0.12); z-index: 2147483647;
+      position: absolute; width: 288px; background: var(--white);
+      border-radius: var(--r-lg); border: 1px solid var(--gray-7);
+      box-shadow: var(--sh-lg); z-index: 2147483647;
       font-family: var(--font); overflow: hidden;
       opacity: 0; transform: translateY(20px); transition: all 0.4s var(--spring);
+      pointer-events: auto;
     }
     .decode-card--active { opacity: 1; transform: translateY(0); }
 
     .decode-card-header {
       display: flex; align-items: center; justify-content: space-between;
-      padding: 12px 16px; background: #F9F9FB; border-bottom: 1px solid #F2F2F7;
+      padding: 11px 14px; border-bottom: 1px solid var(--gray-8);
     }
-    .decode-card-tag { font-size: 10px; font-weight: 700; color: #AEAEB2; text-transform: uppercase; letter-spacing: 0.05em; }
-    .decode-card-close { cursor: pointer; opacity: 0.4; transition: opacity 0.2s; }
+    .decode-card-tag { font-size: 10px; font-weight: 700; color: var(--gray-4); text-transform: uppercase; letter-spacing: .08em; }
+    .decode-card-close { 
+      width: 18px; height: 18px; background: var(--gray-8); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; color: var(--gray-4); cursor: pointer; opacity: 0.8; transition: opacity 0.2s; 
+    }
     .decode-card-close:hover { opacity: 1; }
 
-    .decode-card-body { padding: 16px; display: flex; flex-direction: column; gap: 14px; }
-    .decode-card-text { font-size: 13px; color: var(--black); line-height: 1.6; font-weight: 500; }
+    .decode-card-body { padding: 14px; display: flex; flex-direction: column; gap: 14px; }
+    .decode-card-text { font-size: 14px; color: var(--black); line-height: 1.55; margin-bottom: 14px; font-weight: 400; }
     .decode-card-copy {
-      display: flex; align-items: center; gap: 6px; align-self: flex-start;
-      padding: 6px 12px; border-radius: 8px; background: #F2F2F7;
-      font-size: 11px; font-weight: 600; color: var(--black); cursor: pointer;
-      transition: all 0.2s;
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px; align-self: flex-start;
+      padding: 6px 12px; border-radius: 6px; background: var(--gray-9); border: 1px solid var(--gray-7);
+      font-size: 12px; font-weight: 500; color: var(--black); cursor: pointer;
+      transition: all 0.15s ease;
     }
-    .decode-card-copy:hover { background: #E5E5EA; }
-    .decode-card-copy--copied { background: var(--black); color: var(--white); }
+    .decode-card-copy:hover { background: var(--gray-8); border-color: var(--gray-6); }
+    .decode-card-copy--copied { background: var(--green) !important; border-color: var(--green) !important; color: var(--white) !important; }
+    .decode-card-copy svg { width: 12px; height: 12px; }
+
+    .toast {
+      position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(20px);
+      display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px;
+      border-radius: var(--r-pill); font-size: 12px; font-weight: 600;
+      background: var(--black); box-shadow: var(--sh-lg);
+      z-index: 2147483647; opacity: 0; transition: all 0.4s var(--spring);
+      pointer-events: none; font-family: var(--font); color: var(--white);
+    }
+    .toast--active { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .toast--success { color: #4ade80; }
+    .toast--error { color: #f87171; }
+    .toast--warn { color: #fbbf24; }
+    .toast--info { color: #e8e8ff; }
+
+    .toast-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+    .toast--success .toast-dot { background: #4ade80; }
+    .toast--error .toast-dot { background: #f87171; }
+    .toast--warn .toast-dot { background: #fbbf24; }
+    .toast--info .toast-dot { background: #8888ff; }
   `;
 
   const TONES = [
@@ -217,23 +248,24 @@ window.Tonal = (function() {
       const card = h('div', { className: 'decode-card' });
       const header = h('div', { className: 'decode-card-header' },
         h('span', { className: 'decode-card-tag', textContent: 'Decoded Message' }),
-        h('div', { className: 'decode-card-close', textContent: '✕', onclick: onClose })
+        h('div', { className: 'decode-card-close', textContent: '✕', onclick: (e) => { e.stopPropagation(); onClose(); } })
       );
       
       const body = h('div', { className: 'decode-card-body' },
         h('div', { className: 'decode-card-text', textContent: text }),
         h('div', { 
           className: 'decode-card-copy',
-          onclick: function() {
+          onclick: function(e) {
+            e.stopPropagation();
             navigator.clipboard.writeText(text);
             this.className = 'decode-card-copy decode-card-copy--copied';
-            this.textContent = 'Copied!';
+            this.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Copied!`;
             setTimeout(() => {
               this.className = 'decode-card-copy';
-              this.textContent = 'Copy';
+              this.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg> Copy`;
             }, 2000);
           }
-        }, 'Copy')
+        }, h('div', { style: 'display:contents', innerHTML: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg> Copy` }))
       );
 
       card.appendChild(header);
@@ -241,10 +273,10 @@ window.Tonal = (function() {
       return card;
     },
 
-    showToast: (root, msg) => {
-      const toast = h('div', { className: 'toast' });
+    showToast: (root, msg, type = 'success') => {
+      const toast = h('div', { className: `toast toast--${type}` });
       toast.appendChild(h('div', { className: 'toast-dot' }));
-      toast.appendChild(h('span', { style: 'color:#4ade80;', textContent: msg }));
+      toast.appendChild(h('span', { textContent: msg }));
       
       root.appendChild(toast);
       requestAnimationFrame(() => toast.classList.add('toast--active'));

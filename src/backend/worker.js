@@ -100,7 +100,6 @@ export default {
 
     const promptKey = mode === "decode" ? "decode" : (toneLevel || "workChat");
     const systemPrompt = PROMPTS[promptKey] || PROMPTS.workChat;
-    const forceProvider = body.provider; // "groq" or "cf" for testing
 
     const payload_base = {
       model: "llama-3.3-70b-versatile",
@@ -117,7 +116,7 @@ export default {
     };
 
     // 1. Primary: Groq API
-    if (environment.GROQ_API_KEY && forceProvider !== "cf") {
+    if (environment.GROQ_API_KEY) {
       try {
         const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
           method: "POST",
@@ -141,8 +140,8 @@ export default {
       } catch (e) { console.error("Groq Failed:", e); }
     }
 
-    // 2. Fallback/Force: Cloudflare Workers AI
-    if (environment.AI && (forceProvider === "cf" || !environment.GROQ_API_KEY)) {
+    // 2. Fallback: Cloudflare Workers AI
+    if (environment.AI) {
       try {
         const cfResponse = await environment.AI.run("@cf/meta/llama-3-8b-instruct", {
           messages: [
