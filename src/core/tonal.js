@@ -14,6 +14,7 @@ window.Tonal = (function() {
     @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=DM+Mono:wght@400;500&display=swap');
 
     :host {
+      all: initial;
       --black: #0F0F0F; --white: #FFFFFF; --green: #34C759; --red: #FF3B30;
       --gray-1: #1C1C1E; --gray-2: #2C2C2E; --gray-3: #3A3A3C; --gray-4: #636366;
       --gray-5: #AEAEB2; --gray-6: #D1D1D6; --gray-7: #E5E5EA; --gray-8: #F2F2F7; --gray-9: #F5F5F7;
@@ -25,6 +26,7 @@ window.Tonal = (function() {
       --ease-out: cubic-bezier(0.2, 0, 0, 1);
       --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
     }
+    * { box-sizing: border-box; font-family: var(--font); }
 
     .t-pill {
       display: inline-flex; align-items: center; justify-content: center;
