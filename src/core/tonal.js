@@ -1,6 +1,6 @@
 /**
- * TONAL CORE v4.7.0
- * Smooth Isolated Transitions | 1:1 Design System Parity
+ * TONAL CORE v4.8.0
+ * Professional Motion Profile | High-Fidelity Interaction Layer
  */
 
 window.Tonal = (function() {
@@ -23,30 +23,34 @@ window.Tonal = (function() {
       --sh-sm: 0 1px 4px rgba(0, 0, 0, .06), 0 4px 12px rgba(0, 0, 0, .06);
       --sh-lg: 0 8px 24px rgba(0, 0, 0, .1), 0 24px 64px rgba(0, 0, 0, .12);
       --ease-out: cubic-bezier(0.2, 0, 0, 1);
+      --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
     .t-pill {
       display: inline-flex; align-items: center; justify-content: center;
       background: var(--black); border-radius: var(--r-pill); cursor: pointer;
-      box-shadow: var(--sh-xs); transition: all 0.3s var(--ease-out);
+      box-shadow: var(--sh-xs); transition: all 0.4s var(--ease-out);
       user-select: none; box-sizing: border-box; position: relative; overflow: hidden;
       font-family: var(--font);
     }
-    .t-pill:active { transform: scale(0.96); }
+    .t-pill:active { transform: scale(0.94); transition: transform 0.1s; }
 
     .t-pill--rest { width: 30px; height: 16px; padding: 0; }
-    .t-pill--rest:hover { transform: scale(1.08); box-shadow: 0 2px 8px rgba(0, 0, 0, .2); }
+    .t-pill--rest:hover { transform: scale(1.1); box-shadow: 0 4px 12px rgba(0, 0, 0, .2); }
     .t-pill--expanded { height: 24px; padding: 0 9px; gap: 5px; }
-    .t-pill--loading { height: 24px; padding: 0 9px; opacity: .55; cursor: default; }
-    .t-pill--done { height: 24px; padding: 0 10px; background: var(--green); box-shadow: 0 1px 4px rgba(52, 199, 89, .35); }
+    .t-pill--loading { height: 24px; padding: 0 9px; opacity: .7; cursor: default; animation: pulse 2s infinite ease-in-out; }
+    .t-pill--done { height: 24px; padding: 0 10px; background: var(--green); box-shadow: 0 1px 4px rgba(52, 199, 89, .35); animation: successPop 0.4s var(--spring); }
     .t-pill--error { height: 24px; padding: 0 9px; background: var(--red); }
+
+    @keyframes pulse { 0%, 100% { opacity: 0.7; } 50% { opacity: 0.4; } }
+    @keyframes successPop { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
 
     .pill-text { font-size: 10px; font-weight: 700; color: var(--white); letter-spacing: 0.01em; white-space: nowrap; font-family: var(--font); }
     
     .pill-chev-wrap { 
       display: flex; align-items: center; justify-content: center; 
       width: 24px; height: 24px; margin-right: -9px; 
-      transition: transform 0.3s var(--ease-out); 
+      transition: transform 0.4s var(--spring); 
     }
     .t-pill--popover-open .pill-chev-wrap { transform: rotate(180deg); }
     .t-pill--popover-open .pill-chev-wrap svg { opacity: 1 !important; }
@@ -55,17 +59,23 @@ window.Tonal = (function() {
       position: absolute; bottom: calc(100% + 8px); right: 0;
       width: 192px; background: var(--white); border-radius: var(--r-lg);
       border: 1px solid var(--gray-7); box-shadow: var(--sh-lg); 
-      overflow: hidden; opacity: 0; transform: translateY(10px) scale(0.96); 
-      transition: all 0.3s var(--ease-out); pointer-events: none; font-family: var(--font);
+      overflow: hidden; opacity: 0; transform: translateY(12px) scale(0.92); 
+      transition: all 0.4s var(--spring); pointer-events: none; font-family: var(--font);
       display: flex; flex-direction: column; z-index: 1000; transform-origin: bottom right;
     }
     .popover--active { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
     
     .pop-item { 
       display: flex; align-items: center; justify-content: space-between; 
-      padding: 11px 15px; cursor: pointer; transition: background 0.08s; 
+      padding: 11px 15px; cursor: pointer; transition: background 0.15s, transform 0.3s var(--ease-out), opacity 0.3s; 
       background: var(--white); box-sizing: border-box; width: 100%;
+      opacity: 0; transform: translateY(8px);
     }
+    .popover--active .pop-item { opacity: 1; transform: translateY(0); }
+    .pop-item:nth-child(1) { transition-delay: 0.05s; }
+    .pop-item:nth-child(3) { transition-delay: 0.1s; } /* Accounts for divider at child 2 */
+    .pop-item:nth-child(5) { transition-delay: 0.15s; }
+
     .pop-item:not(.pop-item--active):hover { background: var(--gray-9); }
     .pop-item--active { background: var(--black); cursor: default; }
     
@@ -75,7 +85,8 @@ window.Tonal = (function() {
     .pop-item--active .pop-sub { color: var(--white); }
     .pop-check { font-size: 11px; color: var(--black); font-weight: 600; }
     .pop-item--active .pop-check { color: var(--white); }
-    .pop-divider { height: 1px; background: var(--gray-8); }
+    .pop-divider { height: 1px; background: var(--gray-8); opacity: 0; transition: opacity 0.3s; }
+    .popover--active .pop-divider { opacity: 1; }
 
     .pill-dots::after { content: ''; display: inline-block; animation: dots 1.2s steps(4) infinite; }
     @keyframes dots { 0% { content: ''; } 25% { content: '.'; } 50% { content: '..'; } 75% { content: '...'; } }
@@ -83,9 +94,12 @@ window.Tonal = (function() {
     .toast {
       display: inline-flex; align-items: center; gap: 7px; padding: 9px 16px; 
       border-radius: var(--r-pill); font-size: 12px; font-weight: 600; font-family: var(--font);
-      box-shadow: 0 2px 12px rgba(0, 0, 0, .15); background: var(--black); white-space: nowrap;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, .2); background: var(--black); white-space: nowrap;
+      opacity: 0; transform: translateY(20px); transition: all 0.4s var(--spring);
     }
-    .toast-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; background: #4ade80; }
+    .toast--active { opacity: 1; transform: translateY(0); }
+    .toast-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; background: #4ade80; animation: glow 1.5s infinite alternate; }
+    @keyframes glow { from { box-shadow: 0 0 2px #4ade80; } to { box-shadow: 0 0 8px #4ade80; } }
   `;
 
   const TONES = [
@@ -108,10 +122,8 @@ window.Tonal = (function() {
     return el;
   }
 
-  // --- DEDICATED STATE FACTORIES (ISOLATED PAYLOADS) ---
-
   function createRestPill(callbacks) {
-    const p = h('div', { className: 't-pill--rest' }); // Class for metrics only
+    const p = h('div', { className: 't-pill--rest' });
     p.innerHTML = SVGS.LOGO;
     p.onclick = (e) => { e.stopPropagation(); callbacks.onClick(); };
     p.onmouseenter = () => callbacks.onHover && callbacks.onHover(true);
@@ -166,12 +178,9 @@ window.Tonal = (function() {
     
     renderPill(container, state, toneId, callbacks) {
       const tone = TONES.find(t => t.id === toneId) || TONES[1];
-      
-      // Update Container State (Triggers CSS Transitions)
       container.className = `t-pill t-pill--${state}`;
       container.innerHTML = ''; 
       
-      // Routing to Dedicated Factories (Payloads)
       let payload;
       if (state === 'rest') payload = createRestPill(callbacks);
       else if (state === 'expanded') payload = createExpandedPill(tone, callbacks);
@@ -180,10 +189,7 @@ window.Tonal = (function() {
       else if (state === 'error') payload = createErrorPill(callbacks);
       
       if (payload) {
-        // Move children from payload to container
         while (payload.firstChild) container.appendChild(payload.firstChild);
-        
-        // Re-bind listeners
         container.onclick = payload.onclick;
         container.onmouseenter = payload.onmouseenter;
         container.onmouseleave = payload.onmouseleave;
@@ -220,14 +226,11 @@ window.Tonal = (function() {
       toast.appendChild(h('span', { style: 'color:#4ade80;', textContent: msg }));
       
       root.appendChild(toast);
-      requestAnimationFrame(() => {
-        toast.style.opacity = '1';
-        toast.style.transform = 'translateY(0)';
-      });
+      requestAnimationFrame(() => toast.classList.add('toast--active'));
       setTimeout(() => {
-        toast.style.opacity = '0';
-        setTimeout(() => toast.remove(), 300);
-      }, 2000);
+        toast.classList.remove('toast--active');
+        setTimeout(() => toast.remove(), 400);
+      }, 2500);
     }
   };
 })();
