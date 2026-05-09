@@ -10,56 +10,62 @@ window.Tonal = (function() {
     CHEV: `<svg width="7" height="5" viewBox="0 0 8 5" fill="none"><path d="M1 1l3 3 3-3" stroke="white" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>`
   };
 
-  const CSS = `
-    :host {
-      --black: #0F0F0F; --white: #FFFFFF; --green: #34C759; --red: #FF3B30;
-      --gray: #AEAEB2; --gray-4: #3A3A3C; --gray-5: #8E8E93; --gray-6: #AEAEB2; --gray-7: #E5E5EA; --gray-8: #F2F2F7; --gray-9: #F9F9FB;
-      --font: 'DM Sans', -apple-system, sans-serif;
-      --sh-xs: 0 1px 3px rgba(0, 0, 0, .16);
-      --sh-lg: 0 8px 24px rgba(0, 0, 0, .1), 0 24px 64px rgba(0, 0, 0, .12);
-      --ease: cubic-bezier(0.2, 0, 0, 1);
-    }
-    .t-pill {
-      display: inline-flex; align-items: center; justify-content: center;
-      background: var(--black); border-radius: 100px; cursor: pointer;
-      box-shadow: var(--sh-xs); transition: all .24s var(--ease);
-      user-select: none; box-sizing: border-box; position: relative;
-      overflow: hidden;
-    }
-    .t-pill--rest { width: 30px; height: 16px; padding: 0; }
-    .t-pill--expanded, .t-pill--rest:hover { width: auto; height: 24px; padding: 0 9px; gap: 5px; justify-content: flex-start; }
-    .t-pill--loading { height: 24px; padding: 0 9px; opacity: 0.5; justify-content: flex-start; }
-    .t-pill--done { height: 24px; padding: 0 10px; background: var(--green); justify-content: center; box-shadow: 0 1px 4px rgba(52, 199, 89, .35); }
-    
-    .t-label { 
-      font-size: 10px; font-weight: 700; color: white; white-space: nowrap; 
-      font-family: var(--font); transition: opacity .2s var(--ease);
-    }
-    .t-pill--rest .t-label, .t-pill--rest .t-icon-chev { opacity: 0; width: 0; pointer-events: none; }
-    .t-pill--expanded .t-label, .t-pill--rest:hover .t-label, 
-    .t-pill--expanded .t-icon-chev, .t-pill--rest:hover .t-icon-chev { opacity: 1; width: auto; pointer-events: auto; }
+    const CSS = `
+      :host {
+        --black: #0F0F0F; --white: #FFFFFF; --green: #34C759; --red: #FF3B30;
+        --gray: #AEAEB2; --gray-4: #3A3A3C; --gray-5: #8E8E93; --gray-6: #AEAEB2; --gray-7: #E5E5EA; --gray-8: #F2F2F7; --gray-9: #F9F9FB;
+        --font: 'DM Sans', -apple-system, sans-serif;
+        --sh-xs: 0 1px 3px rgba(0, 0, 0, .16);
+        --sh-lg: 0 8px 24px rgba(0, 0, 0, .1), 0 24px 64px rgba(0, 0, 0, .12);
+        --ease-out: cubic-bezier(0.2, 0, 0, 1);
+        --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+      .t-pill {
+        display: inline-flex; align-items: center; justify-content: center;
+        background: var(--black); border-radius: 100px; cursor: pointer;
+        box-shadow: var(--sh-xs); transition: all .4s var(--ease-out), background .2s;
+        user-select: none; box-sizing: border-box; position: relative;
+        overflow: hidden;
+      }
+      .t-pill--rest { width: 30px; height: 16px; padding: 0; }
+      .t-pill--expanded, .t-pill--rest:hover { 
+        width: auto; height: 24px; padding: 0 9px; gap: 5px; 
+        justify-content: flex-start; max-width: 140px; 
+      }
+      .t-pill--loading { height: 24px; padding: 0 9px; opacity: 0.5; justify-content: flex-start; }
+      .t-pill--done { 
+        height: 24px; padding: 0 10px; background: var(--green); 
+        justify-content: center; box-shadow: 0 1px 4px rgba(52, 199, 89, .35); 
+      }
+      
+      .t-label { 
+        font-size: 10px; font-weight: 700; color: white; white-space: nowrap; 
+        font-family: var(--font); transition: opacity .3s var(--ease-out);
+      }
+      .t-pill--rest .t-label, .t-pill--rest .t-icon-chev { opacity: 0; pointer-events: none; }
+      .t-pill--expanded .t-label, .t-pill--rest:hover .t-label, 
+      .t-pill--expanded .t-icon-chev, .t-pill--rest:hover .t-icon-chev { opacity: 1; pointer-events: auto; }
 
-    .t-icon-logo { display: flex; align-items: center; min-width: 10px; height: 10px; }
-    .t-icon-chev { 
-      position: relative; display: flex; align-items: center; justify-content: center; 
-      width: 7px; height: 5px; cursor: pointer;
-      transition: transform .24s var(--ease); 
-    }
-    .t-icon-chev::after {
-      content: ''; position: absolute; top: -10px; left: -10px; right: -10px; bottom: -10px;
-    }
-    .t-icon-chev:hover { transform: translateY(1px); }
-    .t-pill--popover-open .t-icon-chev { transform: rotate(180deg); }
-    
-    .popover { 
-      position: absolute; bottom: calc(100% + 8px); right: 0;
-      width: 192px; background: var(--white); border-radius: 14px;
-      border: 1px solid var(--gray-7); box-shadow: var(--sh-lg); 
-      overflow: hidden; opacity: 0; transform: translateY(8px); 
-      transition: all .2s var(--ease); pointer-events: none; font-family: var(--font);
-      display: flex; flex-direction: column; z-index: 1000;
-    }
-    .popover--active { opacity: 1; transform: translateY(0); pointer-events: auto; }
+      .t-icon-logo { display: flex; align-items: center; min-width: 13px; height: 8px; }
+      .t-icon-chev { 
+        position: relative; display: flex; align-items: center; justify-content: center; 
+        width: 7px; height: 5px; cursor: pointer;
+        transition: transform .3s var(--ease-out); 
+      }
+      .t-icon-chev::after {
+        content: ''; position: absolute; top: -10px; left: -10px; right: -10px; bottom: -10px;
+      }
+      .t-pill--popover-open .t-icon-chev { transform: rotate(180deg); }
+      
+      .popover { 
+        position: absolute; bottom: calc(100% + 8px); right: 0;
+        width: 192px; background: var(--white); border-radius: 14px;
+        border: 1px solid var(--gray-7); box-shadow: var(--sh-lg); 
+        overflow: hidden; opacity: 0; transform: translateY(12px) scale(0.95); 
+        transition: all .35s var(--ease-spring); pointer-events: none; font-family: var(--font);
+        display: flex; flex-direction: column; z-index: 1000; transform-origin: bottom right;
+      }
+      .popover--active { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
     
     .pop-item { 
       display: flex; align-items: center; justify-content: space-between; 
