@@ -149,20 +149,36 @@
       UI.showToast(e.shadow, 'Restored original text');
     }
 
-    watch() {
-      this.registry.forEach((e, input) => {
-        if (!document.contains(input)) { e.wrap.remove(); this.registry.delete(input); return; }
-        const r = input.getBoundingClientRect();
-        if (r.width < 10) { e.wrap.style.display = 'none'; return; }
-        
-        const isSmall = r.height < 45;
-        const x = window.scrollX + r.right - 200 - 10;
-        const y = window.scrollY + r.top + (isSmall ? (r.height / 2 - 16) : 6);
+    getScroll(el) {
+      return { y: window.scrollY, x: window.scrollX };
+    }
 
-        e.wrap.style.display = 'flex';
-        e.wrap.style.left = `${x}px`;
-        e.wrap.style.top = `${y}px`;
-      });
+    watch() {
+      // 1. Cleanup orphaned overlays
+      for (const [input, e] of this.registry.entries()) {
+        if (!input.isConnected) {
+          e.wrap.remove();
+          this.registry.delete(input);
+        }
+      }
+
+      // 2. Position active overlays
+      for (const [input, e] of this.registry.entries()) {
+        const rect = input.getBoundingClientRect();
+        const sc = this.getScroll(input);
+        
+        // WhatsApp/Slack "Inside-the-Box" Docking
+        const isWA = window.location.host.includes('whatsapp');
+        const isSL = window.location.host.includes('slack');
+        
+        if (isWA || isSL) {
+          e.wrap.style.top = `${rect.top + sc.y + (rect.height - 32) / 2}px`;
+          e.wrap.style.left = `${rect.right + sc.x - 210}px`; // 200px width + 10px padding
+        } else {
+          e.wrap.style.top = `${rect.bottom + sc.y + 4}px`;
+          e.wrap.style.left = `${rect.right + sc.x - 200}px`;
+        }
+      }
       requestAnimationFrame(() => this.watch());
     }
   }

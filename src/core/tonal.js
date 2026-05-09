@@ -32,6 +32,11 @@ window.Tonal = (function() {
         width: auto; height: 24px; padding: 0 9px; gap: 5px; 
         justify-content: flex-start; max-width: 140px; 
       }
+      /* Safety buffer for hover */
+      .t-pill::before {
+        content: ''; position: absolute; top: -6px; left: -6px; right: -6px; bottom: -6px;
+        z-index: -1;
+      }
       .t-pill--loading { height: 24px; padding: 0 9px; opacity: 0.5; justify-content: flex-start; }
       .t-pill--done { 
         height: 24px; padding: 0 10px; background: var(--green); 
@@ -72,8 +77,10 @@ window.Tonal = (function() {
       padding: 11px 15px; cursor: pointer; transition: background .08s; 
       background: var(--white); text-decoration: none;
     }
-    .pop-item:not(.pop-item--active):hover { background: var(--gray-9); }
-    .pop-item--active { background: var(--black); cursor: default; }
+      .pop-item:not(.pop-item--active):hover { background: var(--gray-9); }
+      .pop-item:active { background: var(--gray-8); transform: scale(0.98); transition: transform 0.1s; }
+      .pop-item--active { background: var(--black); cursor: default; }
+      .pop-item--active:active { transform: none; }
     
     .pop-label { font-size: 13px; font-weight: 500; color: var(--black); }
     .pop-sub { font-size: 10px; color: var(--gray-5); margin-left: 4px; }
