@@ -27,29 +27,33 @@ window.Tonal = (function() {
         user-select: none; box-sizing: border-box; position: relative;
         overflow: hidden;
       }
-      .t-pill--rest { width: 30px; height: 16px; padding: 0; }
+        .t-pill--rest { width: 30px; height: 16px; padding: 0; }
       .t-pill--expanded, .t-pill--rest:hover { 
         width: auto; height: 24px; padding: 0 9px; gap: 5px; 
         justify-content: flex-start; max-width: 140px; 
       }
-      /* Safety buffer for hover */
-      .t-pill::before {
-        content: ''; position: absolute; top: -6px; left: -6px; right: -6px; bottom: -6px;
-        z-index: -1;
-      }
-      .t-pill--loading { height: 24px; padding: 0 9px; opacity: 0.5; justify-content: flex-start; }
+      .t-pill--loading { height: 24px; padding: 0 9px; opacity: 0.5; justify-content: flex-start; width: 100px; }
       .t-pill--done { 
         height: 24px; padding: 0 10px; background: var(--green); 
-        justify-content: center; box-shadow: 0 1px 4px rgba(52, 199, 89, .35); 
+        justify-content: center; box-shadow: 0 1px 4px rgba(52, 199, 89, .35); width: 64px;
       }
       
       .t-label { 
         font-size: 10px; font-weight: 700; color: white; white-space: nowrap; 
         font-family: var(--font); transition: opacity .3s var(--ease-out);
       }
-      .t-pill--rest .t-label, .t-pill--rest .t-icon-chev { opacity: 0; pointer-events: none; }
-      .t-pill--expanded .t-label, .t-pill--rest:hover .t-label, 
-      .t-pill--expanded .t-icon-chev, .t-pill--rest:hover .t-icon-chev { opacity: 1; pointer-events: auto; }
+      
+      /* Element Visibility Matrix */
+      .t-icon-logo, .t-label, .t-icon-chev { display: none; }
+      
+      .t-pill--rest .t-icon-logo { display: flex; opacity: 1; }
+      .t-pill--rest .t-label, .t-pill--rest .t-icon-chev { display: flex; opacity: 0; pointer-events: none; }
+      .t-pill--rest:hover .t-label, .t-pill--rest:hover .t-icon-chev { opacity: 1; pointer-events: auto; }
+
+      .t-pill--expanded .t-icon-logo, .t-pill--expanded .t-label, .t-pill--expanded .t-icon-chev { display: flex; opacity: 1; }
+      
+      .t-pill--loading .t-label { display: flex; opacity: 1; }
+      .t-pill--done .t-label { display: flex; opacity: 1; }
 
       .t-icon-logo { display: flex; align-items: center; min-width: 13px; height: 8px; }
       .t-icon-chev { 
@@ -126,18 +130,20 @@ window.Tonal = (function() {
     createPill(state, toneId, callbacks) {
       const tone = TONES.find(t => t.id === toneId) || TONES[1];
       const pill = h('div', { className: `t-pill t-pill--${state}` });
-      
-      if (state === 'rest' || state === 'expanded') {
-        pill.appendChild(h('div', { className: 't-icon-logo', innerHTML: SVGS.ICON }));
-        pill.appendChild(h('span', { className: 't-label', textContent: tone.l }));
-        pill.appendChild(h('div', { className: 't-icon-chev', innerHTML: SVGS.CHEV, onclick: (e) => {
-          e.stopPropagation(); callbacks.onTogglePopover();
-        }}));
-      } 
-      else if (state === 'loading') pill.appendChild(h('span', { className: 't-label dots', innerHTML: 'Converting' }));
-      else if (state === 'done') pill.appendChild(h('span', { className: 't-label', innerHTML: 'Undo' }));
-
       pill.onclick = (e) => { if (!e.target.closest('.t-icon-chev')) callbacks.onClick(); };
+      
+      // Safety buffer for hover
+      pill.appendChild(h('div', { 
+        style: 'position:absolute; top:-6px; left:-6px; right:-6px; bottom:-6px; z-index:-1;' 
+      }));
+
+      // Unified Master DOM: Elements are always present, CSS manages visibility
+      pill.appendChild(h('div', { className: 't-icon-logo', innerHTML: SVGS.ICON }));
+      pill.appendChild(h('span', { className: 't-label', textContent: tone.l }));
+      pill.appendChild(h('div', { className: 't-icon-chev', innerHTML: SVGS.CHEV, onclick: (e) => {
+        e.stopPropagation(); callbacks.onTogglePopover();
+      }}));
+
       return pill;
     },
 
