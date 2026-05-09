@@ -13,18 +13,22 @@
       this.registry = new Map(); // input -> { wrap, state, tone, popover, originalText }
       this.init();
       
-      // Global click-away detection
-      document.addEventListener('click', (e) => {
-        if (!e.target.closest('#' + SHADOW_ID)) {
-          for (const entry of this.registry.values()) {
-            if (entry.popover) {
-              entry.popover = false;
-              if (!entry.isMouseOver) entry.state = 'rest';
-              this.render(entry.input);
-            }
+      // Global click-away detection (Main Document)
+      document.addEventListener('click', (e) => this.dismissPopovers(e.target));
+    }
+
+    dismissPopovers(target) {
+      const isInternal = target.closest && target.closest('#' + SHADOW_ID);
+      for (const entry of this.registry.values()) {
+        if (entry.popover) {
+          // If the click is not inside the wrapper of this specific entry, close it
+          if (!entry.wrap.contains(target)) {
+            entry.popover = false;
+            if (!entry.isMouseOver) entry.state = 'rest';
+            this.render(entry.input);
           }
         }
-      });
+      }
     }
 
     init() {
@@ -54,6 +58,10 @@
       if (!host.shadowRoot) {
         const shadow = host.attachShadow({ mode: 'open' });
         UI.injectStyles(shadow);
+        
+        // Listen for clicks inside the shadow root
+        shadow.addEventListener('click', (e) => this.dismissPopovers(e.target));
+        
         return shadow;
       }
       return host.shadowRoot;
