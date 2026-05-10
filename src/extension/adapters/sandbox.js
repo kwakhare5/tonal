@@ -14,11 +14,10 @@ window.TonalAdapters.sandbox = {
     '.mock-li-input',
     '.mock-sl-input',
     '.mock-gm-body',
-    '.mock-wa-input',
     '.linkedin-mock [contenteditable="true"]',
     '.slack-mock [contenteditable="true"]',
-    '.gmail-mock [contenteditable="true"]',
-    '.whatsapp-mock [contenteditable="true"]'
+    '.gmail-mock [contenteditable="true"]'
+
   ],
 
   isValid(el) {

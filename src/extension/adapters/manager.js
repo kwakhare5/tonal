@@ -16,9 +16,9 @@ window.TonalAdapters.manager = {
     
     // Check for specific platforms first
     if (registry.linkedin?.matches(url)) return registry.linkedin;
-    if (registry.whatsapp?.matches(url)) return registry.whatsapp;
     if (registry.slack?.matches(url))    return registry.slack;
     if (registry.gmail?.matches(url))    return registry.gmail;
+
     
     // Fallback to default generic adapter
     return registry.default || { id: 'none', matches: () => false };

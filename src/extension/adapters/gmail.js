@@ -12,19 +12,28 @@ window.TonalAdapters.gmail = {
 
   selectors: [
     '[role="textbox"][aria-label*="Message"]', 
+    '[role="textbox"][aria-label*="Body"]',
     '.editable[contenteditable="true"]',
     '.Am.Al.editable',
     '[aria-label*="Reply"] [contenteditable="true"]',
-    '.dL .editable'
+    '.dL .editable',
+    'div[id*=":"][role="textbox"]' // Very common Gmail compose ID pattern
   ],
 
   isValid(el) {
     const label = (el.getAttribute('aria-label') || '').toLowerCase();
     const name = (el.getAttribute('name') || '').toLowerCase();
-    if (label.includes('search') || name === 'q') return false;
-    if (label.includes('to') || label.includes('cc') || label.includes('subject')) return false;
-    return label.includes('message') || el.classList.contains('editable');
+    const role = (el.getAttribute('role') || '').toLowerCase();
+    
+    // Block common Gmail navigation/search inputs
+    if (label.includes('search') || name === 'q' || label.includes('to') || label.includes('cc') || label.includes('subject')) return false;
+    
+    // Gmail-specific: Compose boxes often have these classes
+    const isGmailEditor = el.classList.contains('editable') || el.classList.contains('LW-avf');
+    
+    return label.includes('message') || label.includes('body') || isGmailEditor || role === 'textbox';
   },
+
 
   getOffsets(el) {
     return { x: 8, y: 8 };

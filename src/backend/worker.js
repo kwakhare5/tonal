@@ -137,9 +137,9 @@ export default {
     if (platform && mode !== "decode") {
       const contextMap = {
         slack: "PLATFORM: Slack (Internal Team Chat). Keep it brief, direct, and conversational. No email-style greetings or sign-offs unless present in original.",
-        whatsapp: "PLATFORM: WhatsApp (Instant Messaging). Be concise and informal. Avoid corporate fluff.",
         gmail: "PLATFORM: Gmail (Email). Use professional sentence structure. Maintain standard email courtesy.",
         linkedin: "PLATFORM: LinkedIn (Professional Networking). Be professional and polished. Respect InMail norms."
+
       };
       const context = contextMap[platform] || "PLATFORM: General Web Input.";
       systemPrompt = `${systemPrompt}\n\n${context}`;

@@ -6,7 +6,6 @@
 window.Tonal = (function () {
   const SVGS = {
     LOGO: `<svg width="13" height="8" viewBox="0 0 72 44" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="18" width="72" height="8" rx="4" fill="#2C2C2E"/><rect x="0" y="18" width="39" height="8" rx="4" fill="white"/><circle cx="39" cy="22" r="16" fill="#F2F2F2"/><circle cx="39" cy="22" r="14.5" fill="white"/><circle cx="39" cy="22" r="9" fill="#1C1C1E"/><circle cx="39" cy="22" r="4" fill="#3A3A3C"/></svg>`,
-    LOGO_SM: `<svg width="11" height="7" viewBox="0 0 72 44" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="18" width="72" height="8" rx="4" fill="#2C2C2E"/><rect x="0" y="18" width="39" height="8" rx="4" fill="white"/><circle cx="39" cy="22" r="16" fill="#F2F2F2"/><circle cx="39" cy="22" r="14.5" fill="white"/><circle cx="39" cy="22" r="9" fill="#1C1C1E"/><circle cx="39" cy="22" r="4" fill="#3A3A3C"/></svg>`,
     CHEV: `<svg width="7" height="5" viewBox="0 0 8 5" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1l3 3 3-3" stroke="#FFFFFF" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
     CLOSE: `<svg width="8" height="8" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1l12 12M13 1L1 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
     COPY: `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`,
@@ -21,6 +20,7 @@ window.Tonal = (function () {
       top: 0; left: 0; width: 0; height: 0;
       z-index: 2147483647;
       pointer-events: none;
+
       
       /* ── TOKENS ────────────────────────────────────────────────── */
       --black:    #0F0F0F;
@@ -74,13 +74,12 @@ window.Tonal = (function () {
       z-index: 100;
     }
 
-    /* ── PILL ───────────────────────────────────────────────────── */
     .t-pill {
       display: inline-flex; align-items: center; justify-content: center;
       background: var(--black); border-radius: var(--r-pill);
       box-shadow: 0 1px 3px rgba(0,0,0,.16);
       border: 1px solid rgba(255,255,255,0.05); /* Adaptive Glow */
-      transition: transform .1s var(--ease-out), background .1s, box-shadow .1s, width 0.15s var(--spring), height 0.15s var(--spring);
+      transition: transform 0.2s var(--ease-out), background 0.15s, box-shadow 0.15s, width 0.2s var(--spring), height 0.2s var(--spring);
       pointer-events: none; overflow: hidden;
     }
     .t-pill--rest     { width: 30px; height: 16px; }
@@ -244,8 +243,9 @@ window.Tonal = (function () {
         
         const pill = h('div', { className: 't-pill' });
         pill.appendChild(h('div', { className: 'pill-icon-rest', innerHTML: SVGS.LOGO }));
-        pill.appendChild(h('div', { className: 'pill-icon-active', innerHTML: SVGS.LOGO_SM }));
+        pill.appendChild(h('div', { className: 'pill-icon-active', innerHTML: SVGS.LOGO }));
         pill.appendChild(h('span', { className: 'pill-text' }));
+
         pill.appendChild(h('div', { 
           className: 'pill-chev-wrap', 
           innerHTML: SVGS.CHEV, 

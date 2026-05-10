@@ -1,17 +1,17 @@
 # Tonal Chrome Extension
 
-Tonal is an "Elite" AI-powered rephrasing engine that shifts the tone of your messages across LinkedIn, Gmail, Slack, and WhatsApp with 1:1 Design System parity.
+Tonal is an "Elite" AI-powered rephrasing engine that shifts the tone of your messages across LinkedIn, Gmail, and Slack with 1:1 Design System parity.
 
 ## 🛠️ Core Components
 
 - **`src/extension/content.js`**: The main injection engine. Handles platform selectors, DOM mutation, and component logic.
 - **`src/extension/adapters/`**: Platform-specific DOM interaction adapters to ensure pristine text injection across complex rich-text frameworks (Draft.js, Lexical, Quill).
-  - `whatsapp.js`
   - `linkedin.js`
   - `slack.js`
   - `gmail.js`
   - `default.js`
   - `manager.js`
+
 - **`src/extension/background.js`**: Service worker for Cloudflare proxy communication, state management, and circuit-breaking.
 - **`src/core/tonal.js`**: The literal Design System v2.1.0 tokens and UI component classes.
 

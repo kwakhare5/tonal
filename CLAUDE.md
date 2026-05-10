@@ -64,7 +64,7 @@ Rule: read index → match task → load SKILL.md → state what was loaded. Max
 
 ## Project Context for Antigravity
 
-**Tonal** is a free Chrome extension that works as a two-way tone translator inside Gmail, Slack (browser), LinkedIn, and WhatsApp Web. It uses a Cloudflare Worker proxy to route requests to Groq (Llama 3.3 70B) for high-fidelity, preamble-free rephrasing.
+**Tonal** is a free Chrome extension that works as a two-way tone translator inside Gmail, Slack (browser), and LinkedIn. It uses a Cloudflare Worker proxy to route requests to Groq (Llama 3.3 70B) for high-fidelity, preamble-free rephrasing.
 
 It solves two problems for Gen Z users and non-native English speakers:
 
@@ -109,7 +109,6 @@ tonal/
 │   └── extension/
 │       ├── adapters/            ← Platform-specific DOM interaction
 │       │   ├── manager.js
-│       │   ├── whatsapp.js
 │       │   ├── linkedin.js
 │       │   ├── slack.js
 │       │   ├── gmail.js
@@ -131,7 +130,7 @@ tonal/
 
 ### Sending Flow (Casual → Formal)
 
-1. User types in Gmail compose, Slack message box, LinkedIn message, or WhatsApp Web
+1. User types in Gmail compose, Slack message box, or LinkedIn message
 2. `content.js` detects the text input and injects a small "Tonal" pill button
 3. User picks tone level via the **Popover Dropdown**
 4. User clicks the button (or tone item)
@@ -160,8 +159,7 @@ The extension injects into these specific domains:
 "host_permissions": [
   "https://mail.google.com/*",
   "https://app.slack.com/*",
-  "https://www.linkedin.com/*",
-  "https://web.whatsapp.com/*"
+  "https://www.linkedin.com/*"
 ]
 ```
 
@@ -172,7 +170,7 @@ Each platform has different DOM structures. The extension uses the **Adapter Pat
 | Gmail | `gmail.js` | Targets `.editable` nodes. |
 | Slack | `slack.js` | Dispatches specific `textInput` events for Lexical. |
 | LinkedIn | `linkedin.js` | Uses custom selection/range replacements against Draft.js. |
-| WhatsApp | `whatsapp.js` | Robust selection clearing and `insertText`. |
+
 
 ---
 
@@ -261,39 +259,36 @@ INPUT_DATA: {TEXT}
   "manifest_version": 3,
   "name": "Tonal — Two-Way Tone Translator",
   "version": "1.0.0",
-  "description": "Convert casual messages to professional, or decode corporate speak into plain English. Works in Gmail, Slack, LinkedIn, WhatsApp Web.",
-  "permissions": ["storage", "activeTab"],
+  "description": "Two-way tone translator. Convert casual to formal, or decode corporate speak — inside Gmail, Slack, and LinkedIn.",
+  "permissions": ["storage"],
   "host_permissions": [
     "https://mail.google.com/*",
-    "https://app.slack.com/*",
-    "https://www.linkedin.com/*",
-    "https://web.whatsapp.com/*",
-    "https://generativelanguage.googleapis.com/*"
+    "https://*.slack.com/*",
+    "https://*.linkedin.com/*",
+    "https://tonal-proxy.kwakhare5.workers.dev/*"
   ],
-  "background": { "service_worker": "background.js" },
+  "background": { "service_worker": "src/extension/background.js" },
   "content_scripts": [
     {
       "matches": [
         "https://mail.google.com/*",
-        "https://app.slack.com/*",
-        "https://www.linkedin.com/*",
-        "https://web.whatsapp.com/*"
+        "https://*.slack.com/*",
+        "https://*.linkedin.com/*"
       ],
       "js": [
-        "src/core/tonal.js",
-        "src/extension/adapters/manager.js",
-        "src/extension/adapters/default.js",
         "src/extension/adapters/linkedin.js",
-        "src/extension/adapters/whatsapp.js",
         "src/extension/adapters/slack.js",
         "src/extension/adapters/gmail.js",
+        "src/extension/adapters/default.js",
+        "src/extension/adapters/manager.js",
+        "src/core/tonal.js",
         "src/extension/content.js"
       ],
       "run_at": "document_idle"
     }
   ],
   "action": {
-    "default_popup": "popup.html",
+    "default_popup": "src/extension/popup.html",
     "default_icon": {
       "16": "icons/icon16.png",
       "48": "icons/icon48.png",
@@ -302,6 +297,7 @@ INPUT_DATA: {TEXT}
   }
 }
 ```
+
 
 ---
 
