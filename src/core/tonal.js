@@ -62,7 +62,9 @@ window.Tonal = (function () {
       line-height: 1.5 !important;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; border: none; font-family: inherit; line-height: inherit; }
+    * { box-sizing: border-box; margin: 0; padding: 0; border: none; font-family: inherit; line-height: inherit; outline: none; }
+    
+    :focus-visible { outline: 2px solid var(--gray-5) !important; outline-offset: 2px; }
 
     /* ── HITBOX ─────────────────────────────────────────────────── */
     .t-hitbox {
@@ -77,15 +79,16 @@ window.Tonal = (function () {
       display: inline-flex; align-items: center; justify-content: center;
       background: var(--black); border-radius: var(--r-pill);
       box-shadow: 0 1px 3px rgba(0,0,0,.16);
+      border: 1px solid rgba(255,255,255,0.05); /* Adaptive Glow */
       transition: transform .1s var(--ease-out), background .1s, box-shadow .1s, width 0.15s var(--spring), height 0.15s var(--spring);
       pointer-events: none; overflow: hidden;
     }
     .t-pill--rest     { width: 30px; height: 16px; }
-    .t-hitbox:hover .t-pill--rest { transform: scale(1.08); box-shadow: 0 2px 8px rgba(0,0,0,.2); }
+    .t-hitbox:hover .t-pill--rest { transform: scale(1.08); box-shadow: 0 2px 8px rgba(0,0,0,.2); border-color: rgba(255,255,255,0.15); }
     
     .t-pill--expanded { height: 24px; padding: 0 9px; gap: 5px; }
     .t-pill--loading  { height: 24px; padding: 0 9px; opacity: .55; }
-    .t-pill--done     { height: 24px; padding: 0 10px; background: var(--green); box-shadow: 0 1px 4px rgba(52,199,89,.35); }
+    .t-pill--done     { height: 24px; padding: 0 10px; background: var(--green); box-shadow: 0 1px 4px rgba(52,199,89,.35); border-color: rgba(255,255,255,0.1); }
     .t-pill--error    { height: 24px; padding: 0 9px; background: var(--red); }
 
     .pill-icon-rest { display: none; }
@@ -109,7 +112,7 @@ window.Tonal = (function () {
       position: absolute; bottom: calc(100% + 8px); right: 0;
       width: 192px; background: rgba(255, 255, 255, 0.8) !important;
       backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-      border-radius: var(--r-lg); border: 1px solid rgba(0,0,0,0.05);
+      border-radius: var(--r-lg); border: 1px solid rgba(255,255,255,0.1); /* Adaptive Glow */
       box-shadow: var(--sh-lg); overflow: hidden;
       opacity: 0; transform: translateY(12px) scale(0.95);
       transition: all 0.2s var(--spring); pointer-events: none;
@@ -235,13 +238,25 @@ window.Tonal = (function () {
       const tone = TONES.find(t => t.id === toneId) || TONES[1];
       if (!container.dataset.tonalInited) {
         container.className = 't-hitbox';
+        container.setAttribute('role', 'button');
+        container.setAttribute('aria-label', 'Tonal AI Tone Selector');
+        container.setAttribute('tabindex', '0');
+        
         const pill = h('div', { className: 't-pill' });
         pill.appendChild(h('div', { className: 'pill-icon-rest', innerHTML: SVGS.LOGO }));
         pill.appendChild(h('div', { className: 'pill-icon-active', innerHTML: SVGS.LOGO_SM }));
         pill.appendChild(h('span', { className: 'pill-text' }));
-        pill.appendChild(h('div', { className: 'pill-chev-wrap', innerHTML: SVGS.CHEV, onclick: (e) => { e.stopPropagation(); callbacks.onTogglePopover(); } }));
+        pill.appendChild(h('div', { 
+          className: 'pill-chev-wrap', 
+          innerHTML: SVGS.CHEV, 
+          role: 'button',
+          'aria-label': 'Toggle tone menu',
+          tabindex: '0',
+          onclick: (e) => { e.stopPropagation(); callbacks.onTogglePopover(); } 
+        }));
         container.appendChild(pill);
         container.onclick = (e) => { if (!e.target.closest('.pill-chev-wrap')) callbacks.onClick(); };
+        container.onkeydown = (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); callbacks.onClick(); } };
         container.onmouseenter = () => callbacks.onHover(true);
         container.onmouseleave = () => callbacks.onHover(false);
         container.dataset.tonalInited = "true";
@@ -254,12 +269,25 @@ window.Tonal = (function () {
       else if (state === 'done') text.textContent = 'Undo';
     },
     createPopover: (activeId, onSelect, onClose, onMouseEnter, onMouseLeave) => {
-      // Logic: Explicitly avoid automatic closing on mouseleave to satisfy "Sticky" mandate for click-to-open components.
-      const pop = h('div', { className: 'popover', onmouseenter: onMouseEnter, onmouseleave: onMouseLeave });
+      const pop = h('div', { 
+        className: 'popover', 
+        role: 'listbox',
+        'aria-label': 'Select tone level',
+        onmouseenter: onMouseEnter, 
+        onmouseleave: onMouseLeave 
+      });
       TONES.forEach((tone, idx) => {
-        const item = h('div', { className: `pop-item ${tone.id === activeId ? 'pop-item--active' : ''}`, onclick: (e) => { e.stopPropagation(); onSelect(tone.id); } },
+        const isActive = tone.id === activeId;
+        const item = h('div', { 
+          className: `pop-item ${isActive ? 'pop-item--active' : ''}`, 
+          role: 'option',
+          'aria-selected': isActive ? 'true' : 'false',
+          tabindex: isActive ? '-1' : '0',
+          onclick: (e) => { e.stopPropagation(); onSelect(tone.id); },
+          onkeydown: (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSelect(tone.id); } }
+        },
           h('span', { className: 'pop-label', textContent: tone.l }),
-          tone.id === activeId ? h('span', { className: 'pop-check', textContent: '✓' }) : h('span', { className: 'pop-sub', textContent: tone.s })
+          isActive ? h('span', { className: 'pop-check', textContent: '✓' }) : h('span', { className: 'pop-sub', textContent: tone.s })
         );
         pop.appendChild(item);
         if (idx < TONES.length - 1) pop.appendChild(h('div', { className: 'pop-divider' }));
@@ -268,10 +296,23 @@ window.Tonal = (function () {
       return pop;
     },
     createDecodeFloat: (onDecode) => {
-      return h('div', { className: 'decode-float', onclick: onDecode }, h('span', { textContent: 'Decode' }));
+      return h('div', { 
+        className: 'decode-float', 
+        role: 'button',
+        'aria-label': 'Decode selected text',
+        tabindex: '0',
+        onclick: onDecode,
+        onkeydown: (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onDecode(); } }
+      }, h('span', { textContent: 'Decode' }));
     },
     createDecodeCard: (text, onClose) => {
-      const copyBtn = h('div', { className: 'decode-card-copy', innerHTML: `${SVGS.COPY} Copy` });
+      const copyBtn = h('div', { 
+        className: 'decode-card-copy', 
+        role: 'button',
+        'aria-label': 'Copy decoded text',
+        tabindex: '0',
+        innerHTML: `${SVGS.COPY} Copy` 
+      });
       copyBtn.onclick = () => {
         navigator.clipboard.writeText(text);
         copyBtn.className = 'decode-card-copy decode-card-copy--copied';
@@ -281,11 +322,20 @@ window.Tonal = (function () {
           copyBtn.innerHTML = `${SVGS.COPY} Copy`;
         }, 2000);
       };
-
-      return h('div', { className: 'decode-card' },
+      copyBtn.onkeydown = (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); copyBtn.click(); } };
+ 
+      return h('div', { className: 'decode-card', role: 'dialog', 'aria-label': 'Decoding results' },
         h('div', { className: 'decode-card-header' },
           h('span', { className: 'decode-card-tag', textContent: 'Plain English' }),
-          h('div', { className: 'decode-card-close', innerHTML: SVGS.CLOSE, onclick: onClose })
+          h('div', { 
+            className: 'decode-card-close', 
+            role: 'button',
+            'aria-label': 'Close card',
+            tabindex: '0',
+            innerHTML: SVGS.CLOSE, 
+            onclick: onClose,
+            onkeydown: (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClose(); } }
+          })
         ),
         h('div', { className: 'decode-card-body' },
           h('div', { className: 'decode-card-text', textContent: text }),
