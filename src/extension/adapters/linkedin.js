@@ -11,7 +11,10 @@ window.TonalAdapters.linkedin = {
   matches: (url) => url.includes('linkedin.com'),
 
   selectors: [
-    '.msg-form__contenteditable', // Main Chat
+    '.msg-form__contenteditable',
+    '.msg-form__contenteditable [contenteditable="true"]',
+    '[role="textbox"][aria-label*="message"]',
+    '.ql-editor[contenteditable="true"]',
     '.comments-comment-box__content-editable', // Feed Comments
     '.feed-shared-update-v2__comment-box [contenteditable="true"]', // Alternative Feed Comments
     '.msg-form__textarea' // Fallback for some InMail variations

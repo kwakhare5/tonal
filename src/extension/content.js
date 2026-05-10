@@ -1,9 +1,13 @@
 /**
- * TONAL CONTENT ORCHESTRATOR v5.5.0
+ * TONAL CONTENT ORCHESTRATOR
  * Zero Bloat | Production-Hardened
  */
 
 (function () {
+  // CONTEXT GUARD: If the extension was updated/reloaded, the context is invalidated.
+  // We must stop execution to prevent "Extension context invalidated" errors.
+  if (!chrome.runtime?.id) return;
+
   const UI = window.Tonal;
   const ADAPTERS = window.TonalAdapters;
   const SHADOW_ID = 'tonal-root';
@@ -16,6 +20,18 @@
     MAGNET_PULL_PILL: 0.25,
     ANIM_DURATION_MS: 300
   };
+
+  /**
+   * Returns a storage key based on the current platform.
+   */
+  function getPlatformKey() {
+    const url = window.location.href;
+    if (url.includes('slack.com')) return 'tonal_tone_slack';
+    if (url.includes('linkedin.com')) return 'tonal_tone_linkedin';
+    if (url.includes('whatsapp.com')) return 'tonal_tone_whatsapp';
+    if (url.includes('mail.google.com')) return 'tonal_tone_gmail';
+    return 'tonal_tone_default';
+  }
 
   class TonalInjector {
     constructor() {
@@ -45,6 +61,9 @@
 
       // Magnetic Pull Engine
       document.addEventListener('mousemove', (e) => this.handleMagneticPull(e));
+
+      // Re-scan on click (Fallback for SPAs)
+      document.addEventListener('click', () => this.initScan(), { passive: true });
 
       // Ensure layout stays synced on window changes
       const onSync = () => this.requestPositionUpdate();
@@ -189,6 +208,7 @@
      */
     async callAI(text, mode, toneLevel = 'workChat') {
       return new Promise((resolve, reject) => {
+        if (!chrome.runtime?.id) return reject('Extension reloaded. Please refresh the page.');
         chrome.runtime.sendMessage({
           type: mode === 'decode' ? "TONESHIFT_DECODE" : "TONESHIFT_CONVERT",
           text, toneLevel
@@ -205,49 +225,64 @@
     showDecodeCard(resultText, rect) {
       if (this.decodeUI.card) this.decodeUI.card.remove();
 
-      this.decodeUI.card = UI.createDecodeCard(resultText, () => {
-        this.decodeUI.card.classList.remove('decode-card--active');
-        setTimeout(() => { if (this.decodeUI.card) this.decodeUI.card.remove(); this.decodeUI.card = null; }, 200);
-      });
-
-      const safeRect = this.getSafeRect(rect);
+      // 1. Setup dimensions and viewport constants
       const cardWidth = 288;
-
-      // 1. Initial Positioning (Below Selection)
-      let left = safeRect.left + (safeRect.width / 2) - (cardWidth / 2);
-      let top = safeRect.top + safeRect.height + 12;
-
-      // 2. Viewport Guarding Logic
+      const safeHeight = 420; // Matches CSS max-height for collision check
       const vH = window.innerHeight;
       const vW = window.innerWidth;
       const sY = window.scrollY;
 
-      // Use a shadow element to measure height if possible, or use a safe estimate
-      const cardHeightEstimate = 240;
+      const safeRect = this.getSafeRect(rect);
+      let left = safeRect.left + (safeRect.width / 2) - (cardWidth / 2);
+      let top = safeRect.top + safeRect.height + 12;
 
-      // Check Bottom Collision (WhatsApp Input Bar Zone)
-      if (rect.top + rect.height + cardHeightEstimate > vH + sY - 20) {
-        // FLIP: Try showing above the selection
-        top = safeRect.top - cardHeightEstimate - 12;
+      // 2. Instant Proactive Collision Logic
+      const bottomLimit = sY + vH - 24;
+      const topLimit = sY + 12;
 
-        // Check Top Collision (Very long message or selection at top)
-        if (top < 10) {
-          // FAIL-SAFE: If it doesn't fit above OR below, anchor to screen center
-          top = (vH / 2) - (cardHeightEstimate / 2);
-          left = (vW / 2) - (cardWidth / 2);
-          this.decodeUI.card.style.position = 'fixed'; // Lock to viewport
+      // If appearing below would cut the card off...
+      if (top + safeHeight > bottomLimit) {
+        // Try appearing ABOVE the selection
+        const aboveTop = safeRect.top - safeHeight - 12;
+        if (aboveTop > topLimit) {
+          top = aboveTop;
+        } else {
+          // If it fits nowhere relative to selection, anchor to fixed screen center
+          this.decodeUI.card = UI.createDecodeCard(resultText, () => this.dismissDecodeCard());
+          this.decodeUI.card.style.position = 'fixed';
+          Object.assign(this.decodeUI.card.style, {
+            left: '50%',
+            top: '50%',
+            transform: 'translate(-50%, -50%)',
+            display: 'block'
+          });
+          this.getShadow().appendChild(this.decodeUI.card);
+          requestAnimationFrame(() => this.decodeUI.card.classList.add('decode-card--active'));
+          return;
         }
       }
 
+      // 3. Horizontal Safety Guard
+      left = Math.max(12, Math.min(left, vW - cardWidth - 12));
+
+      // 4. Create and Render instantly at final coordinates
+      this.decodeUI.card = UI.createDecodeCard(resultText, () => this.dismissDecodeCard());
       Object.assign(this.decodeUI.card.style, {
-        position: this.decodeUI.card.style.position || 'absolute',
-        left: `${Math.max(12, Math.min(left, vW - cardWidth - 12))}px`,
+        position: 'absolute',
+        left: `${left}px`,
         top: `${top}px`,
         display: 'block'
       });
 
       this.getShadow().appendChild(this.decodeUI.card);
       requestAnimationFrame(() => this.decodeUI.card.classList.add('decode-card--active'));
+    }
+
+    dismissDecodeCard() {
+      if (!this.decodeUI.card) return;
+      this.decodeUI.card.classList.remove('decode-card--active');
+      const node = this.decodeUI.card;
+      setTimeout(() => { if (node) node.remove(); if (this.decodeUI.card === node) this.decodeUI.card = null; }, 200);
     }
 
     /**
@@ -279,28 +314,43 @@
      * Sets up the MutationObserver to scan for new inputs as the user scrolls.
      */
     init() {
-      const scan = () => {
-        const adapter = ADAPTERS.manager.getAdapter();
-        if (!adapter) return;
-
-        document.querySelectorAll(adapter.selectors.join(',')).forEach(el => {
-          if (el.dataset.tonal || !adapter.isValid(el)) return;
-          el.dataset.tonal = "v5";
-          this.register(el, adapter);
-        });
-      };
-
-      let scanTimeout;
       this.observer = new MutationObserver((m) => {
         if (m.some(x => x.addedNodes.length)) {
-          if (scanTimeout) clearTimeout(scanTimeout);
-          scanTimeout = setTimeout(scan, CONFIG.DEBOUNCE_SCAN);
+          this.initScan();
         }
       });
       this.observer.observe(document.body, { childList: true, subtree: true });
 
-      scan(); // Initial scan
+      this.initScan(); // Initial scan
       UI.injectFonts();
+    }
+
+    /**
+     * Scans the page for valid text inputs, including those inside Shadow DOMs.
+     */
+    initScan() {
+      if (this._scanTimeout) clearTimeout(this._scanTimeout);
+      this._scanTimeout = setTimeout(() => {
+        const adapter = ADAPTERS.manager.getAdapter();
+        if (!adapter || adapter.id === 'none') return;
+
+        // Recursive scanner for Shadow DOM support with performance filtering
+        const scanNode = (root) => {
+          // 1. Direct hit on current root
+          root.querySelectorAll(adapter.selectors.join(',')).forEach(el => {
+            if (el.dataset.tonal || !adapter.isValid(el)) return;
+            el.dataset.tonal = "v5";
+            this.register(el, adapter);
+          });
+
+          // 2. Selective Shadow Root diving (ignore scripts, styles, and SVGs)
+          root.querySelectorAll('div, section, main, footer, header, aside, [role]').forEach(el => {
+            if (el.shadowRoot) scanNode(el.shadowRoot);
+          });
+        };
+
+        scanNode(document);
+      }, CONFIG.DEBOUNCE_SCAN);
     }
 
     /**
@@ -347,12 +397,22 @@
       this.resizeObserver.observe(input);
 
       // Initial state load
-      const key = this.getPlatformKey();
+      const key = getPlatformKey();
       chrome.storage.sync.get(key, (res) => {
         if (res[key]) entry.tone = res[key];
         this.render(input);
         this.requestPositionUpdate();
       });
+
+      // Handle text changes: close popover and reset 'Done' state
+      input.addEventListener('input', () => {
+        if (entry.state === 'done') entry.state = 'rest';
+        if (entry.popover) {
+          entry.popover = false;
+          entry.state = 'rest';
+        }
+        this.render(input);
+      }, { passive: true });
     }
 
     /**
@@ -415,8 +475,11 @@
               entry.tone = t;
               entry.popover = false;
               entry.state = entry.isMouseOver ? 'expanded' : 'rest';
-              chrome.storage.sync.set({ [this.getPlatformKey()]: t });
+              chrome.storage.sync.set({ [getPlatformKey()]: t });
               this.render(entry.input);
+              
+              // SMARTER UX: One-Touch Conversion
+              this.convert(entry.input);
             },
             () => { // onClose
               entry.popover = false;
@@ -465,21 +528,27 @@
      */
     async convert(input) {
       const entry = this.registry.get(input);
-      const text = entry.adapter.getValue(input);
-      if (!text || text.length < 2) return UI.showToast(this.getShadow(), 'Type more first', 'error');
+      const currentText = entry.adapter.getValue(input);
+      if (!currentText || currentText.length < 2) return UI.showToast(this.getShadow(), 'Type something first', 'error');
 
-      entry.originalText = text;
+      // SMARTER LOGIC: Always convert from the original draft to preserve quality
+      if (entry.state !== 'done') {
+        entry.originalText = currentText;
+      }
+      const sourceText = entry.originalText || currentText;
+
       entry.state = 'loading';
       this.render(input);
 
       try {
-        const res = await this.callAI(text, 'convert', entry.tone);
+        const res = await this.callAI(sourceText, 'convert', entry.tone);
         entry.adapter.insertText(input, res, input.isContentEditable);
         entry.state = 'done';
-        UI.showToast(this.getShadow(), 'Done!');
+        UI.showToast(this.getShadow(), 'Converted');
       } catch (err) {
         entry.state = 'error';
-        UI.showToast(this.getShadow(), 'AI Busy', 'error');
+        const msg = err.message === 'Failed to fetch' ? 'Check your internet' : 'Couldn\'t rewrite this';
+        UI.showToast(this.getShadow(), msg, 'error');
       }
       this.render(input);
     }
@@ -529,19 +598,10 @@
         entry.wrap.style.left = `${safeRect.left + safeRect.width - off.x}px`;
       }
     }
-
-    /**
-     * Returns a storage key based on the current platform.
-     */
-    getPlatformKey() {
-      const url = window.location.href;
-      if (url.includes('slack.com')) return 'tonal_tone_slack';
-      if (url.includes('linkedin.com')) return 'tonal_tone_linkedin';
-      if (url.includes('whatsapp.com')) return 'tonal_tone_whatsapp';
-      if (url.includes('mail.google.com')) return 'tonal_tone_gmail';
-      return 'tonal_tone_default';
-    }
   }
 
-  if (window.Tonal) window.tonalInjector = new TonalInjector();
+  if (window.Tonal) {
+    window.tonalInjector = new TonalInjector();
+    console.info('%c Tonal Elite %c Active on ' + window.location.host, 'background: #000; color: #fff; padding: 2px 5px; border-radius: 3px;', 'color: #888;');
+  }
 })();

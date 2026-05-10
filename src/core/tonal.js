@@ -1,5 +1,5 @@
 /**
- * TONAL MASTER ENGINE v5.5.0
+ * TONAL MASTER ENGINE
  * Verbatim Decode UI | Smart Persistence | Nuclear Isolation
  */
 
@@ -152,7 +152,8 @@ window.Tonal = (function () {
     .decode-card {
       position: absolute; width: 288px; background: var(--white) !important;
       border-radius: var(--r-lg); border: 1px solid var(--gray-7);
-      box-shadow: var(--sh-lg); overflow: hidden; pointer-events: auto;
+      box-shadow: var(--sh-lg); pointer-events: auto;
+      max-height: 420px; display: flex; flex-direction: column;
       opacity: 0; transform: translateY(20px);
       transition: all 0.2s var(--spring); z-index: 2147483647;
     }
@@ -162,8 +163,8 @@ window.Tonal = (function () {
     .decode-card-tag { font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--gray-4); }
     .decode-card-close { width: 18px; height: 18px; background: var(--gray-8); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--gray-4); cursor: pointer; }
     
-    .decode-card-body { padding: 14px; }
-    .decode-card-text { font-size: 14px; color: var(--black); line-height: 1.55; margin-bottom: 14px; }
+    .decode-card-body { padding: 14px; overflow-y: auto; flex: 1; }
+    .decode-card-text { font-size: 14px; color: var(--black); line-height: 1.55; margin-bottom: 14px; overflow-wrap: anywhere; }
     
     .decode-card-copy {
       display: inline-flex; align-items: center; justify-content: center; gap: 6px;
@@ -176,13 +177,15 @@ window.Tonal = (function () {
 
     /* ── TOAST ──────────────────────────────────────────────────── */
     .toast {
-      position: fixed; left: 50%; bottom: 32px; transform: translateX(-50%) translateY(20px);
+      position: fixed; left: 50%; bottom: 32px; transform: translateX(-50%) translateY(24px);
       display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px;
       border-radius: var(--r-pill); font-size: 12px; font-weight: 600;
-      background: var(--black); box-shadow: var(--sh-md);
-      opacity: 0; pointer-events: none; transition: all 0.2s var(--spring); z-index: 2147483647;
+      background: var(--black); box-shadow: var(--sh-lg);
+      opacity: 0; pointer-events: none; transition: transform 0.2s var(--spring), opacity 0.2s var(--spring); 
+      z-index: 2147483647;
     }
     .toast--active { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .toast--exit { opacity: 0; transform: translateX(-50%) translateY(-12px); transition: all 0.3s ease; }
     
     .toast--success { color: var(--green); }
     .toast--error   { color: var(--red); }
@@ -193,7 +196,7 @@ window.Tonal = (function () {
     .toast-dot--success { background: var(--green); }
     .toast-dot--error   { background: var(--red); }
     .toast-dot--warn    { background: var(--orange); }
-    .toast-dot--info    { background: #8888ff; }
+    .toast-dot--info    { background: #FFFFFF; }
   `;
 
   const TONES = [
@@ -293,8 +296,16 @@ window.Tonal = (function () {
     showToast: (root, msg, type = 'success') => {
       const toast = h('div', { className: `toast toast--${type}` }, h('div', { className: `toast-dot toast-dot--${type}` }), h('span', { textContent: msg }));
       root.appendChild(toast);
-      requestAnimationFrame(() => toast.classList.add('toast--active'));
-      setTimeout(() => { toast.classList.remove('toast--active'); setTimeout(() => toast.remove(), 200); }, 2500);
+      // Trigger entrance
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => toast.classList.add('toast--active'));
+      });
+      // Trigger exit
+      setTimeout(() => { 
+        toast.classList.remove('toast--active'); 
+        toast.classList.add('toast--exit');
+        setTimeout(() => toast.remove(), 300); 
+      }, 3000);
     }
   };
 })();

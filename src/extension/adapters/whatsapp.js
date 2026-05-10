@@ -11,14 +11,16 @@ window.TonalAdapters.whatsapp = {
   matches: (url) => url.includes('whatsapp.com'),
 
   selectors: [
-    '#main [contenteditable="true"]', // Main chat bubble
-    '[data-tab="10"]', // Specific data attribute for WhatsApp input
-    'footer [contenteditable="true"]' // Container-based fallback
+    '#main [contenteditable="true"]',
+    '#main [role="textbox"]',
+    '[data-tab="10"]',
+    'footer [contenteditable="true"]',
+    '.lexical-rich-text-input [contenteditable="true"]'
   ],
 
   isValid(el) {
-    const isInMain = el.closest('#main') || el.closest('footer');
-    const isSmall = el.offsetHeight < 30;
+    const isInMain = el.closest('#main') || el.closest('footer') || el.closest('[role="main"]');
+    const isSmall = el.offsetHeight < 20 && el.offsetWidth < 50; 
     return isInMain && !isSmall;
   },
 

@@ -11,10 +11,12 @@ window.TonalAdapters.slack = {
   matches: (url) => url.includes('slack.com'),
 
   selectors: [
-    '.ql-editor[contenteditable="true"]', // Main Slack Quill editor
-    '[data-qa="reply_container"] .ql-editor', // Thread sidebar
-    '[data-qa="message_editor"] .ql-editor', // Editing messages
-    '[aria-label*="Message"]' // Generic fallback for message areas
+    '.ql-editor[contenteditable="true"]',
+    '[data-qa="reply_container"] .ql-editor',
+    '[data-qa="message_editor"] .ql-editor',
+    '[aria-label*="Message"]',
+    '.c-wysiwyg_container [contenteditable="true"]',
+    '.p-message_input_field [contenteditable="true"]'
   ],
 
   isValid(el) {

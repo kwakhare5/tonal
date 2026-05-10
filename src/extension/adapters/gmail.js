@@ -11,9 +11,11 @@ window.TonalAdapters.gmail = {
   matches: (url) => url.includes('mail.google.com'),
 
   selectors: [
-    '[role="textbox"][aria-label*="Message"]', // Compose body
-    '.editable[contenteditable="true"]', // Reply area
-    '.Am.Al.editable' // Class-based fallback for classic UI
+    '[role="textbox"][aria-label*="Message"]', 
+    '.editable[contenteditable="true"]',
+    '.Am.Al.editable',
+    '[aria-label*="Reply"] [contenteditable="true"]',
+    '.dL .editable'
   ],
 
   isValid(el) {
