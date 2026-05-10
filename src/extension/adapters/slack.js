@@ -11,9 +11,9 @@ window.TonalAdapters.slack = {
   matches: (url) => url.includes('slack.com'),
 
   selectors: [
-    '.ql-editor[contenteditable="true"]',
-    '[data-qa="reply_container"] .ql-editor',
-    '[data-qa="message_editor"] .ql-editor',
+    '.ql-editor[contenteditable="true"]', // Legacy Quill
+    '.lexical-editor [contenteditable="true"]', // Modern Lexical
+    '[data-lexical-editor="true"]', // Lexical Root
     '[aria-label*="Message"]',
     '.c-wysiwyg_container [contenteditable="true"]',
     '.p-message_input_field [contenteditable="true"]'
@@ -21,8 +21,9 @@ window.TonalAdapters.slack = {
 
   isValid(el) {
     const label = (el.getAttribute('aria-label') || '').toLowerCase();
-    if (label.includes('jump to') || label.includes('search')) return false;
-    return label.includes('message') || el.closest('.p-message_input');
+    const role = (el.getAttribute('role') || '').toLowerCase();
+    if (label.includes('jump to') || label.includes('search') || role === 'combobox') return false;
+    return label.includes('message') || el.closest('.p-message_input') || el.classList.contains('lexical-editor');
   },
 
   getOffsets(el) {

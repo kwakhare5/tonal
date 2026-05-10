@@ -12,14 +12,23 @@ window.TonalAdapters.default = {
 
   selectors: [
     '[contenteditable="true"]',
-    'textarea'
+    'textarea',
+    '[role="textbox"]',
+    '[role="message"]',
+    '.editable'
   ],
 
   isValid(el) {
-    // Basic heuristic: not a search bar and tall enough
-    const text = (el.getAttribute('aria-label') || el.placeholder || el.id || '').toLowerCase();
-    const isSearch = text.includes('search') || text.includes('query');
-    return !isSearch && el.offsetHeight > 30;
+    // Structural Fingerprinting: Identify message fields vs simple inputs
+    const rect = el.getBoundingClientRect();
+    if (rect.height < 32 || rect.width < 100) return false;
+    
+    const label = (el.getAttribute('aria-label') || el.placeholder || el.id || '').toLowerCase();
+    const isSearch = label.includes('search') || label.includes('filter') || label.includes('query');
+    if (isSearch) return false;
+
+    // Must be editable and visible
+    return el.offsetHeight > 0 && (el.contentEditable === 'true' || el.tagName === 'TEXTAREA' || el.getAttribute('role') === 'textbox');
   },
 
   getOffsets(el) {

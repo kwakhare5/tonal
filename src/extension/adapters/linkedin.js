@@ -50,25 +50,30 @@ window.TonalAdapters.linkedin = {
     // LinkedIn specific: trigger an input event for React
     el.dispatchEvent(new Event('input', { bubbles: true }));
 
-    // Cursor Anchor: Force restore position after React render
-    setTimeout(() => {
+    // Cursor Anchor: Robust Multi-Tick restoration for Draft.js stability
+    const restore = (attempts = 0) => {
+      if (attempts > 5) return; // Guard
+      
       el.focus();
       try {
+        const selection = window.getSelection();
         const newRange = document.createRange();
         const textNode = el.firstChild || el;
-        const finalPos = Math.min(offset, (textNode.length || textNode.textContent?.length || 0));
+        
+        // Ensure we target a valid text offset in the current DOM state
+        const maxLen = textNode.nodeType === 3 ? textNode.length : (textNode.textContent || "").length;
+        const finalPos = Math.min(offset, maxLen);
+        
         newRange.setStart(textNode, finalPos);
         newRange.collapse(true);
         selection.removeAllRanges();
         selection.addRange(newRange);
       } catch (e) {
-        // Fallback to end of text if node structure changed
-        const range = document.createRange();
-        range.selectNodeContents(el);
-        range.collapse(false);
-        selection.removeAllRanges();
-        selection.addRange(range);
+        // If DOM changed, wait for next tick and try again
+        setTimeout(() => restore(attempts + 1), 20);
       }
-    }, 10);
+    };
+
+    setTimeout(() => restore(), 30);
   }
 };
