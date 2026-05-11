@@ -38,6 +38,7 @@
       document.addEventListener('selectionchange', () => this.handleSelection());
       document.addEventListener('mousemove', (e) => this.handleMagneticPull(e));
       document.addEventListener('click', () => this.initScan(), { passive: true });
+      document.addEventListener('focusin', () => this.initScan(), { passive: true });
 
       const onSync = () => this.requestPositionUpdate();
       window.addEventListener('resize', onSync, { passive: true });
@@ -216,11 +217,16 @@
     init() {
       this.observer = new MutationObserver(() => this.initScan());
       this.observer.observe(document.body, { childList: true, subtree: true });
+      
+      // The Heartbeat Watchdog: Catches elements that expand post-render
+      setInterval(() => this.initScan(), 1500);
+      
       this.initScan();
       UI.injectFonts();
     }
 
     initScan() {
+      if (!chrome.runtime?.id) return;
       if (this._scanTimeout) clearTimeout(this._scanTimeout);
       this._scanTimeout = setTimeout(() => {
         const adapter = ADAPTERS.manager.getAdapter();
@@ -305,10 +311,10 @@
           entry.isMouseOver = hover;
           if (hover) {
             if (entry.hoverTimer) clearTimeout(entry.hoverTimer);
-            if (!entry.popover) { entry.state = 'expanded'; this.render(input); }
+            if (!entry.popover && entry.state !== 'done') { entry.state = 'expanded'; this.render(input); }
           } else {
             entry.hoverTimer = setTimeout(() => {
-              if (!entry.isMouseOver && !entry.isMouseOverPopover && !entry.popover) {
+              if (!entry.isMouseOver && !entry.isMouseOverPopover && !entry.popover && entry.state !== 'done' && entry.state !== 'loading') {
                 entry.state = 'rest';
                 this.render(input);
               }
@@ -325,9 +331,10 @@
           entry.popNode = UI.createPopover(entry.tone, (t) => {
             entry.tone = t; entry.popover = false;
             entry.state = entry.isMouseOver ? 'expanded' : 'rest';
-            chrome.storage.sync.set({ [getPlatformKey()]: t });
+            chrome.storage.sync.set({ [TONE_KEY]: t });
             this.render(entry.input);
             this.convert(entry.input);
+
           }, () => {
             entry.popover = false; entry.state = entry.isMouseOver ? 'expanded' : 'rest';
             this.render(entry.input);
@@ -337,7 +344,7 @@
           }, () => {
             entry.isMouseOverPopover = false;
             entry.hoverTimer = setTimeout(() => {
-              if (!entry.isMouseOver && !entry.isMouseOverPopover && !entry.popover) {
+              if (!entry.isMouseOver && !entry.isMouseOverPopover && !entry.popover && entry.state !== 'done' && entry.state !== 'loading') {
                 entry.state = 'rest'; this.render(entry.input);
               }
             }, 250);
@@ -400,73 +407,20 @@
 
     updatePositions() {
       this.registry.forEach((entry, input) => {
-        if (!input.isConnected) { entry.wrap.remove(); this.registry.delete(input); return; }
+        if (!input.isConnected) {
+          if (this.resizeObserver) this.resizeObserver.unobserve(input);
+          entry.wrap.remove();
+          this.registry.delete(input);
+          return;
+        }
         const rect = input.getBoundingClientRect();
         if (rect.width === 0 || rect.height === 0) { entry.wrap.style.display = 'none'; return; }
         entry.wrap.style.display = 'block';
         const safe = this.getSafeRect(rect);
         const offsets = entry.adapter.getOffsets ? entry.adapter.getOffsets(input) : { x: 8, y: 8 };
-        const collisionOffset = this.checkCollision(input);
-        entry.wrap.style.left = `${safe.left + safe.width - offsets.x - collisionOffset}px`;
+        entry.wrap.style.left = `${safe.left + safe.width - offsets.x}px`;
         entry.wrap.style.top = `${safe.top + safe.height - offsets.y}px`;
       });
-    }
-
-    checkCollision(input) {
-      // ELITE COLLISION ENGINE: Aggressive detection of Grammarly and other floating widgets
-      
-      const grammarlyHosts = document.querySelectorAll('grammarly-extension-element, grammarly-desktop-integration, [data-grammarly-part="button"], .grammarly-control, .gr_');
-      const iRect = input.getBoundingClientRect();
-      let collisionOffset = 0;
-
-      for (let el of grammarlyHosts) {
-        let gRect = el.getBoundingClientRect();
-
-        // If the host is 0x0, probe its Shadow Root for the actual floating button
-        if ((gRect.width === 0 || gRect.height === 0) && el.shadowRoot) {
-          // Find any visible element inside the shadow root
-          const innerElements = el.shadowRoot.querySelectorAll('*');
-          for (const inner of innerElements) {
-            const innerRect = inner.getBoundingClientRect();
-            if (innerRect.width > 10 && innerRect.height > 10 && innerRect.width < 100) {
-              gRect = innerRect;
-              break;
-            }
-          }
-        }
-
-        // Broad overlap check: Is the widget in the bottom right corner of the input?
-        const isOverlapping = (
-          gRect.right > iRect.right - 80 && 
-          gRect.left < iRect.right + 20 &&
-          gRect.bottom > iRect.bottom - 80 &&
-          gRect.top < iRect.bottom + 20
-        );
-
-        if (isOverlapping) {
-          collisionOffset = 48; // Clear the teal icon completely
-          break;
-        }
-      }
-
-      if (collisionOffset > 0) return collisionOffset;
-
-      // Aggressive fallback: Check siblings for unidentified floating widgets
-      const parent = input.parentElement;
-      if (parent) {
-        const widgets = Array.from(parent.children).filter(s => s !== input && s.tagName !== 'STYLE' && s.tagName !== 'SCRIPT');
-        for (const w of widgets) {
-           const wRect = w.getBoundingClientRect();
-           // If sibling is a small floating square/circle near the bottom right
-           if (wRect.width > 0 && wRect.width < 60 && wRect.height > 0 && wRect.height < 60) {
-             if (wRect.right > iRect.right - 40 && wRect.bottom > iRect.bottom - 40) {
-               return 36;
-             }
-           }
-        }
-      }
-
-      return 0;
     }
 
 

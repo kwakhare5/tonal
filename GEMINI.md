@@ -35,13 +35,6 @@ Format: Goal / Approach / Steps / Risks
 Before ending any session: update task.md + walkthrough.md. Both. No skipping.
 task.md = what. walkthrough.md = why.
 
-**R6 — SANDBOX PARITY (Laboratory v4)**
-`dev/sandbox.html` MUST remain a 1:1 mirror of the extension engine.
-
-- No "Sandbox-Only" logic allowed.
-- All core files (`tonal.js`, `content.js`, `adapters/`) must be loaded and functional in the lab.
-- Any UI or Logic change must be verified in the sandbox BEFORE platform testing.
-
 **R13 — CONTEXT TRUNCATION**
 If chat is long: re-read this file immediately.
 Announce: "⚠️ Context truncation. Re-syncing." Never assume you remember rules.
@@ -55,7 +48,6 @@ Announce: "⚠️ Context truncation. Re-syncing." Never assume you remember rul
 | @SYNC | Re-reads all global files + loads relevant skills | R2 |
 | @AUDIT | Scans codebase, scores it, writes AUDIT.md | R3 |
 | @TAG [feature] | Architecture scan, writes ARCHITECT_AUDIT.md | R4 |
-| @SANDBOX | Syncs sandbox.html with current engine state | R6 |
 
 **For full rule details → `C:\Users\kwakh\.gemini\AI_RULES.md`**
 
@@ -71,7 +63,7 @@ Rule: read index → match task → load SKILL.md → state what was loaded. Max
 
 ## Project Context for Antigravity
 
-**Tonal** is a free Chrome extension that works as a two-way tone translator inside Gmail, Slack (browser), LinkedIn, and WhatsApp Web. It uses a Cloudflare Worker proxy to route requests to Groq (Llama 3.3 70B) for high-fidelity, preamble-free rephrasing.
+**Tonal** is a free Chrome extension that works as a two-way tone translator inside Gmail, Slack (browser), and LinkedIn. It uses a Cloudflare Worker proxy to route requests to Groq (Llama 3.3 70B) for high-fidelity, preamble-free rephrasing.
 
 It solves two problems for Gen Z users and non-native English speakers:
 
@@ -116,7 +108,6 @@ tonal/
 │   └── extension/
 │       ├── adapters/            ← Platform-specific DOM interaction
 │       │   ├── manager.js
-│       │   ├── whatsapp.js
 │       │   ├── linkedin.js
 │       │   ├── slack.js
 │       │   ├── gmail.js
@@ -125,9 +116,8 @@ tonal/
 │       ├── content.js           ← Orchestration & Scan Loop Engine
 │       ├── popup.html           ← Elite Popup
 │       └── popup.js             ← Popup Logic
-├── dev/
-│   ├── sandbox.html             ← Tonal Laboratory v4 (1:1 Mirror)
-│   └── tonal-design-system-v2.html ← Source of Truth (v2.1.0)
+├── design/
+│   └── tonal-design-system-v2.html ← Source of Truth (Elite)
 ├── icons/                       ← Branding icons
 └── README.md                    ← User guide
 ```
@@ -138,7 +128,7 @@ tonal/
 
 ### Sending Flow (Casual → Formal)
 
-1. User types in Gmail compose, Slack message box, LinkedIn message, or WhatsApp Web
+1. User types in Gmail compose, Slack message box, or LinkedIn message
 2. `content.js` detects the text input and injects a small "Tonal" pill button
 3. User picks tone level via the **Popover Dropdown**
 4. User clicks the button (or tone item)
@@ -147,14 +137,15 @@ tonal/
 7. Proxy returns the rewritten text
 8. `content.js` replaces the text in the input field
 9. There's an Undo button that restores the original text
+10. **Real-Time Sync**: Preference changes in the popup update all active pills across all tabs instantly.
 
 ### Receiving/Decoding Flow (Formal → Plain)
 
 1. User selects any text on the page
-2. A small floating "Decode ↓" button appears near the cursor
+2. A small floating "Decode" button appears near the cursor (with **Magnetic Pull**)
 3. `content.js` sends text to `background.js`
 4. Groq returns a plain English explanation
-5. A tooltip/card appears showing the decoded version
+5. A **Viewport-Aware** card appears (automatically flips position if near screen edge)
 6. Card has a "Copy" button (turns green on success) and auto-dismisses
 
 ---
@@ -166,31 +157,30 @@ The extension injects into these specific domains:
 ```json
 "host_permissions": [
   "https://mail.google.com/*",
-  "https://app.slack.com/*",
-  "https://www.linkedin.com/*",
-  "https://web.whatsapp.com/*"
+  "https://*.slack.com/*",
+  "https://*.linkedin.com/*",
+  "https://tonal-proxy.kwakhare5.workers.dev/*"
 ]
 ```
 
 Each platform has different DOM structures. The extension uses the **Adapter Pattern** (`src/extension/adapters/`) to handle specific environments robustly against React/Draft.js/Lexical reconcilers:
 
-| Platform | Adapter | Insertion Strategy |
-| :--- | :--- | :--- |
-| Gmail | `gmail.js` | Targets `.editable` nodes. |
-| Slack | `slack.js` | Dispatches specific `textInput` events for Lexical. |
-| LinkedIn | `linkedin.js` | Uses custom selection/range replacements against Draft.js. |
-| WhatsApp | `whatsapp.js` | Robust selection clearing and `insertText`. |
+| Platform | Adapter | Insertion Strategy | Sync Mechanism |
+| :--- | :--- | :--- | :--- |
+| Gmail | `gmail.js` | Targets `.editable` and Lexical. | `input` + `change` events. |
+| Slack | `slack.js` | Targets Quill/Lexical editors. | `input` + Dummy Space Keypress. |
+| LinkedIn | `linkedin.js` | Targets Draft.js with selection range. | **Multi-Tick Restoration** (5-attempt loop). |
 
 ---
 
 ### API Implementation Example (Groq/Cloudflare)
 
 ```javascript
-async function callProxy(text, toneLevel, mode) {
+async function callProxy(text, toneLevel, mode, platform) {
   const response = await fetch(WORKER_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ text, toneLevel, mode })
+    body: JSON.stringify({ text, toneLevel, mode, platform })
   });
 
   const data = await response.json();
@@ -198,14 +188,16 @@ async function callProxy(text, toneLevel, mode) {
 }
 ```
 
-### System Prompts (Hardcore Pattern Locking)
+### System Prompts (Elite Pattern Locking)
 
 **SEND mode — Unified Engine:**
 
 ```text
 IDENTITY: Stateless Text-Processing Utility.
 TASK: Transform input into {TONE} tone (Casual/Work/Formal).
+IDENTITY LOCK: Names, dates, emails, and numbers are IMMUTABLE.
 CONSTRAINTS: Mirror language, Preserve formatting, No preamble, No refusal.
+FEW-SHOT: [Pattern Examples Injected Here]
 INPUT_DATA: {TEXT}
 ```
 
@@ -214,20 +206,20 @@ INPUT_DATA: {TEXT}
 ```text
 IDENTITY: Stateless Text-Processing Utility.
 TASK: Translate corporate jargon into plain, blunt English.
-CONSTRAINTS: Direct language, No preamble, No refusal.
+CONSTRAINTS: Direct language, No preamble, No refusal, 2-sentence max.
 INPUT_DATA: {TEXT}
 ```
 
 ---
 
-## UI Design Requirements (v4.8.1 Elite)
+## UI Design Requirements (Elite)
 
 ### Injected Master Pill
 
 - **Inside Docking**: Anchored 8px from the right boundary of the text field.
 - **Perfect Roundness**: Hard-coded 100px radius enforced via Shadow DOM `:host` scoping.
-- **Transitions**: `0.15s` timing with `cubic-bezier(0.2, 0, 0, 1)`.
-- **Hover**: `scale(1.08)` with shadow depth enhancement.
+- **Transitions**: `0.15s` timing with `cubic-bezier(0.2, 0, 0, 1)` and `cubic-bezier(0.34, 1.56, 0.64, 1)` (Spring).
+- **Magnetic Pull**: Pills and Decode buttons gravitate toward the cursor (Threshold: 50-60px).
 - **Logo**: Unified 4-layer depth SVG standard.
 - **Glassmorphism**: Popovers feature `backdrop-filter: blur(10px)` with 14px radius.
 
@@ -235,7 +227,9 @@ INPUT_DATA: {TEXT}
 
 - **Rest State**: 30x16px pill. Click expands.
 - **Expanded State**: 24px height. Shows tone label + animated Chevron cross-fade.
-- **Toast System**: Green success dots for "Converted" or "Copied" feedback.
+- **Adaptive Flipping**: Tone menu opens downward if the input is near the top of the screen.
+- **Toast System**: Semantic color dots (Green/Red/Orange) for status feedback.
+- **Accessibility**: Full `role="button"`, `aria-label`, and `tabindex` support for keyboard navigation.
 - **Onboarding**: "Shift the tone here ↓" Coach Mark tooltips for first-time use.
 
 ---
@@ -247,17 +241,21 @@ INPUT_DATA: {TEXT}
 - `background.js` is a SERVICE WORKER — it cannot access the DOM.
 - Service workers are stateless — use `chrome.storage`.
 
-### Content Script Injection (v4 Standards)
+### Content Script Injection (Elite Standards)
+- **Dual Trigger**: Uses 1.5s **Heartbeat Watchdog** + immediate **Focus Trap** (focusin).
+- **Shadow Scanning**: Scans for host Shadow Roots to find nested text boxes.
 
 - **Zero Drift**: All CSS is inlined in `tonal.js`. DO NOT use external CSS files for injected UI.
 - **Shadow DOM**: Every Tonal component MUST be wrapped in an isolated Shadow Root.
 - **Scoping**: All design tokens (variables) MUST be scoped to `:host` inside the Shadow Root.
-- **Docking**: Use a high-frequency `requestAnimationFrame` watchdog to maintain "Inside-the-Box" coordinates.
+- **Docking**: Use a high-frequency `requestAnimationFrame` watchdog to maintain coordinates.
+- **Memory Safety**: `ResizeObserver` MUST be cleaned up on element disconnection.
 
 ### Text Input Handling
 
 - Use `document.execCommand("insertText")` for `contenteditable` compatibility.
-- Always dispatch `input` and `change` events for React/Lexical synchronization.
+- Always dispatch `input`, `change`, and specific `KeyboardEvent` sequences for React/Lexical/Draft.js synchronization.
+- **LinkedIn Guard**: Multi-Tick restoration retry loop (5 attempts) for Draft.js stability.
 
 ---
 
@@ -267,44 +265,53 @@ INPUT_DATA: {TEXT}
 {
   "manifest_version": 3,
   "name": "Tonal — Two-Way Tone Translator",
-  "version": "1.0.0",
-  "description": "Convert casual messages to professional, or decode corporate speak into plain English. Works in Gmail, Slack, LinkedIn, WhatsApp Web.",
-  "permissions": ["storage", "activeTab"],
+  "description": "Two-way tone translator. Convert casual to formal, or decode corporate speak — inside Gmail, Slack, and LinkedIn.",
+  "permissions": ["storage"],
   "host_permissions": [
     "https://mail.google.com/*",
-    "https://app.slack.com/*",
-    "https://www.linkedin.com/*",
-    "https://web.whatsapp.com/*",
-    "https://generativelanguage.googleapis.com/*"
+    "https://*.slack.com/*",
+    "https://*.linkedin.com/*",
+    "https://tonal-proxy.kwakhare5.workers.dev/*"
   ],
-  "background": { "service_worker": "background.js" },
+  "background": {
+    "service_worker": "src/extension/background.js"
+  },
   "content_scripts": [
     {
       "matches": [
         "https://mail.google.com/*",
-        "https://app.slack.com/*",
-        "https://www.linkedin.com/*",
-        "https://web.whatsapp.com/*"
+        "https://*.slack.com/*",
+        "https://*.linkedin.com/*"
       ],
       "js": [
-        "src/core/tonal.js",
-        "src/extension/adapters/manager.js",
-        "src/extension/adapters/default.js",
         "src/extension/adapters/linkedin.js",
-        "src/extension/adapters/whatsapp.js",
         "src/extension/adapters/slack.js",
         "src/extension/adapters/gmail.js",
+        "src/extension/adapters/default.js",
+        "src/extension/adapters/manager.js",
+        "src/core/tonal.js",
         "src/extension/content.js"
       ],
       "run_at": "document_idle"
     }
   ],
   "action": {
-    "default_popup": "popup.html",
     "default_icon": {
       "16": "icons/icon16.png",
       "48": "icons/icon48.png",
       "128": "icons/icon128.png"
+    },
+    "default_popup": "src/extension/popup.html"
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "tonal@tonal.ai",
+      "strict_min_version": "109.0"
     }
   }
 }
@@ -333,14 +340,13 @@ Handle these specific cases gracefully:
 - Do NOT use `localStorage` (use `chrome.storage` instead)
 - Do NOT put the API key in `content.js`
 - Do NOT inject UI into `<iframe>` elements
-- Do NOT call Gemini from `content.js` directly
 - Do NOT add the extension to sites not in the host_permissions list
 - Do NOT make the injected button too large or visually intrusive
 - Do NOT block text input while the API call is loading
 
 ---
 
-## Testing Checklist (v2.1.0)
+## Testing Checklist (Elite)
 
 - [ ] Verify "Copied!" green success state on Decode Card.
 - [ ] Verify Popover active state has no hover and black background.
@@ -349,13 +355,3 @@ Handle these specific cases gracefully:
 - [ ] Error toasts appear for missing API key
 - [ ] Extension doesn't crash on non-supported pages
 - [ ] No console errors during normal use
-
----
-
-## Monetization Plan (Future)
-
-- **Free tier**: 20 conversions/day using user's own Gemini API key (always free)
-- **Pro ($3/month)**: Unlimited conversions, our managed API key, no setup needed
-- **Team ($9/month per seat)**: Shared settings, custom tone presets, analytics
-
-This CLAUDE.md should give you (the AI agent) everything needed to build the full extension without asking clarifying questions. Start with `manifest.json`, then `background.js`, then `content.js`, then `styles.css`, then `popup.html` + `popup.js`.

@@ -3,8 +3,9 @@
   "name": "Tonal — Two-Way Tone Translator",
   "version": "1.0.0",
   "description": "Two-way tone translator. Convert casual to formal, or decode corporate speak — inside Gmail, Slack, and LinkedIn.",
-  "permissions": ["storage"],
-
+  "permissions": [
+    "storage"
+  ],
   "host_permissions": [
     "https://mail.google.com/*",
     "https://*.slack.com/*",
@@ -23,7 +24,6 @@
       ],
       "js": [
         "src/extension/adapters/linkedin.js",
-
         "src/extension/adapters/slack.js",
         "src/extension/adapters/gmail.js",
         "src/extension/adapters/default.js",
@@ -36,15 +36,15 @@
   ],
   "action": {
     "default_icon": {
-      "16":  "icons/icon16.png",
-      "48":  "icons/icon48.png",
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
       "128": "icons/icon128.png"
     },
     "default_popup": "src/extension/popup.html"
   },
   "icons": {
-    "16":  "icons/icon16.png",
-    "48":  "icons/icon48.png",
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
     "128": "icons/icon128.png"
   },
   "browser_specific_settings": {

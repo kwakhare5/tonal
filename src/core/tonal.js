@@ -1,6 +1,6 @@
 /**
- * TONAL MASTER ENGINE
- * Verbatim Decode UI | Smart Persistence | Nuclear Isolation
+ * Tonal Design System
+ * Tokens, Icons, and Components
  */
 
 window.Tonal = (function () {
@@ -38,18 +38,18 @@ window.Tonal = (function () {
       --red:      #FF3B30;
       --orange:   #FF9F0A;
 
-      --font: 'DM Sans', -apple-system, sans-serif;
-      --mono: 'DM Mono', 'SF Mono', monospace;
+      --font: 'Geist', 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --mono: 'Geist Mono', 'DM Mono', 'SF Mono', ui-monospace, monospace;
 
       --r-sm:  6px;
       --r-md:  10px;
       --r-lg:  14px;
       --r-pill:100px;
 
-      --sh-xs: 0 1px 2px rgba(0,0,0,.06);
-      --sh-sm: 0 4px 12px rgba(0,0,0,.06);
-      --sh-md: 0 12px 32px rgba(0,0,0,.08);
-      --sh-lg: 0 24px 64px rgba(0,0,0,.12);
+      --sh-xs: 0 1px 2px rgba(0, 0, 0, .06);
+      --sh-sm: 0 1px 4px rgba(0, 0, 0, .06), 0 4px 12px rgba(0, 0, 0, .06);
+      --sh-md: 0 2px 8px rgba(0, 0, 0, .06), 0 12px 32px rgba(0, 0, 0, .08);
+      --sh-lg: 0 8px 24px rgba(0, 0, 0, .1), 0 24px 64px rgba(0, 0, 0, .12);
 
       --ease-out:    cubic-bezier(0.2, 0, 0, 1);
       --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -76,42 +76,38 @@ window.Tonal = (function () {
 
     .t-pill {
       display: inline-flex; align-items: center; justify-content: center;
-      background: var(--black); border-radius: var(--r-pill);
+      background: var(--black); border-radius: var(--r-pill); cursor: pointer;
       box-shadow: 0 1px 3px rgba(0,0,0,.16);
-      border: 1px solid rgba(255,255,255,0.05); /* Adaptive Glow */
-      transition: transform 0.2s var(--ease-out), background 0.15s, box-shadow 0.15s, width 0.2s var(--spring), height 0.2s var(--spring);
+      transition: transform 0.15s var(--ease-out), background 0.15s, box-shadow 0.15s, width 0.2s var(--spring), height 0.2s var(--spring);
       pointer-events: none; overflow: hidden;
     }
     .t-pill--rest     { width: 30px; height: 16px; }
-    .t-hitbox:hover .t-pill--rest { transform: scale(1.08); box-shadow: 0 2px 8px rgba(0,0,0,.2); border-color: rgba(255,255,255,0.15); }
+    .t-hitbox:hover .t-pill--rest { transform: scale(1.08); box-shadow: 0 2px 8px rgba(0,0,0,.2); }
     
     .t-pill--expanded { height: 24px; padding: 0 9px; gap: 5px; }
     .t-pill--loading  { height: 24px; padding: 0 9px; opacity: .55; }
-    .t-pill--done     { height: 24px; padding: 0 10px; background: var(--green); box-shadow: 0 1px 4px rgba(52,199,89,.35); border-color: rgba(255,255,255,0.1); }
+    .t-pill--done     { height: 24px; padding: 0 10px; background: var(--green); box-shadow: 0 1px 4px rgba(52,199,89,.35); }
     .t-pill--error    { height: 24px; padding: 0 9px; background: var(--red); }
 
-    .pill-icon-rest { display: none; }
-    .t-pill--rest .pill-icon-rest { display: block; }
-    .pill-icon-active { display: none; }
-    .t-pill:not(.t-pill--rest) .pill-icon-active { display: block; }
-    .pill-text { font-size: 10px; font-weight: 700; color: #FFFFFF !important; white-space: nowrap; display: none; }
-    .t-pill:not(.t-pill--rest) .pill-text { display: block; }
+    .pill-icon { display: flex; align-items: center; justify-content: center; }
+    .pill-icon svg { display: block; }
+    .pill-text { font-size: 10px; font-weight: 700; color: var(--white); letter-spacing: 0.01em; white-space: nowrap; font-family: var(--font); line-height: 1; }
+    
+    .pill-dots::after { content: ''; display: inline-block; animation: dots 1.2s steps(4) infinite; }
+    @keyframes dots { 0% { content: ''; } 25% { content: '.'; } 50% { content: '..'; } 75% { content: '...'; } }
 
     .pill-chev-wrap { 
-      display: none; align-items: center; justify-content: center; 
+      display: flex; align-items: center; justify-content: center; 
       width: 14px; height: 24px; transition: transform 0.15s var(--spring); 
       cursor: pointer; pointer-events: auto; position: relative;
     }
-    .t-pill--expanded .pill-chev-wrap { display: flex; }
     .pill-chev-wrap::after { content: ''; position: absolute; top: 0; bottom: 0; left: -5px; right: -9px; z-index: 1; }
-    .t-pill--popover-open .pill-chev-wrap { transform: rotate(180deg); }
 
     /* ── POPOVER ────────────────────────────────────────────────── */
     .popover {
       position: absolute; bottom: calc(100% + 8px); right: 0;
-      width: 192px; background: rgba(255, 255, 255, 0.8) !important;
-      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-      border-radius: var(--r-lg); border: 1px solid rgba(255,255,255,0.1); /* Adaptive Glow */
+      width: 192px; background: var(--white);
+      border-radius: var(--r-lg); border: 1px solid var(--gray-7);
       box-shadow: var(--sh-lg); overflow: hidden;
       opacity: 0; transform: translateY(12px) scale(0.95);
       transition: all 0.2s var(--spring); pointer-events: none;
@@ -119,42 +115,32 @@ window.Tonal = (function () {
       transform-origin: bottom right;
     }
     .popover--active { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
-    .pop-item { display: flex; align-items: center; justify-content: space-between; padding: 11px 15px; cursor: pointer; transition: background .08s; background: rgba(255,255,255,0.01) !important; width: 100%; }
-    .pop-item:not(.pop-item--active):hover { background: rgba(0,0,0,0.04) !important; }
-    .pop-item--active { background: #0F0F0F !important; cursor: default; }
-    .pop-label { font-size: 13px; font-weight: 500; color: #0F0F0F !important; }
-    .pop-item--active .pop-label { color: #FFFFFF !important; }
-    .pop-sub   { font-size: 10px; color: #AEAEB2 !important; }
-    .pop-item--active .pop-sub { color: #E5E5EA !important; }
-    .pop-check { font-size: 11px; color: #0F0F0F !important; font-weight: 600; }
-    .pop-item--active .pop-check { color: #FFFFFF !important; }
-    .pop-divider { height: 1px; background: #F2F2F7; }
+    .pop-item { display: flex; align-items: center; justify-content: space-between; padding: 11px 15px; cursor: pointer; transition: background .08s; width: 100%; }
+    .pop-item:not(.pop-item--active):hover { background: var(--gray-9); }
+    .pop-item--active { background: var(--black); cursor: default; }
+    .pop-label { font-size: 13px; font-weight: 500; color: var(--black); }
+    .pop-item--active .pop-label, .pop-item--active .pop-sub, .pop-item--active .pop-check { color: var(--white); }
+    .pop-sub   { font-size: 10px; color: var(--gray-5); }
+    .pop-check { font-size: 11px; color: var(--black); font-weight: 600; }
+    .pop-divider { height: 1px; background: var(--gray-8); }
 
     /* ── DECODE FLOW ────────────────────────────────────────────── */
     .decode-float {
       position: absolute; display: inline-flex; align-items: center; justify-content: center;
-      background: var(--black); color: var(--white) !important;
+      background: var(--black); color: var(--white);
       border-radius: var(--r-pill); padding: 6px 13px;
       font-size: 11px; font-weight: 600; cursor: pointer;
-      box-shadow: 0 2px 8px rgba(0,0,0,.18); pointer-events: auto;
-      opacity: 0; transform: scale(0.8) translateY(10px);
+      box-shadow: 0 2px 8px rgba(0,0,0,.18); letter-spacing: .01em;
+      pointer-events: auto; opacity: 0; transform: scale(0.8) translateY(10px);
       transition: all 0.2s var(--spring), width 0.2s var(--spring); z-index: 2147483647;
       min-width: 68px;
     }
     .decode-float--active { opacity: 1; transform: scale(1) translateY(0); }
-    .decode-float--loading { cursor: default; pointer-events: none; }
-    .decode-float--loading span { animation: t-pulse 1.4s ease-in-out infinite; }
-
-    @keyframes t-pulse {
-      0% { opacity: 1; }
-      50% { opacity: 0.5; }
-      100% { opacity: 1; }
-    }
 
     .decode-card {
-      position: absolute; width: 288px; background: var(--white) !important;
+      position: absolute; width: 288px; background: var(--white);
       border-radius: var(--r-lg); border: 1px solid var(--gray-7);
-      box-shadow: var(--sh-lg); pointer-events: auto;
+      box-shadow: var(--sh-lg); overflow: hidden; pointer-events: auto;
       max-height: 420px; display: flex; flex-direction: column;
       opacity: 0; transform: translateY(20px);
       transition: all 0.2s var(--spring); z-index: 2147483647;
@@ -180,9 +166,9 @@ window.Tonal = (function () {
     /* ── TOAST ──────────────────────────────────────────────────── */
     .toast {
       position: fixed; left: 50%; bottom: 32px; transform: translateX(-50%) translateY(24px);
-      display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px;
+      display: inline-flex; align-items: center; gap: 7px; padding: 9px 16px;
       border-radius: var(--r-pill); font-size: 12px; font-weight: 600;
-      background: var(--black); box-shadow: var(--sh-lg);
+      background: var(--black); box-shadow: 0 2px 12px rgba(0,0,0,.15); white-space: nowrap;
       opacity: 0; pointer-events: none; transition: transform 0.2s var(--spring), opacity 0.2s var(--spring); 
       z-index: 2147483647;
     }
@@ -231,7 +217,11 @@ window.Tonal = (function () {
     injectFonts: () => {
       if (document.getElementById('tonal-fonts')) return;
       const link = h('link', { id: 'tonal-fonts', rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap' });
+      const geist = h('link', { id: 'tonal-geist', rel: 'stylesheet', href: 'https://cdn.jsdelivr.net/npm/geist@latest/dist/fonts/geist-sans/style.css' });
+      const geistMono = h('link', { id: 'tonal-geist-mono', rel: 'stylesheet', href: 'https://cdn.jsdelivr.net/npm/geist@latest/dist/fonts/geist-mono/style.css' });
       document.head.appendChild(link);
+      document.head.appendChild(geist);
+      document.head.appendChild(geistMono);
     },
     renderPill: (container, state, toneId, isPopoverOpen, callbacks) => {
       const tone = TONES.find(t => t.id === toneId) || TONES[1];
@@ -242,19 +232,8 @@ window.Tonal = (function () {
         container.setAttribute('tabindex', '0');
         
         const pill = h('div', { className: 't-pill' });
-        pill.appendChild(h('div', { className: 'pill-icon-rest', innerHTML: SVGS.LOGO }));
-        pill.appendChild(h('div', { className: 'pill-icon-active', innerHTML: SVGS.LOGO }));
-        pill.appendChild(h('span', { className: 'pill-text' }));
-
-        pill.appendChild(h('div', { 
-          className: 'pill-chev-wrap', 
-          innerHTML: SVGS.CHEV, 
-          role: 'button',
-          'aria-label': 'Toggle tone menu',
-          tabindex: '0',
-          onclick: (e) => { e.stopPropagation(); callbacks.onTogglePopover(); } 
-        }));
         container.appendChild(pill);
+        
         container.onclick = (e) => { if (!e.target.closest('.pill-chev-wrap')) callbacks.onClick(); };
         container.onkeydown = (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); callbacks.onClick(); } };
         container.onmouseenter = () => callbacks.onHover(true);
@@ -262,11 +241,24 @@ window.Tonal = (function () {
         container.dataset.tonalInited = "true";
       }
       const pill = container.querySelector('.t-pill');
-      const text = container.querySelector('.pill-text');
+      if (!pill) return;
+      
       pill.className = `t-pill t-pill--${state} ${isPopoverOpen ? 't-pill--popover-open' : ''}`;
-      if (state === 'expanded') text.textContent = tone.l;
-      else if (state === 'loading') text.textContent = 'Converting...';
-      else if (state === 'done') text.textContent = 'Undo';
+      
+      if (state === 'rest' || state === 'hover') {
+        pill.innerHTML = `<div class="pill-icon">${SVGS.LOGO}</div>`;
+      } else if (state === 'expanded') {
+        const chevTransform = isPopoverOpen ? 'transform: rotate(180deg);' : '';
+        pill.innerHTML = `<div class="pill-icon">${SVGS.LOGO}</div><span class="pill-text">${tone.l}</span><div class="pill-chev-wrap" tabindex="0" role="button" aria-label="Toggle tone menu" style="${chevTransform}">${SVGS.CHEV}</div>`;
+        const chev = pill.querySelector('.pill-chev-wrap');
+        if (chev) chev.onclick = (e) => { e.stopPropagation(); callbacks.onTogglePopover(); };
+      } else if (state === 'loading') {
+        pill.innerHTML = `<span class="pill-text">Converting<span class="pill-dots"></span></span>`;
+      } else if (state === 'done') {
+        pill.innerHTML = `<span class="pill-text">Undo</span>`;
+      } else if (state === 'error') {
+        pill.innerHTML = `<div class="pill-icon"><svg width="10" height="10" viewBox="0 0 14 14" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 1l12 12M13 1L1 13"/></svg></div><span class="pill-text" style="margin-left: 4px;">Retry</span>`;
+      }
     },
     createPopover: (activeId, onSelect, onClose, onMouseEnter, onMouseLeave) => {
       const pop = h('div', { 

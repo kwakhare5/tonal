@@ -1,6 +1,5 @@
 /**
- * TONAL BACKGROUND GATEWAY v5.0.0
- * AI Proxy Orchestrator | Error Resilience
+ * Tonal Background Service Worker
  */
 
 const CONFIG = {

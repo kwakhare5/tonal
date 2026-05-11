@@ -47,5 +47,9 @@ window.TonalAdapters.gmail = {
     input.focus();
     document.execCommand('selectAll', false, null);
     document.execCommand('insertText', false, text);
+    
+    // Sync with Gmail's Lexical/React state
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    input.dispatchEvent(new Event('change', { bubbles: true }));
   }
 };
