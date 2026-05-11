@@ -1,67 +1,143 @@
+<!-- ╔══════════════════════════════════════════════════════════════════╗
+     ║               TONAL — ELITE README DOCUMENTATION                ║
+     ║   Precision Tone Translation for Gmail, Slack, & LinkedIn      ║
+     ╚══════════════════════════════════════════════════════════════════╝ -->
+
 <div align="center">
 
-<!-- PROJECT LOGO / BANNER -->
-<img src="https://raw.githubusercontent.com/kwakhare5/Tonal/main/icons/icon128.png" alt="Tonal banner" width="128"/>
+  <img src="https://raw.githubusercontent.com/kwakhare5/Tonal/main/icons/icon128.png" alt="Tonal Logo" width="128"/>
 
-<br/>
-<br/>
+  <br/>
+  <br/>
 
-# Tonal
+  # Tonal
 
-### Precision tone translation for Gmail, Slack, and LinkedIn
+  ### *The two-way tone translator for elite professional communication.*
+  <!-- e.g. "An automated momentum swing-trading bot for NSE/BSE — zero manual work." -->
 
-<br/>
+  <br/>
 
-<!-- BADGES -->
-[![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?style=flat-square&logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
-[![License: MIT](https://img.shields.io/badge/License-MIT-black?style=flat-square)](LICENSE)
-[![Manifest V3](https://img.shields.io/badge/Manifest-V3-4285F4?style=flat-square&logo=google-chrome&logoColor=white)](https://developer.chrome.com/docs/extensions/mv3/intro/)
-[![Geist Type](https://img.shields.io/badge/Typography-Geist-000000?style=flat-square)](https://vercel.com/font)
-[![Last Commit](https://img.shields.io/github/last-commit/kwakhare5/Tonal?style=flat-square)](https://github.com/kwakhare5/Tonal/commits/main)
+  <!-- ── STATUS BADGES ── -->
+  ![Version](https://img.shields.io/badge/version-1.0.0-blue?style=for-the-badge)
+  ![Last Commit](https://img.shields.io/github/last-commit/kwakhare5/Tonal?style=for-the-badge&color=orange)
+  ![License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge)
+  ![JavaScript](https://img.shields.io/badge/Language-Vanilla_JS-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
+  ![Manifest](https://img.shields.io/badge/Manifest-V3-4285F4?style=for-the-badge&logo=google-chrome&logoColor=white)
+  ![Stars](https://img.shields.io/github/stars/kwakhare5/Tonal?style=for-the-badge&color=yellow)
 
-<br/>
+  <br/>
 
-<!-- QUICK NAVIGATION LINKS -->
-[🚀 Quickstart](#quickstart) · [🏗️ Architecture](#architecture) · [🛡️ Privacy](#privacy--security)
+  <!-- ── QUICK NAVIGATION ── -->
+  <a href="#-about-the-project">About</a> &nbsp;·&nbsp;
+  <a href="#-features">Features</a> &nbsp;·&nbsp;
+  <a href="#-tech-stack">Tech Stack</a> &nbsp;·&nbsp;
+  <a href="#-architecture">Architecture</a> &nbsp;·&nbsp;
+  <a href="#-quickstart">Quickstart</a> &nbsp;·&nbsp;
+  <a href="#-roadmap">Roadmap</a> &nbsp;·&nbsp;
+  <a href="#-privacy--security">Privacy</a> &nbsp;·&nbsp;
+  <a href="#-contributing">Contributing</a> &nbsp;·&nbsp;
+  <a href="#-about-the-author">Author</a>
 
 </div>
 
 ---
 
-## 🧩 What is Tonal?
+## 📌 About the Project
 
-Tonal is a **zero-dependency Chrome extension** acting as a precision translator inside Gmail, Slack, and LinkedIn. It bridges the gap between raw drafts and professional execution.
+**Tonal** is a **zero-dependency Chrome extension** built with **Vanilla JavaScript (Manifest V3)** and **Shadow DOM isolation**.
 
-Built with **Shadow DOM isolation**, it ensures that your professional communication remains visually pristine and functionally stable, regardless of the host platform's complexity.
+It was created to solve the friction of switching between casual drafts and professional execution, as well as the confusion of parsing jargon-heavy messages. Unlike existing solutions that clutter your UI with bloat, Tonal uses a precision, non-intrusive architecture powered by **Groq Llama 3.3 70B** for high-fidelity, preamble-free rephrasing.
+
+> **Why this project?**
+> Most professional friction comes from tone mismatch. Whether you're too blunt in an email or confused by a corporate jargon-bomb, Tonal bridges the gap instantly.
+
+<br/>
 
 ---
 
-## ✅ Core Features
+## ✨ Features
 
-- ✅ **Precision Sending** — Convert casual notes to **Formal Professional** or **Work Chat** instantly.
-- ✅ **Blunt Decoding** — Select jargon-heavy text and click **Decode** for a blunt, plain English explanation.
-- ✅ **Unkillable Pill** — **1.5s Heartbeat Watchdog** ensures Tonal persists through framework re-renders.
-- ✅ **Identity Lock** — AI engine preserves names, dates, and emails as immutable constants.
+| Status | Feature | Description |
+|:---:|---|---|
+| ✅ | **Precision Sending** | Convert casual drafts to Formal Professional or Work Chat instantly. |
+| ✅ | **Blunt Decoding** | Highlight jargon and get a plain English explanation in a magnetic viewport card. |
+| ✅ | **1.5s Watchdog** | A heartbeat loop ensures the UI persists through complex React/Lexical re-renders. |
+| ✅ | **Identity Lock** | AI engine preserves names, dates, emails, and numbers as immutable constants. |
+| ✅ | **Platform Adapters** | Custom DOM synchronization for Gmail, Slack, and LinkedIn to prevent cursor drift. |
+
+<br/>
+
+---
+
+## 🛠️ Tech Stack
+
+<div align="center">
+
+### Core
+![JS](https://skillicons.dev/icons?i=js)
+![HTML](https://skillicons.dev/icons?i=html)
+![CSS](https://skillicons.dev/icons?i=css)
+
+### Infrastructure
+![Cloudflare](https://skillicons.dev/icons?i=cloudflare)
+![GitHub Actions](https://skillicons.dev/icons?i=githubactions)
+
+</div>
+
+<br/>
+
+| Layer | Technology | Purpose |
+|---|---|---|
+| **Framework** | Manifest V3 | Chrome Extension architecture |
+| **Logic** | Vanilla JS | Zero-dependency, lightweight runtime |
+| **Styling** | Shadow DOM CSS | Zero leakage to/from host pages |
+| **AI Engine** | Groq Llama 3.3 | 70B parameter high-fidelity rephrasing |
+| **Proxy** | Cloudflare Workers | Secure, serverless API routing |
+| **Typography** | Geist | Elite, high-status professional font |
+
+<br/>
 
 ---
 
 ## 🏗️ Architecture
 
-Tonal utilizes a stateless, high-performance bridge between your browser and the Groq Llama 3.3 70B engine.
+Tonal uses an **Adapter Pattern** to isolate platform-specific DOM quirks from the core rephrasing logic.
 
-```text
-  ┌──────────────┐      ┌──────────────┐      ┌──────────────┐
-  │   Content    │      │  Background  │      │  Cloudflare  │
-  │   Script     │─────▶│   Worker     │─────▶│    Worker    │
-  │ (Shadow DOM) │      │  (Manifest V3)│     │   (Proxy)    │
-  └──────────────┘      └──────────────┘      └──────────────┘
-                                                     │
-                                             ┌───────▼──────┐
-                                             │  Groq Engine │
-                                             │ (Llama 3.3   │
-                                             │   70B Vers)  │
-                                             └──────────────┘
+```mermaid
+flowchart LR
+    A[Host DOM] <--> B[Platform Adapter]
+    B <--> C[Content Orchestrator]
+    C <--> D[Shadow Root UI]
+    C <--> E[Background Service Worker]
+    E <--> F[Cloudflare Proxy]
+    F <--> G[Groq Llama 3.3]
 ```
+
+<br/>
+
+---
+
+## 📁 Project Structure
+
+```
+Tonal/
+│
+├── manifest.json                # Extension configuration (MV3)
+├── src/
+│   ├── core/
+│   │   └── tonal.js             # Design System tokens & classes
+│   └── extension/
+│       ├── adapters/            # Platform-specific (Gmail/Slack/LinkedIn)
+│       ├── background.js        # Service worker (Proxy handler)
+│       ├── content.js           # Injection & Watchdog engine
+│       └── popup.js             # Settings & preference logic
+│
+├── design/                      # Tonal Design System source
+├── icons/                       # Branding & UI assets
+└── README.md
+```
+
+<br/>
 
 ---
 
@@ -69,120 +145,133 @@ Tonal utilizes a stateless, high-performance bridge between your browser and the
 
 ### Prerequisites
 
-- Chrome Browser
-- Groq API Key
+- **Google Chrome** (or any Chromium-based browser like Brave/Edge)
+- **Developer Mode** enabled in `chrome://extensions/`
 
-### Installation
+<br/>
+
+### Step 1 — Clone the Repository
 
 ```bash
-# 1. Clone the repo
 git clone https://github.com/kwakhare5/Tonal.git
 cd Tonal
-
-# 2. Open Extension Management
-# In Chrome: chrome://extensions/
-
-# 3. Load Unpacked
-# Click 'Load unpacked' and select the Tonal folder.
 ```
 
-### Configuration
+### Step 2 — Load Unpacked
 
-1. Click the **Tonal Icon** in your toolbar.
-2. Enter your **Groq API Key**.
-3. Refresh your Gmail, Slack, or LinkedIn tabs.
+1. Open `chrome://extensions/` in your browser.
+2. Toggle **Developer mode** (top right).
+3. Click **Load unpacked** and select the `Tonal` folder.
+
+### Step 3 — Configure Preferences
+
+1. Click the **Tonal Icon** in your extension bar.
+2. Select your default tone level (Casual, Work, or Formal).
+3. Your settings will sync across all active tabs instantly.
+
+<br/>
 
 ---
 
 ## 📖 Documentation
 
-### Technical Mechanisms
-
-| Feature | Type | Description |
-|-----------|------|-------------|
-| **Heartbeat** | `1.5s` | Watchdog timer ensuring pill presence via `requestAnimationFrame`. |
-| **Sync Loop** | `5-Tick` | Multi-attempt retry logic for stable LinkedIn/Draft.js text replacement. |
-| **Isolation** | `Shadow DOM` | Nuclear-level CSS resets to prevent host site pollution. |
-
 ### Usage Examples
 
-**Sending Mode:**
-Type "hey can u send that doc" -> Click Tonal Pill -> Select **Formal** -> Text becomes "I hope you are well. Could you please send over the document at your earliest convenience?"
+**Example 1 — Sending a Formal Email**
+Type `hey can u send that doc?` in a Gmail compose box. Click the Tonal pill, select **Formal**, and it transforms into:
+> *I hope you are well. Could you please provide the document at your earliest convenience?*
 
-**Decoding Mode:**
-Select "We need to synergize our core competencies" -> Click **Decode** -> Result: "We need to use our skills to get results."
+**Example 2 — Decoding Jargon**
+Highlight text like `synergizing core competencies` and click the **Decode** button. A card appears:
+> *Translation: We need to use our skills together.*
+
+<br/>
 
 ---
 
-## 📁 Project Structure
+## 🧪 Testing
 
-```text
-Tonal/
-│
-├── manifest.json            # Extension Config
-├── src/
-│   ├── core/
-│   │   └── tonal.js         # Design System & UI Components
-│   ├── extension/
-│   │   ├── adapters/        # Platform-specific Logic
-│   │   │   ├── gmail.js     # Lexical/Classic Support
-│   │   │   ├── slack.js     # Quill/Lexical Support
-│   │   │   └── linkedin.js  # Draft.js / Multi-Tick Sync
-│   │   ├── background.js    # Service Worker Proxy
-│   │   └── content.js       # Injection Engine
-│   └── popup.js             # Extension Settings
-│
-├── icons/                   # Branding Assets
-└── README.md
+```bash
+# Tonal is built with Vanilla JS to minimize overhead.
+# Manual verification is performed across:
+- Gmail (Lexical/Classic)
+- Slack (Quill/Lexical)
+- LinkedIn (Draft.js)
 ```
 
+| Environment | Status |
+|---|:---:|
+| Gmail | ✅ |
+| Slack | ✅ |
+| LinkedIn | ✅ |
+| Brave Browser | ✅ |
+
+<br/>
+
 ---
 
-## 🧪 Stability Checklist
+## 🗺️ Roadmap
 
-- [x] **Gmail Integration**: Verified on Lexical and Classic compose boxes.
-- [x] **Slack Compatibility**: Verified on Browser-based Quill/Lexical editors.
-- [x] **LinkedIn Stability**: Multi-Tick restoration logic confirmed.
-- [x] **Zero Drift**: Absolute positioning watchdog confirmed.
-- [x] **Privacy**: 100% Stateless request cycle verified.
+### v1.0 — Foundation *(current)*
+- [x] Absolute Shadow DOM isolation
+- [x] 1.5s Heartbeat Watchdog for persistence
+- [x] Gmail, Slack, and LinkedIn adapters
+
+
+<br/>
 
 ---
 
 ## 🤝 Contributing
 
-We value **clarity over cleverness**. If you'd like to contribute:
+1. **Fork** the repository
+2. **Create** your feature branch (`git checkout -b feature/amazing-feature`)
+3. **Commit** your changes using [Conventional Commits](https://www.conventionalcommits.org/)
+4. **Push** to the branch (`git push origin feature/amazing-feature`)
+5. **Open a Pull Request**
 
-1. Fork the repo
-2. Create your feature branch (`git checkout -b feat/amazing-feature`)
-3. Commit your changes (`git commit -m 'feat: add amazing feature'`)
-4. Push to the branch (`git push origin feat/amazing-feature`)
-5. Open a Pull Request
+<br/>
 
 ---
 
 ## 🛡️ Privacy & Security
 
-> Tonal operates on a **Stateless** principle.
-> We do not store, log, or train on your messages.
-> Requests are processed in-memory and purged immediately.
+> **Tonal is a stateless utility.** No message data is ever stored on our servers. Requests are processed in real-time by Groq Llama 3.3 and discarded immediately. Tonal does not track your browsing history or access data outside of the supported messaging platforms.
+
+<br/>
 
 ---
 
 ## 📄 License
 
-Distributed under the MIT License. See `LICENSE` for more information.
+Distributed under the **MIT License**. See `LICENSE` for the full text.
+
+<br/>
 
 ---
 
-## 👤 Author
+## 👨‍💻 About the Author
 
-**Karan Wakhare**
+<div align="center">
 
-[![GitHub](https://img.shields.io/badge/GitHub-kwakhare5-181717?style=flat-square&logo=github)](https://github.com/kwakhare5)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-0A66C2?style=flat-square&logo=linkedin)](https://linkedin.com/in/karan-wakhare)
+### Karan
+*Full-Stack Engineer · AI Enthusiast*
+
+[![GitHub](https://img.shields.io/badge/GitHub-kwakhare5-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/kwakhare5)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/karanwakhare)
+
+</div>
+
+<br/>
 
 ---
 
 <div align="center">
-  <sub>If this helped you, consider giving it a ⭐ — it means a lot!</sub>
+
+  Made with ❤️ by [Karan](https://github.com/kwakhare5)
+
+  <br/>
+
+  *"First, solve the problem. Then, write the code."*
+
 </div>
