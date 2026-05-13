@@ -121,25 +121,34 @@ const CORS_HEADERS = {
 
 export default {
   async fetch(request, environment) {
-    if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: CORS_HEADERS });
-    if (request.method !== "POST") return json({ success: false, error: "Method not allowed" }, 405);
+    if (request.method === "OPTIONS")
+      return new Response(null, { status: 204, headers: CORS_HEADERS });
+    if (request.method !== "POST")
+      return json({ success: false, error: "Method not allowed" }, 405);
 
     let body;
-    try { body = await request.json(); } catch { return json({ success: false, error: "Invalid JSON" }, 400); }
+    try {
+      body = await request.json();
+    } catch {
+      return json({ success: false, error: "Invalid JSON" }, 400);
+    }
 
     const { text, toneLevel, mode, platform } = body;
-    if (!text || typeof text !== "string" || text.trim().length < 2) return json({ success: false, error: "Text too short" }, 400);
+    if (!text || typeof text !== "string" || text.trim().length < 2)
+      return json({ success: false, error: "Text too short" }, 400);
 
-    const promptKey = mode === "decode" ? "decode" : (toneLevel || "workChat");
+    const promptKey = mode === "decode" ? "decode" : toneLevel || "workChat";
     let systemPrompt = PROMPTS[promptKey] || PROMPTS.workChat;
 
     // Inject Platform Context
     if (platform && mode !== "decode") {
       const contextMap = {
-        slack: "PLATFORM: Slack (Internal Team Chat). Keep it brief, direct, and conversational. No email-style greetings or sign-offs unless present in original.",
-        gmail: "PLATFORM: Gmail (Email). Use professional sentence structure. Maintain standard email courtesy.",
-        linkedin: "PLATFORM: LinkedIn (Professional Networking). Be professional and polished. Respect InMail norms."
-
+        slack:
+          "PLATFORM: Slack (Internal Team Chat). Keep it brief, direct, and conversational. No email-style greetings or sign-offs unless present in original.",
+        gmail:
+          "PLATFORM: Gmail (Email). Use professional sentence structure. Maintain standard email courtesy.",
+        linkedin:
+          "PLATFORM: LinkedIn (Professional Networking). Be professional and polished. Respect InMail norms.",
       };
       const context = contextMap[platform] || "PLATFORM: General Web Input.";
       systemPrompt = `${systemPrompt}\n\n${context}`;
@@ -149,32 +158,47 @@ export default {
       model: "llama-3.3-70b-versatile",
       messages: [
         { role: "system", content: systemPrompt },
-        { role: "user", content: `INPUT: ${text.trim()}` }
+        { role: "user", content: `INPUT: ${text.trim()}` },
       ],
-      temperature: 0.1, 
-      max_tokens: 1000
+      temperature: 0.1,
+      max_tokens: 1000,
     };
 
     if (environment.GROQ_API_KEY) {
       try {
-        const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-          method: "POST",
-          headers: { "Authorization": `Bearer ${environment.GROQ_API_KEY}`, "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        });
+        const response = await fetch(
+          "https://api.groq.com/openai/v1/chat/completions",
+          {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${environment.GROQ_API_KEY}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(payload),
+          },
+        );
         if (response.ok) {
           const data = await response.json();
           let rawText = data.choices?.[0]?.message?.content?.trim() || "";
-          
+
           // Smart Preamble Stripper
           const cleanText = rawText
-            .replace(/^(here is|sure|certainly|revised|converted|output|rewritten|message|result|the|this)[\s\S]*?[:\n]+/i, "") // Strip headers
+            .replace(
+              /^(here is|sure|certainly|revised|converted|output|rewritten|message|result|the|this)[\s\S]*?[:\n]+/i,
+              "",
+            ) // Strip headers
             .replace(/^["']|["']$/g, "") // Strip accidental quotes
             .trim();
-            
-          return json({ success: true, text: cleanText || rawText, provider: "groq" });
+
+          return json({
+            success: true,
+            text: cleanText || rawText,
+            provider: "groq",
+          });
         }
-      } catch (e) { console.error("Groq Failed:", e); }
+      } catch (e) {
+        console.error("Groq Failed:", e);
+      }
     }
 
     return json({ success: false, error: "AI Pipeline failed" }, 502);

@@ -3,9 +3,7 @@
   "name": "Tonal — Two-Way Tone Translator",
   "version": "1.0.0",
   "description": "Two-way tone translator. Convert casual to formal, or decode corporate speak — inside Gmail, Slack, and LinkedIn.",
-  "permissions": [
-    "storage"
-  ],
+  "permissions": ["storage"],
   "host_permissions": [
     "https://mail.google.com/*",
     "https://*.slack.com/*",
