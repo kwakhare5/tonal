@@ -3,44 +3,70 @@
      ║   Precision Tone Translation for Gmail, Slack, & LinkedIn      ║
      ╚══════════════════════════════════════════════════════════════════╝ -->
 
+<!-- ═══════════════════════════ HERO SECTION ═══════════════════════════ -->
+
 <div align="center">
 
   <img src="https://raw.githubusercontent.com/kwakhare5/Tonal/main/icons/icon128.png" alt="Tonal Logo" width="128"/>
 
   <br/>
-  <br/>
 
   # Tonal
 
-  ### *The two-way tone translator for elite professional communication.*
-  <!-- e.g. "An automated momentum swing-trading bot for NSE/BSE — zero manual work." -->
 
+  ### *The two-way tone translator for elite professional communication.*
+
+  <br/>
   <br/>
 
   <!-- ── STATUS BADGES ── -->
+
   ![Version](https://img.shields.io/badge/version-1.0.0-blue?style=for-the-badge)
-  ![Last Commit](https://img.shields.io/github/last-commit/kwakhare5/Tonal?style=for-the-badge&color=orange)
   ![License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge)
+  ![Last Commit](https://img.shields.io/github/last-commit/kwakhare5/Tonal?style=for-the-badge&color=orange)
+  ![Stars](https://img.shields.io/github/stars/kwakhare5/Tonal?style=for-the-badge&color=yellow)
   ![JavaScript](https://img.shields.io/badge/Language-Vanilla_JS-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
   ![Manifest](https://img.shields.io/badge/Manifest-V3-4285F4?style=for-the-badge&logo=google-chrome&logoColor=white)
-  ![Stars](https://img.shields.io/github/stars/kwakhare5/Tonal?style=for-the-badge&color=yellow)
 
   <br/>
 
   <!-- ── QUICK NAVIGATION ── -->
   <a href="#-about-the-project">About</a> &nbsp;·&nbsp;
+  <a href="#🎬-demo">Demo</a> &nbsp;·&nbsp;
   <a href="#-features">Features</a> &nbsp;·&nbsp;
   <a href="#-tech-stack">Tech Stack</a> &nbsp;·&nbsp;
-  <a href="#-architecture">Architecture</a> &nbsp;·&nbsp;
   <a href="#-quickstart">Quickstart</a> &nbsp;·&nbsp;
   <a href="#-roadmap">Roadmap</a> &nbsp;·&nbsp;
-  <a href="#-privacy--security">Privacy</a> &nbsp;·&nbsp;
   <a href="#-contributing">Contributing</a> &nbsp;·&nbsp;
   <a href="#-about-the-author">Author</a>
 
 </div>
 
 ---
+
+<!-- ════════════════════════════ DEMO ════════════════════════════ -->
+
+## 🎬 Demo
+
+<div align="center">
+  <img src="media/demo.gif" alt="Tonal Demo" width="800"/>
+</div>
+
+<br/>
+
+<div align="center">
+
+| 🖥️ Extension | 📹 Platform Support | 📄 Architecture |
+|:---:|:---:|:---:|
+| [Chrome Store](#) | [Gmail / Slack / LinkedIn](#) | [Shadow DOM Isolation](#) |
+
+</div>
+
+<br/>
+
+---
+
+<!-- ════════════════════════════ ABOUT ════════════════════════════ -->
 
 ## 📌 About the Project
 
@@ -55,6 +81,8 @@ It was created to solve the friction of switching between casual drafts and prof
 
 ---
 
+<!-- ════════════════════════════ FEATURES ════════════════════════════ -->
+
 ## ✨ Features
 
 | Status | Feature | Description |
@@ -65,9 +93,12 @@ It was created to solve the friction of switching between casual drafts and prof
 | ✅ | **Identity Lock** | AI engine preserves names, dates, emails, and numbers as immutable constants. |
 | ✅ | **Platform Adapters** | Custom DOM synchronization for Gmail, Slack, and LinkedIn to prevent cursor drift. |
 
+
 <br/>
 
 ---
+
+<!-- ════════════════════════════ TECH STACK ════════════════════════════ -->
 
 ## 🛠️ Tech Stack
 
@@ -88,8 +119,8 @@ It was created to solve the friction of switching between casual drafts and prof
 
 | Layer | Technology | Purpose |
 |---|---|---|
+| **Language** | Vanilla JS | Zero-dependency, lightweight runtime |
 | **Framework** | Manifest V3 | Chrome Extension architecture |
-| **Logic** | Vanilla JS | Zero-dependency, lightweight runtime |
 | **Styling** | Shadow DOM CSS | Zero leakage to/from host pages |
 | **AI Engine** | Groq Llama 3.3 | 70B parameter high-fidelity rephrasing |
 | **Proxy** | Cloudflare Workers | Secure, serverless API routing |
@@ -99,9 +130,9 @@ It was created to solve the friction of switching between casual drafts and prof
 
 ---
 
-## 🏗️ Architecture
+<!-- ════════════════════════════ ARCHITECTURE ════════════════════════════ -->
 
-Tonal uses an **Adapter Pattern** to isolate platform-specific DOM quirks from the core rephrasing logic.
+## 🏗️ Architecture
 
 ```mermaid
 flowchart LR
@@ -116,6 +147,8 @@ flowchart LR
 <br/>
 
 ---
+
+<!-- ════════════════════════════ PROJECT STRUCTURE ════════════════════════ -->
 
 ## 📁 Project Structure
 
@@ -141,11 +174,15 @@ Tonal/
 
 ---
 
+<!-- ════════════════════════════ QUICKSTART ════════════════════════════ -->
+
 ## 🚀 Quickstart
 
 ### Prerequisites
 
-- **Google Chrome** (or any Chromium-based browser like Brave/Edge)
+Before you begin, make sure you have the following installed:
+
+- **Google Chrome** (or any Chromium-based browser)
 - **Developer Mode** enabled in `chrome://extensions/`
 
 <br/>
@@ -173,42 +210,7 @@ cd Tonal
 
 ---
 
-## 📖 Documentation
-
-### Usage Examples
-
-**Example 1 — Sending a Formal Email**
-Type `hey can u send that doc?` in a Gmail compose box. Click the Tonal pill, select **Formal**, and it transforms into:
-> *I hope you are well. Could you please provide the document at your earliest convenience?*
-
-**Example 2 — Decoding Jargon**
-Highlight text like `synergizing core competencies` and click the **Decode** button. A card appears:
-> *Translation: We need to use our skills together.*
-
-<br/>
-
----
-
-## 🧪 Testing
-
-```bash
-# Tonal is built with Vanilla JS to minimize overhead.
-# Manual verification is performed across:
-- Gmail (Lexical/Classic)
-- Slack (Quill/Lexical)
-- LinkedIn (Draft.js)
-```
-
-| Environment | Status |
-|---|:---:|
-| Gmail | ✅ |
-| Slack | ✅ |
-| LinkedIn | ✅ |
-| Brave Browser | ✅ |
-
-<br/>
-
----
+<!-- ════════════════════════════ ROADMAP ════════════════════════════ -->
 
 ## 🗺️ Roadmap
 
@@ -218,9 +220,12 @@ Highlight text like `synergizing core competencies` and click the **Decode** but
 - [x] Gmail, Slack, and LinkedIn adapters
 
 
+
 <br/>
 
 ---
+
+<!-- ════════════════════════════ CONTRIBUTING ════════════════════════════ -->
 
 ## 🤝 Contributing
 
@@ -234,6 +239,8 @@ Highlight text like `synergizing core competencies` and click the **Decode** but
 
 ---
 
+<!-- ════════════════════════════ DISCLAIMER ════════════════════════════ -->
+
 ## 🛡️ Privacy & Security
 
 > **Tonal is a stateless utility.** No message data is ever stored on our servers. Requests are processed in real-time by Groq Llama 3.3 and discarded immediately. Tonal does not track your browsing history or access data outside of the supported messaging platforms.
@@ -241,6 +248,8 @@ Highlight text like `synergizing core competencies` and click the **Decode** but
 <br/>
 
 ---
+
+<!-- ════════════════════════════ LICENSE ════════════════════════════ -->
 
 ## 📄 License
 
@@ -250,15 +259,33 @@ Distributed under the **MIT License**. See `LICENSE` for the full text.
 
 ---
 
+<!-- ════════════════════════════ ABOUT THE AUTHOR ════════════════════════ -->
+
 ## 👨‍💻 About the Author
 
 <div align="center">
 
-### Karan
-*Full-Stack Engineer · AI Enthusiast*
+### Karan Wakhare
+
+
+</div>
+
+<br/>
+
+---
+
+<!-- ════════════════════════════ LET'S CONNECT ════════════════════════════ -->
+
+## 🌐 Let's Connect
+
+<div align="center">
 
 [![GitHub](https://img.shields.io/badge/GitHub-kwakhare5-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/kwakhare5)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/karanwakhare)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/karanwakhare)
+
+<br/>
+
+![Visitors](https://komarev.com/ghpvc/?username=kwakhare5&label=Profile+Views&color=0e75b6&style=for-the-badge)
 
 </div>
 
@@ -268,10 +295,14 @@ Distributed under the **MIT License**. See `LICENSE` for the full text.
 
 <div align="center">
 
-  Made with ❤️ by [Karan](https://github.com/kwakhare5)
+  Made with ❤️ by [Karan Wakhare](https://github.com/kwakhare5)
 
   <br/>
 
   *"First, solve the problem. Then, write the code."*
+
+  <br/>
+
+  ![Wave](https://raw.githubusercontent.com/mayhemantt/mayhemantt/Update/svg/Bottom.svg)
 
 </div>
