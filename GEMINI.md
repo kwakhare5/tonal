@@ -56,7 +56,7 @@ Announce: "⚠️ Context truncation. Re-syncing." Never assume you remember rul
 ## SKILLS (loaded via @SYNC or on demand)
 
 Index: `C:\Users\kwakh\.gemini\SKILLS_INDEX.md`
-Path: `C:\Users\kwakh\.gemini\antigravity\skills\[skill-folder]\SKILL.md`
+Path: `C:\Users\kwakh\.gemini\config\skills\[skill-folder]\SKILL.md`
 Rule: read index → match task → load SKILL.md → state what was loaded. Max 2 per task.
 
 ---
@@ -355,3 +355,4 @@ Handle these specific cases gracefully:
 - [ ] Error toasts appear for missing API key
 - [ ] Extension doesn't crash on non-supported pages
 - [ ] No console errors during normal use
+

@@ -56,7 +56,7 @@ Announce: "⚠️ Context truncation. Re-syncing." Never assume you remember rul
 ## SKILLS (loaded via @SYNC or on demand)
 
 Index: `C:\Users\kwakh\.gemini\SKILLS_INDEX.md`
-Path: `C:\Users\kwakh\.gemini\antigravity\skills\[skill-folder]\SKILL.md`
+Path: `C:\Users\kwakh\.gemini\config\skills\[skill-folder]\SKILL.md`
 Rule: read index → match task → load SKILL.md → state what was loaded. Max 2 per task.
 
 ---
@@ -361,3 +361,5 @@ Handle these specific cases gracefully:
 - **Free tier**: Standard access.
 
 This CLAUDE.md should give you (the AI agent) everything needed to build the full extension without asking clarifying questions. Start with `manifest.json`, then `background.js`, then `content.js`, then `styles.css`, then `popup.html` + `popup.js`.
+
+
