@@ -1,3 +1,14 @@
+# AGENTS.md
+# Universal agent context file — works with all AI tools (Claude Code, Gemini CLI, Cursor, Zed).
+# This project's full context is in CLAUDE.md (Claude-specific).
+# All global AI rules live in: C:\Users\kwakh\.gemini\config\AGENTS.md
+
+# READ THESE FILES IN ORDER:
+# 1. CLAUDE.md  — project identity, tech stack, design system, mistakes
+# 2. CONTEXT.md — domain glossary, design token index, session log
+# 3. ARCHITECTURE.md — DB schemas, API contracts (if it exists)
+
+# Re-export the content of CLAUDE.md so cross-tool agents get full context:
 # CLAUDE.md â€” Agent Rules + Project Context
 
 ## Overview
@@ -363,32 +374,3 @@ Handle these specific cases gracefully:
 This CLAUDE.md should give you (the AI agent) everything needed to build the full extension without asking clarifying questions. Start with `manifest.json`, then `background.js`, then `content.js`, then `styles.css`, then `popup.html` + `popup.js`.
 
 
-
-
----
-
-## AI COMMAND CHEAT SHEET
-
-| Command     | Action                                                                                           |
-| ----------- | ------------------------------------------------------------------------------------------------ |
-| `@SPEC`     | Interview mode — AI asks ONE question at a time, builds `spec.md` before any code.              |
-| `@PLAN`     | Standard planning mode. Creates `implementation_plan.md` for approval before coding.            |
-| `@TDD`      | Red-Green-Refactor loop. Write failing test first, make it pass, then refactor.                  |
-| `@GRILL`    | Relentless interrogation — one question at a time until design is locked. No code until aligned. |
-| `@DIAGNOSE` | Scientific bug hunt: reproducer ? 3-5 hypotheses ? instrument ? fix only when proven.           |
-| `@ZOOM`     | Architecture mapping — map dependencies, components, data flow before any sweeping change.       |
-| `@AUDIT`    | Code quality scan — dead code, over-engineering, missing design tokens.                          |
-
----
-
-## MISTAKES TO AVOID
-
-_Auto-updated by AI when it hits project-specific errors._
-
-- Do NOT use React, Vue, or any framework — vanilla JS only.
-- Do NOT use npm or build tools — no bundlers.
-- Do NOT use `localStorage` — use `chrome.storage` for all persistence.
-- Do NOT inject UI into `<iframe>` elements.
-- All CSS MUST be inlined in `tonal.js` — no external CSS files for injected UI.
-- Every Tonal component MUST be wrapped in an isolated Shadow Root.
-- All design tokens (CSS variables) MUST be scoped to `:host` inside the Shadow Root.
