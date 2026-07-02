@@ -1,7 +1,6 @@
 ﻿# AGENTS.md
-# Global AI rules auto-loaded from: C:\Users\kwakh\.gemini\config\AGENTS.md
-# Brain: D:\workflow-main\brain\ (MCP obsidian-vault reads at session start)
-# Every response auto-saves to brain/Projects/[project].md
+# Global rules: C:\Users\kwakh\.gemini\config\AGENTS.md
+# Brain: D:\workflow-main\brain\
 
 # CLAUDE.md â€” Agent Rules + Project Context
 
