@@ -1,6 +1,7 @@
 ﻿# AGENTS.md
 # Global rules: C:\Users\kwakh\.gemini\config\AGENTS.md
 # Brain HOME: KARAN PERSONAL (CLAUDE.md, Journal) | WORK (Projects/, Concepts/)
+# Section rules: CURRENT STATE + ACTIVE FEATURES = overwrite | DECISIONS + BUGS = append-only
 
 # CLAUDE.md â€” Agent Rules + Project Context
 
