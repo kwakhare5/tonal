@@ -1,13 +1,13 @@
 ﻿# AGENTS.md
-# Universal agent context file — works with all AI tools (Claude Code, Gemini CLI, Cursor).
-# Global AI rules: C:\Users\kwakh\.gemini\config\AGENTS.md (read automatically by Antigravity)
+# Universal agent context file.
+# Global AI rules: C:\Users\kwakh\.gemini\config\AGENTS.md (auto-loaded by Antigravity)
 # Brain: D:\workflow-main\brain\ (read via MCP obsidian-vault at session start)
 #
 # READ ORDER:
-# 1. Global AGENTS.md (auto-loaded)   → behavior rules, brain read/write, audit loop
-# 2. This file / CLAUDE.md            → project identity, tech stack, design system, mistakes
+# 1. Global AGENTS.md (auto-loaded)   → behavior, brain rules, audit loop
+# 2. This file                        → project identity, tech stack, design system
 # 3. CONTEXT.md                       → domain glossary, session log
-# 4. ARCHITECTURE.md                  → DB schemas, API contracts (if exists)
+# 4. ARCHITECTURE.md                  → schemas, API contracts
 # CLAUDE.md â€” Agent Rules + Project Context
 
 ## Overview
