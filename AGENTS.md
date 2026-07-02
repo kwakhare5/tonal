@@ -1,14 +1,7 @@
-﻿# ============================================================
-# AGENTS.md — Project AI Rules
-# ============================================================
-# GLOBAL RULES (brain, loop engineering, commands, skills):
-#   C:\Users\kwakh\.gemini\config\AGENTS.md
-#
-# BRAIN FILE (full project context — read at session start):
-#   D:\workflow-main\brain\Projects\[ProjectName].md
-#
-# PROJECT-SPECIFIC RULES (below):
-# ============================================================
+﻿# AGENTS.md — Project Rules
+# Global: C:\Users\kwakh\.gemini\config\AGENTS.md
+# Brain: D:\workflow-main\brain\Projects\[Project].md
+
 # Tonal â€” CLAUDE.md
 # Global rules: C:\Users\kwakh\.gemini\config\AGENTS.md (read this first)
 # Brain file: D:\workflow-main\brain\Projects\Tonal.md (full context â€” file map, flows, adapters)
