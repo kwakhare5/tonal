@@ -1,6 +1,6 @@
 ﻿# AGENTS.md
 # Global rules: C:\Users\kwakh\.gemini\config\AGENTS.md
-# Brain: D:\workflow-main\brain\
+# Brain HOME: KARAN PERSONAL (CLAUDE.md, Journal) | WORK (Projects/, Concepts/)
 
 # CLAUDE.md â€” Agent Rules + Project Context
 
