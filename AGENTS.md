@@ -1,13 +1,8 @@
 ﻿# AGENTS.md
-# Universal agent context file.
-# Global AI rules: C:\Users\kwakh\.gemini\config\AGENTS.md (auto-loaded by Antigravity)
-# Brain: D:\workflow-main\brain\ (read via MCP obsidian-vault at session start)
-#
-# READ ORDER:
-# 1. Global AGENTS.md (auto-loaded)   → behavior, brain rules, audit loop
-# 2. This file                        → project identity, tech stack, design system
-# 3. CONTEXT.md                       → domain glossary, session log
-# 4. ARCHITECTURE.md                  → schemas, API contracts
+# Global AI rules auto-loaded from: C:\Users\kwakh\.gemini\config\AGENTS.md
+# Brain: D:\workflow-main\brain\ (MCP obsidian-vault reads at session start)
+# Every response auto-saves to brain/Projects/[project].md
+
 # CLAUDE.md â€” Agent Rules + Project Context
 
 ## Overview
