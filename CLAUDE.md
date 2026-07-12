@@ -1,8 +1,13 @@
-# Tonal — CLAUDE.md
+﻿# Tonal — CLAUDE.md
 # Global rules: C:\Users\kwakh\.gemini\config\AGENTS.md (read this first)
 # Brain file: D:\workflow-main\brain\Projects\Tonal.md (full context — file map, flows, adapters)
 
 ---
+**AI POINTER:** You are an amnesiac. DO NOT `grep` the codebase. At session start you MUST:
+1. Use Obsidian MCP to read `00_System/active_project_context.md`
+2. Read `wiki/hot.md` (recent context cache - ~500 words, fast)
+3. Only then proceed. Do not guess architecture.
+> For DB schema, file tree, and ADRs -> see `ARCHITECTURE.md` (loaded on-demand via @ZOOM).
 
 ## PROJECT RULES (not in the brain or global AGENTS.md)
 
