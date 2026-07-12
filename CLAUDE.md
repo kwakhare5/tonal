@@ -38,3 +38,23 @@
 - Test injection on the actual platform in Chrome (load unpacked)
 - Verify Undo restores original text exactly
 - Verify Decode card is viewport-aware (doesn't clip at screen edges)
+
+---
+
+## 7. PROJECT-SPECIFIC SKILLS
+
+_Skills that only load for THIS project. Put them in .agents/skills/ in the project root._
+
+```
+.agents\
+  skills\
+    my-skill-name\
+      SKILL.md     <- auto-discovered, loads only in this project
+```
+
+**Use .agents/skills/ for:** domain patterns, API quirks, internal conventions unique to this codebase.
+**Use global skills (workflow-main) for:** anything reusable across projects (Supabase, Stripe, Tailwind, etc.)
+
+_Current project-specific skills:_
+<!-- List them here as you add them -->
+<!-- Format: "- `skill-name` - what it does" -->
