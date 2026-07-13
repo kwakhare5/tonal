@@ -79,6 +79,41 @@ const decoderExamples: DecoderExample[] = [
   { id: 4, label: "KPI Needles", sender: "Account Manager", subject: "KPI Needle Movement", text: "We need to move the needle on our key performance indicators.", blunt: "We need to improve our numbers." }
 ];
 
+interface ButtonProps {
+  href?: string;
+  onClick?: (e: React.MouseEvent) => void;
+  variant?: "primary" | "secondary" | "small";
+  children: React.ReactNode;
+  className?: string;
+}
+
+function Button({ href, onClick, variant = "primary", children, className = "" }: ButtonProps) {
+  const baseStyle = "inline-flex items-center justify-center gap-2 font-mono text-[14px] border transition-all duration-200 active:translate-y-0.5 group shrink-0 select-none cursor-pointer";
+  const variants = {
+    primary: "bg-black border-black text-white hover:bg-neutral-900 shadow-sm",
+    secondary: "bg-white border-black text-black hover:bg-neutral-50 shadow-sm",
+    small: "bg-black border-black text-white hover:bg-neutral-900 text-[13px] px-5 py-2.5"
+  };
+  const bulletColor = variant === "secondary" ? "bg-black" : "bg-white";
+  const padding = variant === "small" ? "" : "px-6 py-3.5";
+
+  if (href) {
+    return (
+      <a href={href} className={`${baseStyle} ${variants[variant]} ${padding} ${className}`}>
+        <span className={`w-1.5 h-1.5 rounded-full ${bulletColor} group-hover:scale-125 transition-transform duration-200`}></span>
+        <span>{children}</span>
+      </a>
+    );
+  }
+
+  return (
+    <button onClick={onClick} className={`${baseStyle} ${variants[variant]} ${padding} ${className}`}>
+      <span className={`w-1.5 h-1.5 rounded-full ${bulletColor} group-hover:scale-125 transition-transform duration-200`}></span>
+      <span>{children}</span>
+    </button>
+  );
+}
+
 export default function Home() {
   const [activeTab, setActiveTab] = useState<Platform>("gmail");
   
@@ -268,7 +303,7 @@ export default function Home() {
 
       {/* ── HEADER / FLOATING NAVBAR ── */}
       <header className="fixed top-6 left-4 right-4 z-50 flex justify-center animate-in fade-in slide-in-from-top-4 duration-500">
-        <div className="flex items-center justify-between w-full max-w-[1240px] bg-white border border-[#DBE0EC] px-6 py-3 shadow-[0_8px_30px_rgba(0,0,0,0.03)] rounded-full">
+        <div className="flex items-center justify-between w-full max-w-[1100px] bg-white border border-[#DBE0EC] px-6 py-3 shadow-[0_8px_30px_rgba(0,0,0,0.03)] rounded-full">
           <a href="#" className="flex items-center gap-2.5 font-bold text-lg tracking-tight hover:opacity-90 transition-opacity duration-300">
             <span className="flex items-center">
               <Image src="/icon128.png" alt="Tonal Logo" width={24} height={24} className="rounded-lg shadow-sm" />
@@ -283,40 +318,35 @@ export default function Home() {
             <a href="#journal" className="text-sm font-semibold text-gray-600 hover:text-black transition-colors duration-300">Journal</a>
           </nav>
           
-          <a href="#install" className="flex items-center gap-2 bg-black hover:bg-neutral-800 text-white font-mono text-[14px] px-5 py-2.5 rounded-none font-medium transition-all duration-300 ease-out hover:-translate-y-0.5 active:translate-y-0">
-            <span className="w-1 h-1 rounded-full bg-white"></span>
-            <span>Download Extension</span>
-          </a>
+          <Button href="#install" variant="small">Download Extension</Button>
         </div>
       </header>
 
       {/* ── INTRO SECTION (Figma: padding 140px 20px 0px, gap 56px) ── */}
-      <section className="pt-[140px] pb-20 px-6 flex flex-col items-center gap-[56px] w-full max-w-[1280px] mx-auto">
+      <section className="pt-[140px] pb-20 px-6 flex flex-col items-center gap-[56px] w-full max-w-[1100px] mx-auto">
         {/* Intro content */}
-        <div className="max-w-[1030px] w-full flex flex-col items-center gap-8">
+        <div className="w-full flex flex-col items-center gap-8">
           
           {/* Header text container */}
           <div className="flex flex-col items-center gap-4 w-full">
-            <h1 className="flex flex-col items-center text-center font-normal text-black text-5xl md:text-[80px] leading-[1.0] tracking-[-0.04em] w-full">
+            <h1 className="text-5xl md:text-[80px] font-normal leading-[1.05] tracking-[-0.04em] flex flex-col items-center text-center w-full">
               <span className="font-serif tracking-[-0.04em]">Calibrated communication,</span>
-              <span className="font-sans font-normal tracking-[-0.05em] mt-1">built for business</span>
+              <span className="font-sans tracking-[-0.05em] mt-2">built for business</span>
             </h1>
             
-            <p className="font-serif text-xl text-black text-center leading-[1.2] max-w-[1030px] mt-4 tracking-[-0.04em] w-full">
+            <p className="font-serif text-xl text-black text-center leading-relaxed max-w-[850px] mt-4 tracking-[-0.04em] w-full">
               Track tone impact, reduce misunderstandings, and accelerate progress—with clarity and confidence.
             </p>
           </div>
 
           {/* Button row (Figma: gap 16px, primary button px-4 py-4 Mono 14px) */}
-          <div className="flex flex-col sm:flex-row items-center gap-4 w-[394px] justify-center">
-            <a href="#demo" className="flex items-center justify-center gap-2 bg-black hover:bg-neutral-800 text-white font-mono text-[14px] px-[16px] py-[16px] w-[164px] h-[46px] rounded-none font-medium hover:-translate-y-0.5 transition-all shadow-sm">
-              <span className="w-1 h-1 rounded-full bg-white"></span>
-              <span>Request a demo</span>
-            </a>
-            <a href="#install" className="flex items-center justify-center gap-2 bg-black hover:bg-neutral-800 text-white font-mono text-[14px] px-[16px] py-[16px] w-[214px] h-[46px] rounded-none font-medium hover:-translate-y-0.5 transition-all shadow-sm">
-              <span className="w-1 h-1 rounded-full bg-white"></span>
-              <span>Download Extension</span>
-            </a>
+          <div className="flex flex-col sm:flex-row items-center gap-4 justify-center w-full">
+            <Button href="#demo" className="w-[180px] h-[48px]">
+              Request a demo
+            </Button>
+            <Button href="#install" variant="secondary" className="w-[214px] h-[48px]">
+              Download Extension
+            </Button>
           </div>
 
         </div>
@@ -919,7 +949,7 @@ export default function Home() {
       <section id="features" className="py-32 bg-white border-t border-gray-100">
         <div className="max-w-[1100px] mx-auto px-6">
           <div className="flex flex-col items-center text-center mb-20">
-            <h2 className="text-4xl md:text-[40px] font-sans font-medium tracking-tight text-black mb-6">
+            <h2 className="text-3xl md:text-[42px] font-sans font-normal tracking-tight text-black leading-[1.15] max-w-3xl mx-auto">
               Everything you need to calibrate, refine, and decode correspondence
             </h2>
           </div>
@@ -936,7 +966,7 @@ export default function Home() {
                   </svg>
                 </div>
                 <div className="font-mono text-xs uppercase tracking-wider text-black font-semibold mb-1">Active Monitoring</div>
-                <div className="font-serif text-sm text-center text-gray-700 max-w-xs">Extension context is rendered locally and isolated securely via Shadow DOM.</div>
+                <div className="font-serif text-sm text-center text-gray-700 max-w-xs font-normal">Extension context is rendered locally and isolated securely via Shadow DOM.</div>
               </div>
             </div>
 
@@ -996,11 +1026,10 @@ export default function Home() {
               </div>
 
               {/* Request Demo Button under Feature List */}
-              <div className="pt-4">
-                <a href="#install" className="flex items-center justify-center gap-2 bg-black hover:bg-neutral-800 text-white font-mono text-[14px] px-[16px] py-[16px] w-[181px] h-[46px] rounded-none font-medium hover:-translate-y-0.5 transition-all shadow-sm">
-                  <span className="w-1 h-1 rounded-full bg-white"></span>
-                  <span>Request a demo</span>
-                </a>
+              <div className="pt-4 flex">
+                <Button href="#install" className="w-[180px] h-[48px]">
+                  Request a demo
+                </Button>
               </div>
 
             </div>
@@ -1011,12 +1040,10 @@ export default function Home() {
       {/* ── VALUES SECTION (CLARITY & ACTION / BENTO-GRID) ── */}
       <section id="values" className="py-32 bg-white border-t border-gray-100">
         <div className="max-w-[1100px] mx-auto px-6">
-          <div className="flex flex-col items-center text-center mb-20 gap-2">
-            <h2 className="text-5xl md:text-[80px] font-normal leading-[1.0] tracking-[-0.04em]">
+          <div className="flex flex-col items-center text-center mb-20 gap-4">
+            <h2 className="text-5xl md:text-[80px] font-normal leading-[1.05] tracking-[-0.04em] flex flex-col items-center w-full">
               <span className="font-serif">Built for clarity,</span>
-            </h2>
-            <h2 className="text-5xl md:text-[80px] font-normal leading-[1.0] tracking-[-0.05em]">
-              <span className="font-sans font-medium">designed for action.</span>
+              <span className="font-sans font-medium mt-2">designed for action.</span>
             </h2>
           </div>
           
@@ -1032,7 +1059,7 @@ export default function Home() {
               </div>
               <div className="flex flex-col gap-2">
                 <h3 className="text-xl font-medium text-black font-sans tracking-tight">Clarity drives action</h3>
-                <p className="font-serif text-lg text-black leading-relaxed tracking-[-0.04em]">
+                <p className="font-serif text-lg text-black/85 leading-relaxed tracking-[-0.04em]">
                   We believe better corporate decisions start with better, clearer communication—measured, visible, and trusted.
                 </p>
               </div>
@@ -1048,7 +1075,7 @@ export default function Home() {
               </div>
               <div className="flex flex-col gap-2">
                 <h3 className="text-xl font-medium text-black font-sans tracking-tight">Zero Bleeding Isolation</h3>
-                <p className="font-serif text-lg text-black leading-relaxed tracking-[-0.04em]">
+                <p className="font-serif text-lg text-black/85 leading-relaxed tracking-[-0.04em]">
                   Every UI element is wrapped in isolated Shadow Roots. Host styles never bleed in, ensuring clean data and visual safety.
                 </p>
               </div>
@@ -1063,7 +1090,7 @@ export default function Home() {
               </div>
               <div className="flex flex-col gap-2">
                 <h3 className="text-xl font-medium text-black font-sans tracking-tight">Secure-By-Design Proxy</h3>
-                <p className="font-serif text-lg text-black leading-relaxed tracking-[-0.04em]">
+                <p className="font-serif text-lg text-black/85 leading-relaxed tracking-[-0.04em]">
                   No local credentials. All traffic to LLM endpoints is securely handled via Cloudflare Workers to prevent credential scraping.
                 </p>
               </div>
@@ -1073,9 +1100,9 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── CASE STUDY SECTION (Figma: padding 120px 20px, background #F6F8FB, rounded-16px case study module) ── */}
+      {/* ── CASE STUDY SECTION ── */}
       <section id="case-study" className="py-32 bg-white border-t border-gray-100 flex flex-col items-center">
-        <div className="w-full max-w-[980px] px-6">
+        <div className="w-full max-w-[1100px] px-6">
           <div className="bg-[#F6F8FB] border border-[#DBE0EC] rounded-[16px] p-8 md:p-10 flex flex-col lg:flex-row items-center gap-[40px] w-full min-h-[320px]">
             {/* Left Case Study image/visual box */}
             <div className="w-full lg:w-[498px] h-[280px] bg-gradient-to-tr from-[#FFF4DF] to-[#A8D3FF] border border-neutral-300 rounded-[8px] relative overflow-hidden shrink-0 flex items-center justify-center font-mono text-xs text-black/60 shadow-inner">
@@ -1086,104 +1113,107 @@ export default function Home() {
             {/* Right content info */}
             <div className="flex flex-col items-start gap-8 flex-1">
               <div className="flex flex-col gap-4">
-                <h3 className="text-xl font-medium tracking-tight text-black font-sans">
+                <h3 className="text-2xl font-sans font-medium tracking-tight text-black leading-snug">
                   Why Acme Inc chose Tonal
                 </h3>
-                <p className="font-serif text-[18px] text-black leading-[1.2] tracking-tight">
+                <p className="font-serif text-lg text-black/80 leading-relaxed tracking-tight">
                   With fragmented communication and growing writing anxiety, Acme turned to Tonal to streamline their ESG messaging workflows. The result? Faster decisions, fewer drafting delays, and 34% more team productivity.
                 </p>
               </div>
               
-              <a href="#install" className="flex items-center justify-center gap-2 bg-black hover:bg-neutral-800 text-white font-mono text-[14px] px-[12px] py-[12px] w-[150px] h-[38px] rounded-none font-medium hover:-translate-y-0.5 transition-all shadow-sm">
-                <span className="w-1 h-1 rounded-full bg-white"></span>
-                <span>Watch case study</span>
-              </a>
+              <Button href="#install" className="w-[180px] h-[48px]">
+                Watch case study
+              </Button>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ── BLOG/JOURNAL SECTION (Figma: padding 0px 20px, gap 40px, list item headers, blue sticker rotated overlapping) ── */}
-      <section id="journal" className="pb-32 bg-white relative">
-        <div className="max-w-[620px] mx-auto px-6 relative flex flex-col items-center gap-[40px] z-10">
-          
-          {/* Header */}
-          <h2 className="text-4xl md:text-[40px] font-sans font-medium text-black tracking-tight text-center">
-            From the journal
-          </h2>
-
-          {/* Sticker (Figma: position absolute, background #2683EB, rotated -10deg, left -287px, top -109px, width 400px, height 154px) */}
-          <div className="hidden xl:flex absolute left-[-320px] top-[-60px] w-[340px] h-[140px] bg-[#2683EB] text-white border-2 border-black rounded-lg shadow-lg flex-col justify-center p-6 transform -rotate-12 select-none z-20 group hover:rotate-[-6deg] transition-transform duration-300">
-            <div className="font-mono text-[10px] tracking-widest uppercase opacity-75">Tonal Dispatch</div>
-            <div className="font-serif text-lg leading-tight mt-1 font-semibold">100% Client-Side Private AI translation.</div>
-            <div className="absolute right-4 bottom-4 w-6 h-6 border border-white/40 rounded-full flex items-center justify-center font-serif text-[10px] font-bold">T</div>
-          </div>
-
-          {/* Journal List container */}
-          <div className="flex flex-col w-full">
+      {/* ── JOURNAL SECTION (Split Column Layout) ── */}
+      <section id="journal" className="py-32 bg-white border-t border-gray-100">
+        <div className="max-w-[1100px] mx-auto px-6">
+          <div className="flex flex-col lg:flex-row gap-16 items-start">
             
-            {/* Journal Item 1 */}
-            <div className="border-t border-[#DBE0EC] py-6 flex flex-row gap-6 items-start w-full">
-              {/* Mock Image placeholder */}
-              <div className="w-[165px] h-[100px] rounded-lg bg-gradient-to-br from-indigo-100 to-indigo-50 border border-gray-200 shrink-0 relative overflow-hidden flex items-center justify-center font-mono text-[9px] text-[#6C6C6C]">
-                <span>article_img_01</span>
-              </div>
-              <div className="flex flex-col gap-2">
-                <h4 className="text-lg font-medium text-black font-sans tracking-tight hover:underline cursor-pointer">
-                  How to Build a Climate-Ready Data Stack
-                </h4>
-                <div className="flex gap-2 font-mono text-xs text-[#6C6C6C]">
-                  <span>Tooling</span>
-                  <span>·</span>
-                  <span>4 min read</span>
+            {/* Left Side: Rotated Blue Sticker & Header */}
+            <div className="w-full lg:w-1/3 flex flex-col items-start gap-8 shrink-0">
+              <h2 className="text-3xl md:text-[42px] font-sans font-normal text-black tracking-tight leading-none">
+                From the journal
+              </h2>
+              {/* Blue Sticker Card */}
+              <div className="relative w-full h-[180px] bg-[#2683EB] text-white border-2 border-black rounded-[16px] shadow-md flex flex-col justify-between p-6 transform -rotate-2 hover:rotate-0 transition-transform duration-300 select-none">
+                <div className="flex flex-col">
+                  <span className="font-mono text-[9px] tracking-widest uppercase opacity-75">Tonal Dispatch</span>
+                  <span className="font-serif text-[19px] leading-snug mt-2 font-semibold">100% Client-Side Private AI translation.</span>
+                </div>
+                <div className="flex justify-between items-center mt-4">
+                  <span className="font-mono text-[10px] bg-white/20 px-2 py-0.5 rounded-full font-bold">Secure Extension</span>
+                  <span className="w-6 h-6 border border-white/40 rounded-full flex items-center justify-center font-serif text-[10px] font-bold">T</span>
                 </div>
               </div>
             </div>
 
-            {/* Journal Item 2 */}
-            <div className="border-t border-[#DBE0EC] py-6 flex flex-row gap-6 items-start w-full">
-              {/* Mock Image 2 */}
-              <div className="w-[165px] h-[100px] rounded-lg bg-gradient-to-br from-amber-100 to-amber-50 border border-gray-200 shrink-0 relative overflow-hidden flex items-center justify-center font-mono text-[9px] text-[#6C6C6C]">
-                <span>article_img_02</span>
-              </div>
-              <div className="flex flex-col gap-2">
-                <h4 className="text-lg font-medium text-black font-sans tracking-tight hover:underline cursor-pointer">
-                  Constructive Professional Pushback: The Guide
-                </h4>
-                <div className="flex gap-2 font-mono text-xs text-[#6C6C6C]">
-                  <span>Communication</span>
-                  <span>·</span>
-                  <span>6 min read</span>
+            {/* Right Side: Journal List Items */}
+            <div className="w-full lg:w-2/3 flex flex-col">
+              
+              {/* Journal Item 1 */}
+              <div className="border-t border-[#DBE0EC] py-6 flex flex-row gap-6 items-start w-full group">
+                <div className="w-[165px] h-[100px] rounded-lg bg-gradient-to-br from-indigo-100 to-indigo-50 border border-gray-200 shrink-0 relative overflow-hidden flex items-center justify-center font-mono text-[9px] text-[#6C6C6C] group-hover:scale-[1.02] transition-transform duration-300">
+                  <span>article_img_01</span>
+                </div>
+                <div className="flex flex-col gap-2">
+                  <h4 className="text-lg font-medium text-black font-sans tracking-tight group-hover:underline cursor-pointer">
+                    How to Build a Climate-Ready Data Stack
+                  </h4>
+                  <div className="flex gap-2 font-mono text-xs text-[#6C6C6C]">
+                    <span>Tooling</span>
+                    <span>·</span>
+                    <span>4 min read</span>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            {/* Journal Item 3 */}
-            <div className="border-t border-b border-[#DBE0EC] py-6 flex flex-row gap-6 items-start w-full mb-6">
-              {/* Mock Image 3 */}
-              <div className="w-[165px] h-[100px] rounded-lg bg-gradient-to-br from-emerald-100 to-emerald-50 border border-gray-200 shrink-0 relative overflow-hidden flex items-center justify-center font-mono text-[9px] text-[#6C6C6C]">
-                <span>article_img_03</span>
-              </div>
-              <div className="flex flex-col gap-2">
-                <h4 className="text-lg font-medium text-black font-sans tracking-tight hover:underline cursor-pointer">
-                  Designing Shadow DOM Components That Don't Bleed
-                </h4>
-                <div className="flex gap-2 font-mono text-xs text-[#6C6C6C]">
-                  <span>Architecture</span>
-                  <span>·</span>
-                  <span>5 min read</span>
+              {/* Journal Item 2 */}
+              <div className="border-t border-[#DBE0EC] py-6 flex flex-row gap-6 items-start w-full group">
+                <div className="w-[165px] h-[100px] rounded-lg bg-gradient-to-br from-amber-100 to-amber-50 border border-gray-200 shrink-0 relative overflow-hidden flex items-center justify-center font-mono text-[9px] text-[#6C6C6C] group-hover:scale-[1.02] transition-transform duration-300">
+                  <span>article_img_02</span>
+                </div>
+                <div className="flex flex-col gap-2">
+                  <h4 className="text-lg font-medium text-black font-sans tracking-tight group-hover:underline cursor-pointer">
+                    Constructive Professional Pushback: The Guide
+                  </h4>
+                  <div className="flex gap-2 font-mono text-xs text-[#6C6C6C]">
+                    <span>Communication</span>
+                    <span>·</span>
+                    <span>6 min read</span>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            {/* Journal View All Button */}
-            <div className="flex justify-center mt-2">
-              <a href="#install" className="flex items-center justify-center gap-2 bg-black hover:bg-neutral-800 text-white font-mono text-[14px] px-[12px] py-[12px] w-[167px] h-[38px] rounded-none font-medium hover:-translate-y-0.5 transition-all shadow-sm">
-                <span className="w-1 h-1 rounded-full bg-white"></span>
-                <span>Watch case study</span>
-              </a>
-            </div>
+              {/* Journal Item 3 */}
+              <div className="border-t border-b border-[#DBE0EC] py-6 flex flex-row gap-6 items-start w-full mb-8 group">
+                <div className="w-[165px] h-[100px] rounded-lg bg-gradient-to-br from-emerald-100 to-emerald-50 border border-gray-200 shrink-0 relative overflow-hidden flex items-center justify-center font-mono text-[9px] text-[#6C6C6C] group-hover:scale-[1.02] transition-transform duration-300">
+                  <span>article_img_03</span>
+                </div>
+                <div className="flex flex-col gap-2">
+                  <h4 className="text-lg font-medium text-black font-sans tracking-tight group-hover:underline cursor-pointer">
+                    Designing Shadow DOM Components That Don't Bleed
+                  </h4>
+                  <div className="flex gap-2 font-mono text-xs text-[#6C6C6C]">
+                    <span>Architecture</span>
+                    <span>·</span>
+                    <span>5 min read</span>
+                  </div>
+                </div>
+              </div>
 
+              {/* Journal View All Button */}
+              <div className="flex justify-start">
+                <Button href="#install" className="w-[180px] h-[48px]">
+                  View all articles
+                </Button>
+              </div>
+
+            </div>
           </div>
         </div>
       </section>
@@ -1191,7 +1221,7 @@ export default function Home() {
       {/* ── TESTIMONIAL SECTION ── */}
       <section className="py-32 bg-white border-t border-gray-100">
         <div className="max-w-[1100px] mx-auto px-6 flex flex-col lg:flex-row items-center gap-16">
-          {/* Left testimonial image box per Figma */}
+          {/* Left testimonial image box */}
           <div className="w-full lg:w-1/2 aspect-[4/5] bg-gradient-to-br from-[#FFF4DF] to-[#A8D3FF] rounded-[24px] border-2 border-black relative overflow-hidden shadow-lg group">
             <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800c_1px,transparent_1px),linear-gradient(to_bottom,#8080800c_1px,transparent_1px)] bg-[size:3rem_3rem] opacity-35" />
             <div className="absolute bottom-8 left-8 bg-white border-2 border-black p-4 rounded-xl shadow-md max-w-xs font-mono text-xs font-bold leading-tight">
@@ -1203,7 +1233,7 @@ export default function Home() {
           {/* Right quotation area */}
           <div className="w-full lg:w-1/2 flex flex-col justify-center items-start gap-8 px-2">
             <div className="text-6xl font-serif text-[#DBE0EC] select-none leading-none -mb-6 font-bold">“</div>
-            <blockquote className="font-sans font-medium text-3xl md:text-4xl text-black leading-tight tracking-tight max-w-[480px]">
+            <blockquote className="font-sans font-medium text-3xl md:text-[40px] text-black leading-[1.1] tracking-tight max-w-[480px]">
               We finally moved past spreadsheets and guesswork. Now we have real data to guide real decisions.
             </blockquote>
             <div className="flex flex-col gap-1">
@@ -1217,17 +1247,16 @@ export default function Home() {
       {/* ── CALL TO ACTION SECTION ── */}
       <section className="py-32 px-6 bg-[#F6F8FB] border-t border-gray-150 text-center">
         <div className="max-w-[1100px] mx-auto flex flex-col items-center gap-8">
-          <h2 className="text-3xl md:text-[40px] font-sans font-medium text-black tracking-tight leading-none max-w-2xl">
+          <h2 className="text-3xl md:text-[42px] font-sans font-normal text-black tracking-tight leading-tight max-w-2xl">
             Ready to operationalize your professional goals?
           </h2>
-          <a href="#install" className="flex items-center gap-2 bg-black hover:bg-neutral-800 text-white font-mono text-[14px] px-[16px] py-[16px] w-[164px] h-[46px] rounded-none font-medium hover:-translate-y-0.5 transition-all shadow-md">
-            <span className="w-1 h-1 rounded-full bg-white"></span>
-            <span>Request a demo</span>
-          </a>
+          <Button href="#install" className="w-[180px] h-[48px]">
+            Request a demo
+          </Button>
         </div>
       </section>
 
-      {/* ── FOOTER (Figma: background #FFF546 yellow, 20px padding) ── */}
+      {/* ── FOOTER ── */}
       <footer className="bg-[#FFF546] text-black py-20 border-t-2 border-black select-none">
         <div className="max-w-[1100px] mx-auto px-6 flex flex-col md:flex-row justify-between gap-12">
           
@@ -1236,7 +1265,7 @@ export default function Home() {
               <Image src="/icon128.png" alt="Tonal Logo" width={24} height={24} className="rounded-lg shadow-sm border border-black/10" />
               <span className="font-serif">Tonal</span>
             </div>
-            <p className="font-serif text-sm max-w-xs text-black/70">
+            <p className="font-serif text-sm max-w-xs text-black/70 leading-relaxed">
               Calibrated corporate correspondence, built with clarity and absolute data privacy.
             </p>
             <p className="font-mono text-xs text-black/50 mt-4">© 2026 Tonal. All rights reserved.</p>
