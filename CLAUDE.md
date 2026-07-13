@@ -109,20 +109,13 @@ _AI fills this at the END of every session. Read this at the START of the next s
 **Last session date:** 2026-07-14
 
 **What we built / changed:**
-- Refactored the Next.js landing page to use a reusable `Button` component, standardizing all padding, borders, monospaced styles, and bullet elements across all sections.
-- Unified heading scale sizes: H1 (`text-5xl md:text-[80px]`), H2 (`text-3xl md:text-[42px]`), and H3 (`text-xl`) to establish visual harmony.
-- Aligned all layout containers to a unified grid width (`max-w-[1100px] mx-auto px-6`) to match vertical alignments.
-- Improved the Journal section to a beautiful split-screen flex layout, making the blue tilted sticker highly visible on desktop.
+- Deleted the entire Next.js `website` directory from the repository as requested.
 
 **Immediate next task:**
-- Review the live page on local port 3000 to ensure perfect responsive scaling.
-- Continue building out MV3 extension content/adapter updates if requested.
+- Work on the Chrome extension (MV3) adapters or backend worker logic.
 
 **Open blockers:**
 - None.
 
 **Files most recently changed:**
-- `website/src/app/page.tsx`
-- `website/src/app/layout.tsx`
-- `website/src/app/globals.css`
-- `walkthrough.md`
+- `CLAUDE.md`
