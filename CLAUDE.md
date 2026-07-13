@@ -106,25 +106,23 @@ content.js (user interaction)
 
 _AI fills this at the END of every session. Read this at the START of the next session._
 
-**Last session date:** 2026-07-13
+**Last session date:** 2026-07-14
 
 **What we built / changed:**
-- Redesigned the Next.js landing page to a "Modern SaaS" aesthetic with a floating navbar.
-- Redesigned the landing page to mimic Framer's dark, premium bento-grid and bold-typography aesthetic.
-- Conducted a full `@ARCHITECTURE-REVIEW` of the extension.
-- Fixed a prompt injection vulnerability in `worker.js` via HTML entity encoding (`<`, `>`).
-- Optimized extension performance by removing the `setInterval` DOM polling loop in favor of robust `MutationObserver` and `ResizeObserver` tracking.
+- Fully redesigned the Next.js landing page to match the exact Figma specification (modern clean SaaS/editorial design).
+- Applied top pastel blue-to-orange background gradient, Source Serif 4 + Radio Canada typography pairing, high-contrast black borders, Geist Mono buttons with bullets, and yellow footer.
+- Implemented and integrated missing Figma sections: the Case Study segment and the Journal/Blog layout featuring a rotated blue floating sticker.
+- Fixed residual tag syntax bugs in `page.tsx` and successfully validated build with `npm run build`.
 
 **Immediate next task:**
-- Review the new Framer-styled landing page locally.
-- Address any outstanding UI/UX polish (e.g. mobile responsiveness for the tabs in `page.tsx` which was audited but paused).
+- Review the live page on local port 3000 to ensure perfect responsive scaling.
+- Continue building out MV3 extension content/adapter updates if requested.
 
 **Open blockers:**
 - None.
 
 **Files most recently changed:**
 - `website/src/app/page.tsx`
-- `src/backend/worker.js`
-- `src/extension/content.js`
-- `tests/worker_real_scenarios.test.js`
-- `CONTEXT.md`
+- `website/src/app/layout.tsx`
+- `website/src/app/globals.css`
+- `walkthrough.md`
