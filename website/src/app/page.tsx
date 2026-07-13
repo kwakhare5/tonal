@@ -261,92 +261,90 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F5F5F7] text-[#0F0F0F] font-sans antialiased overflow-x-hidden">
+    <div className="min-h-screen bg-[#F9FAFB] text-[#0F0F0F] font-sans antialiased overflow-x-hidden">
       
       {/* ── HEADER / FLOATING NAVBAR ── */}
       <header className="fixed top-4 left-4 right-4 z-50 flex justify-center animate-in fade-in slide-in-from-top-2 duration-300">
-        <div className="flex items-center justify-between w-full max-w-[1100px] bg-white/85 backdrop-blur-md border border-[#E5E5EA]/60 rounded-full px-6 py-2.5 shadow-sm">
-          <a href="#" className="flex items-center gap-2.5 font-bold text-lg tracking-tight hover:opacity-90 transition-opacity">
+        <div className="flex items-center justify-between w-full max-w-[1100px] bg-white/90 backdrop-blur-xl border border-gray-200/60 rounded-2xl px-6 py-3 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+          <a href="#" className="flex items-center gap-2.5 font-bold text-lg tracking-tight hover:opacity-90 transition-opacity duration-300">
             <span className="flex items-center">
-              <Image src="/icon128.png" alt="Tonal Logo" width={24} height={24} className="rounded-md" />
+              <Image src="/icon128.png" alt="Tonal Logo" width={24} height={24} className="rounded-lg shadow-sm" />
             </span>
             <span>Tonal</span>
           </a>
           <nav className="hidden md:flex items-center gap-8">
-            <a href="#demo" className="text-sm font-medium text-[#636366] hover:text-[#0F0F0F] transition-colors">Interactive Playground</a>
-            <a href="#features" className="text-sm font-medium text-[#636366] hover:text-[#0F0F0F] transition-colors">Architecture</a>
-            <a href="#install" className="text-sm font-medium text-[#636366] hover:text-[#0F0F0F] transition-colors">Installation</a>
+            <a href="#demo" className="text-sm font-semibold text-gray-500 hover:text-[#0F0F0F] transition-colors duration-300">Interactive Playground</a>
+            <a href="#features" className="text-sm font-semibold text-gray-500 hover:text-[#0F0F0F] transition-colors duration-300">Features</a>
+            <a href="#install" className="text-sm font-semibold text-gray-500 hover:text-[#0F0F0F] transition-colors duration-300">Installation</a>
           </nav>
-          <a href="#install" className="bg-[#0F0F0F] text-white text-xs font-semibold px-4 py-2 rounded-full hover:bg-[#1C1C1E] transition-all hover:scale-[1.03] active:scale-[0.98]">
-            Install Extension
+          <a href="#install" className="bg-[#0F0F0F] text-white text-xs font-bold px-5 py-2.5 rounded-xl hover:bg-[#1C1C1E] hover:shadow-md transition-all duration-300 ease-out hover:-translate-y-0.5 active:translate-y-0">
+            Download Extension
           </a>
         </div>
       </header>
 
       {/* ── HERO SECTION ── */}
-      <section className="pt-40 pb-16 text-center px-6">
-        <div className="inline-flex items-center gap-1.5 bg-white border border-[#E5E5EA] rounded-full px-3 py-1 text-[11px] font-semibold tracking-wider uppercase mb-6 shadow-xs animate-in fade-in zoom-in-95 duration-500">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#34C759] animate-pulse"></span> Now Running Next.js + Tailwind v4
-        </div>
-        <h1 className="text-4xl md:text-[56px] font-extrabold leading-tight tracking-tight max-w-[850px] mx-auto mb-5 text-[#0F0F0F] animate-in fade-in slide-in-from-bottom-3 duration-500 delay-75">
-          Calibrate your tone.<br />Translate corporate speak in real-time.
+      <section className="pt-32 md:pt-40 pb-16 text-center px-6 relative">
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none -z-10"></div>
+        <h1 className="text-5xl md:text-[72px] font-extrabold leading-[1.05] tracking-tight max-w-[900px] mx-auto mb-6 text-[#0F0F0F] animate-in fade-in slide-in-from-bottom-3 duration-500 delay-75">
+          Write without the anxiety.
         </h1>
-        <p className="text-base md:text-lg text-[#636366] max-w-[640px] mx-auto mb-8 leading-relaxed animate-in fade-in slide-in-from-bottom-3 duration-500 delay-150">
-          A zero-dependency, two-way tone translator that works natively inside Gmail, Slack, and LinkedIn. Wrapped fully inside isolated Shadow DOM elements.
+        <p className="text-lg md:text-xl text-gray-500 max-w-[640px] mx-auto mb-10 leading-relaxed font-medium animate-in fade-in slide-in-from-bottom-3 duration-500 delay-150">
+          Instantly translate your raw thoughts into polished work messages, or decode confusing corporate jargon into plain English. Works right inside Gmail, Slack, and LinkedIn.
         </p>
-        <div className="flex items-center justify-center gap-4 animate-in fade-in slide-in-from-bottom-3 duration-500 delay-200">
-          <a href="#demo" className="bg-[#0F0F0F] text-white font-semibold px-6 py-3 rounded-lg hover:bg-[#1C1C1E] transition-all hover:-translate-y-0.5 shadow-sm active:translate-y-0">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-in fade-in slide-in-from-bottom-3 duration-500 delay-200">
+          <a href="#demo" className="w-full sm:w-auto bg-[#0F0F0F] text-white font-bold px-8 py-3.5 rounded-xl hover:bg-[#1C1C1E] shadow-lg hover:shadow-xl transition-all duration-300 ease-out hover:-translate-y-1 active:translate-y-0">
             Try Interactive Playground
           </a>
-          <a href="#install" className="bg-white text-[#0F0F0F] border border-[#E5E5EA] font-semibold px-6 py-3 rounded-lg hover:border-[#AEAEB2] transition-all hover:-translate-y-0.5 shadow-xs active:translate-y-0">
-            Get Started
+          <a href="#install" className="w-full sm:w-auto bg-white text-[#0F0F0F] border border-gray-200 font-bold px-8 py-3.5 rounded-xl hover:bg-gray-50 hover:border-gray-300 shadow-sm hover:shadow-md transition-all duration-300 ease-out hover:-translate-y-1 active:translate-y-0">
+            Download Extension
           </a>
         </div>
       </section>
 
       {/* ── INTERACTIVE PLAYGROUND (PLATFORM ADAPTER VISUALIZER) ── */}
-      <section id="demo" className="pb-24 max-w-[1100px] mx-auto px-6">
-        <div className="bg-white border border-[#E5E5EA] rounded-2xl shadow-lg overflow-hidden flex flex-col h-[590px] animate-in fade-in zoom-in-95 duration-500 delay-300">
+      <section id="demo" className="pb-24 max-w-[1000px] mx-auto px-6 -mt-4 relative z-10">
+        <div className="bg-white border border-gray-200/80 rounded-3xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05)] overflow-hidden flex flex-col h-[590px] animate-in fade-in zoom-in-95 duration-500 delay-300">
           
           {/* Header tabs */}
-          <div className="bg-[#F2F2F7] border-b border-[#E5E5EA] px-5 py-3 flex items-center justify-between">
-            <div className="flex gap-1 md:gap-2">
+          <div className="bg-[#FAFAFA] border-b border-gray-200/80 px-5 py-3.5 flex items-center justify-between">
+            <div className="flex gap-2">
               <button 
                 onClick={() => handleTabChange("gmail")}
-                className={`text-xs font-semibold px-3 py-1.5 rounded-full transition-all ${
+                className={`text-xs font-semibold px-3 py-1.5 rounded-lg transition-all duration-300 ${
                   activeTab === "gmail" 
-                    ? "bg-white text-[#0F0F0F] shadow-xs" 
-                    : "text-[#636366] hover:bg-black/5 hover:text-[#0F0F0F]"
+                    ? "bg-[#EA4335] text-white shadow-sm" 
+                    : "text-gray-500 hover:bg-gray-200/50 hover:text-[#0F0F0F]"
                 }`}
               >
                 Gmail Composer
               </button>
               <button 
                 onClick={() => handleTabChange("slack")}
-                className={`text-xs font-semibold px-3 py-1.5 rounded-full transition-all ${
+                className={`text-xs font-semibold px-3 py-1.5 rounded-lg transition-all duration-300 ${
                   activeTab === "slack" 
-                    ? "bg-white text-[#0F0F0F] shadow-xs" 
-                    : "text-[#636366] hover:bg-black/5 hover:text-[#0F0F0F]"
+                    ? "bg-[#4A154B] text-white shadow-sm" 
+                    : "text-gray-500 hover:bg-gray-200/50 hover:text-[#0F0F0F]"
                 }`}
               >
                 Slack Chat
               </button>
               <button 
                 onClick={() => handleTabChange("linkedin")}
-                className={`text-xs font-semibold px-3 py-1.5 rounded-full transition-all ${
+                className={`text-xs font-semibold px-3 py-1.5 rounded-lg transition-all duration-300 ${
                   activeTab === "linkedin" 
-                    ? "bg-white text-[#0F0F0F] shadow-xs" 
-                    : "text-[#636366] hover:bg-black/5 hover:text-[#0F0F0F]"
+                    ? "bg-[#0A66C2] text-white shadow-sm" 
+                    : "text-gray-500 hover:bg-gray-200/50 hover:text-[#0F0F0F]"
                 }`}
               >
                 LinkedIn Post
               </button>
               <button 
                 onClick={() => handleTabChange("decode")}
-                className={`text-xs font-semibold px-3 py-1.5 rounded-full transition-all ${
+                className={`text-xs font-semibold px-3 py-1.5 rounded-lg transition-all duration-300 ${
                   activeTab === "decode" 
-                    ? "bg-white text-[#0F0F0F] shadow-xs" 
-                    : "text-[#636366] hover:bg-black/5 hover:text-[#0F0F0F]"
+                    ? "bg-[#0F0F0F] text-white shadow-sm" 
+                    : "text-gray-500 hover:bg-gray-200/50 hover:text-[#0F0F0F]"
                 }`}
               >
                 Jargon Decoder
@@ -418,8 +416,8 @@ export default function Home() {
                     <div className="border border-dashed border-[#007AFF]/40 p-1 rounded-full bg-[#007AFF]/5 hover:border-[#007AFF] transition-colors">
                       <button 
                         onClick={toggleTonalMenu}
-                        className={`flex items-center h-6 px-2.5 gap-1.5 bg-[#0F0F0F] text-white rounded-full text-[10px] font-bold shadow-sm cursor-pointer hover:bg-[#1C1C1E] transition-all hover:scale-[1.04] active:scale-[0.98] select-none ${
-                          isMenuOpen ? "bg-[#1C1C1E]" : ""
+                        className={`flex items-center h-6 px-2.5 gap-1.5 bg-[#0F0F0F] text-white rounded-full text-[10px] font-bold shadow-sm cursor-pointer hover:bg-[#1E1B4B] transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-md active:translate-y-0 select-none ${
+                          isMenuOpen ? "bg-[#1E1B4B] ring-2 ring-[#6366F1] ring-offset-1" : ""
                         }`}
                       >
                         <svg width="13" height="8" viewBox="0 0 72 44" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -616,7 +614,7 @@ export default function Home() {
                           <div className="border border-dashed border-[#007AFF]/40 p-0.5 rounded-full bg-[#007AFF]/5 hover:border-[#007AFF] transition-colors flex items-center">
                             <button 
                               onClick={toggleTonalMenu}
-                              className="flex items-center h-6 px-2.5 gap-1.5 bg-[#0F0F0F] text-white rounded-full text-[10px] font-bold shadow-sm cursor-pointer hover:bg-[#1C1C1E] transition-all hover:scale-[1.04] active:scale-[0.98] select-none"
+                              className="flex items-center h-6 px-2.5 gap-1.5 bg-[#0F0F0F] text-white rounded-full text-[10px] font-bold shadow-sm cursor-pointer hover:bg-[#1E1B4B] transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-md active:translate-y-0 select-none"
                             >
                               <svg width="13" height="8" viewBox="0 0 72 44" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <rect x="0" y="18" width="72" height="8" rx="4" fill="#2C2C2E"/>
@@ -744,7 +742,7 @@ export default function Home() {
                     <div className="border border-dashed border-[#007AFF]/40 p-0.5 rounded-full bg-[#007AFF]/5 hover:border-[#007AFF] transition-colors flex items-center">
                       <button 
                         onClick={toggleTonalMenu}
-                        className="flex items-center h-6 px-2.5 gap-1.5 bg-[#0F0F0F] text-white rounded-full text-[10px] font-bold shadow-sm cursor-pointer hover:bg-[#1C1C1E] transition-all hover:scale-[1.04] active:scale-[0.98] select-none"
+                        className="flex items-center h-6 px-2.5 gap-1.5 bg-[#0F0F0F] text-white rounded-full text-[10px] font-bold shadow-sm cursor-pointer hover:bg-[#1E1B4B] transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-md active:translate-y-0 select-none"
                       >
                         <svg width="13" height="8" viewBox="0 0 72 44" fill="none" xmlns="http://www.w3.org/2000/svg">
                           <rect x="0" y="18" width="72" height="8" rx="4" fill="#2C2C2E"/>
@@ -839,9 +837,9 @@ export default function Home() {
                     <div className="border border-dashed border-[#007AFF]/40 p-1 rounded-full bg-[#007AFF]/5 hover:border-[#007AFF] transition-colors">
                       <button 
                         onClick={triggerDecode}
-                        className="bg-[#0F0F0F] text-white px-3.5 py-2 rounded-full text-[10px] font-bold flex items-center gap-1.5 shadow-md cursor-pointer hover:bg-[#1C1C1E] transition-all hover:scale-[1.04] animate-bounce"
+                        className="bg-[#0F0F0F] text-white px-3.5 py-2 rounded-full text-[10px] font-bold flex items-center gap-1.5 shadow-md cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#6366F1] hover:bg-[#1E1B4B] transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-lg active:translate-y-0"
                       >
-                        <Eye className="w-3.5 h-3.5 animate-pulse" />
+                        <Eye className="w-3.5 h-3.5" />
                         Decode Selection
                       </button>
                     </div>
@@ -901,39 +899,52 @@ export default function Home() {
       </section>
 
       {/* ── UNDER THE HOOD (FEATURES) ── */}
-      <section id="features" className="py-24 bg-white border-y border-[#E5E5EA]">
+      <section id="features" className="py-32 bg-white border-t border-gray-100">
         <div className="max-w-[1100px] mx-auto px-6">
-          <h2 className="text-3xl font-extrabold tracking-tight text-center mb-12">Under the hood. Built for production.</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="flex flex-col items-center text-center mb-20">
+            <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight text-[#0F0F0F] mb-6">Enterprise-grade privacy.<br/>Zero friction.</h2>
+            <p className="text-gray-500 text-xl max-w-2xl font-medium">Under the hood, Tonal is engineered as a lightweight, highly secure, and deeply isolated extension.</p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             
-            <div className="border border-[#F2F2F7] rounded-xl p-8 hover:translate-y-[-4px] hover:shadow-md transition-all duration-200">
-              <div className="w-11 h-11 rounded-lg bg-[#F5F5F7] flex items-center justify-center text-[#0F0F0F] mb-5">
-                <Shield className="w-5 h-5" />
+            {/* Feature 1 */}
+            <div className="bg-[#F9FAFB] rounded-[2rem] p-10 flex flex-col justify-between border border-gray-100 hover:shadow-xl hover:border-gray-200 transition-all duration-300 group">
+              <div className="w-14 h-14 rounded-2xl bg-white shadow-sm flex items-center justify-center text-[#0F0F0F] mb-8 group-hover:scale-110 transition-transform duration-300 border border-gray-100">
+                <Shield className="w-6 h-6 text-[#0F0F0F]" />
               </div>
-              <h3 className="text-lg font-bold mb-3">Shadow DOM Isolation</h3>
-              <p className="text-sm text-[#636366] leading-relaxed">
-                Every Tonal UI component is fully wrapped inside isolated Shadow Roots. Host styles never bleed in, and extension styles never disrupt the page styling rules.
-              </p>
+              <div>
+                <h3 className="text-xl font-bold mb-3 text-[#0F0F0F]">Shadow DOM Isolation</h3>
+                <p className="text-gray-500 leading-relaxed font-medium">
+                  Every UI component is wrapped in isolated Shadow Roots. Host styles never bleed in, and our styles never break your page. Absolute quarantine.
+                </p>
+              </div>
             </div>
 
-            <div className="border border-[#F2F2F7] rounded-xl p-8 hover:translate-y-[-4px] hover:shadow-md transition-all duration-200">
-              <div className="w-11 h-11 rounded-lg bg-[#F5F5F7] flex items-center justify-center text-[#0F0F0F] mb-5">
-                <Cpu className="w-5 h-5" />
+            {/* Feature 2 */}
+            <div className="bg-[#F9FAFB] rounded-[2rem] p-10 flex flex-col justify-between border border-gray-100 hover:shadow-xl hover:border-gray-200 transition-all duration-300 group">
+              <div className="w-14 h-14 rounded-2xl bg-white shadow-sm flex items-center justify-center text-[#0F0F0F] mb-8 group-hover:scale-110 transition-transform duration-300 border border-gray-100">
+                <Cpu className="w-6 h-6 text-[#0F0F0F]" />
               </div>
-              <h3 className="text-lg font-bold mb-3">Zero Dependencies</h3>
-              <p className="text-sm text-[#636366] leading-relaxed">
-                No build step. No npm. No bundlers. Written purely in Vanilla Javascript and CSS, optimizing performance, page loads, and extension package size.
-              </p>
+              <div>
+                <h3 className="text-xl font-bold mb-3 text-[#0F0F0F]">Zero Dependencies</h3>
+                <p className="text-gray-500 leading-relaxed font-medium">
+                  No build step. No heavy npm packages. Written purely in Vanilla JS and CSS, heavily optimizing performance and load times.
+                </p>
+              </div>
             </div>
 
-            <div className="border border-[#F2F2F7] rounded-xl p-8 hover:translate-y-[-4px] hover:shadow-md transition-all duration-200">
-              <div className="w-11 h-11 rounded-lg bg-[#F5F5F7] flex items-center justify-center text-[#0F0F0F] mb-5">
-                <Lock className="w-5 h-5" />
+            {/* Feature 3 */}
+            <div className="bg-[#F9FAFB] rounded-[2rem] p-10 flex flex-col justify-between border border-gray-100 hover:shadow-xl hover:border-gray-200 transition-all duration-300 group">
+              <div className="w-14 h-14 rounded-2xl bg-white shadow-sm flex items-center justify-center text-[#0F0F0F] mb-8 group-hover:scale-110 transition-transform duration-300 border border-gray-100">
+                <Lock className="w-6 h-6 text-[#0F0F0F]" />
               </div>
-              <h3 className="text-lg font-bold mb-3">Secure Proxy Architecture</h3>
-              <p className="text-sm text-[#636366] leading-relaxed">
-                No API keys are stored in the client-side content scripts. All traffic is securely encrypted and routed via Service Workers to a serverless Cloudflare Workers proxy.
-              </p>
+              <div>
+                <h3 className="text-xl font-bold mb-3 text-[#0F0F0F]">Secure Architecture</h3>
+                <p className="text-gray-500 leading-relaxed font-medium">
+                  No API keys stored locally. All traffic is encrypted and routed via Service Workers to a serverless Cloudflare Workers proxy.
+                </p>
+              </div>
             </div>
 
           </div>
@@ -941,80 +952,34 @@ export default function Home() {
       </section>
 
       {/* ── HOW TO INSTALL ── */}
-      <section id="install" className="py-24 max-w-[1100px] mx-auto px-6">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+      <section id="install" className="py-24 px-6 bg-white">
+        <div className="max-w-[1100px] mx-auto bg-[#0F0F0F] rounded-[3rem] p-12 md:p-20 text-center relative overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.3)]">
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:32px_32px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none"></div>
           
-          <div>
-            <h2 className="text-3xl font-extrabold tracking-tight mb-5">Install on Chrome</h2>
-            <p className="text-base text-[#636366] mb-8">
-              Tonal is developed with standard manifest-driven modular scripts. You can run the extension locally in seconds by loading it unpacked.
-            </p>
-            
-            <div className="flex flex-col gap-6">
-              <div className="flex gap-4 items-start">
-                <div className="font-mono text-xs font-semibold text-[#636366] bg-white border border-[#E5E5EA] w-7 h-7 rounded-full flex items-center justify-center shrink-0">1</div>
-                <div>
-                  <h4 className="text-base font-bold mb-1">Clone / Download Code</h4>
-                  <p className="text-sm text-[#636366]">Download the codebase files and keep the directory structured as is.</p>
-                </div>
-              </div>
-              
-              <div className="flex gap-4 items-start">
-                <div className="font-mono text-xs font-semibold text-[#636366] bg-white border border-[#E5E5EA] w-7 h-7 rounded-full flex items-center justify-center shrink-0">2</div>
-                <div>
-                  <h4 className="text-base font-bold mb-1">Open Extensions Panel</h4>
-                  <p className="text-sm text-[#636366]">Navigate to <span className="font-mono bg-[#E5E5EA]/50 px-1.5 py-0.5 rounded text-xs text-[#0F0F0F]">chrome://extensions/</span> in your address bar.</p>
-                </div>
-              </div>
-
-              <div className="flex gap-4 items-start">
-                <div className="font-mono text-xs font-semibold text-[#636366] bg-white border border-[#E5E5EA] w-7 h-7 rounded-full flex items-center justify-center shrink-0">3</div>
-                <div>
-                  <h4 className="text-base font-bold mb-1">Toggle Developer Mode</h4>
-                  <p className="text-sm text-[#636366]">Switch on the <strong>Developer mode</strong> toggle located in the upper-right corner of the window.</p>
-                </div>
-              </div>
-
-              <div className="flex gap-4 items-start">
-                <div className="font-mono text-xs font-semibold text-[#636366] bg-white border border-[#E5E5EA] w-7 h-7 rounded-full flex items-center justify-center shrink-0">4</div>
-                <div>
-                  <h4 className="text-base font-bold mb-1">Load Unpacked Extension</h4>
-                  <p className="text-sm text-[#636366]">Click the <strong>Load unpacked</strong> button on the top-left, and select the folder containing the manifest.</p>
-                </div>
-              </div>
-            </div>
+          <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-6 text-white relative z-10">Ready to upgrade your workflow?</h2>
+          <p className="text-lg md:text-xl text-gray-400 mb-12 max-w-2xl mx-auto font-medium relative z-10">
+            Install the extension locally in seconds. Join thousands of professionals communicating with confidence.
+          </p>
+          
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 relative z-10">
+            <a href="#install" className="w-full sm:w-auto bg-white text-[#0F0F0F] font-bold px-10 py-4 rounded-xl hover:bg-gray-100 hover:shadow-xl transition-all duration-300 ease-out hover:-translate-y-1 active:translate-y-0 text-lg">
+              Download Extension
+            </a>
+            <a href="https://github.com/kwakhare5/Tonal" target="_blank" rel="noreferrer" className="w-full sm:w-auto bg-[#1C1C1E] text-white border border-gray-800 font-bold px-10 py-4 rounded-xl hover:bg-gray-800 hover:border-gray-700 hover:shadow-xl transition-all duration-300 ease-out hover:-translate-y-1 active:translate-y-0 text-lg">
+              View Source Code
+            </a>
           </div>
-
-          <div className="bg-white border border-[#E5E5EA] rounded-2xl p-8 shadow-md">
-            <div className="text-[10px] font-bold uppercase tracking-wider text-[#AEAEB2] mb-3">manifest.json</div>
-            <pre className="bg-[#F5F5F7] rounded-lg p-5 font-mono text-xs text-[#1C1C1E] overflow-x-auto border border-[#E5E5EA]">
-              <code>{`{
-  "manifest_version": 3,
-  "name": "Tonal",
-  "version": "5.0.0",
-  "permissions": [
-    "storage"
-  ],
-  "host_permissions": [
-    "https://mail.google.com/*",
-    "https://*.slack.com/*",
-    "https://*.linkedin.com/*"
-  ]
-}`}</code>
-            </pre>
-          </div>
-
         </div>
       </section>
 
       {/* ── FOOTER ── */}
-      <footer className="bg-white border-t border-[#E5E5EA] py-12 text-center">
+      <footer className="bg-white pb-12 text-center">
         <div className="max-w-[1100px] mx-auto px-6">
           <div className="inline-flex items-center gap-2 font-bold text-sm mb-4">
-            <Image src="/icon128.png" alt="Tonal Logo" width={24} height={24} className="rounded-md" />
-            <span>Tonal</span>
+            <Image src="/icon128.png" alt="Tonal Logo" width={24} height={24} className="rounded-lg shadow-sm" />
+            <span className="text-[#0F0F0F]">Tonal</span>
           </div>
-          <p className="text-xs text-[#AEAEB2]">© 2026 Tonal. Calibrated corporate correspondence.</p>
+          <p className="text-sm font-medium text-gray-400">© 2026 Tonal. Calibrated corporate correspondence.</p>
         </div>
       </footer>
 

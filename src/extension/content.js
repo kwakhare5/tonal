@@ -796,8 +796,6 @@
       this.observer = new MutationObserver(() => this.registry.scan());
       this.observer.observe(document.body, { childList: true, subtree: true });
 
-      setInterval(() => this.registry.scan(), 1500);
-
       this.registry.scan();
     }
 
