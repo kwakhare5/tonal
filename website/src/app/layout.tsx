@@ -1,16 +1,20 @@
 import type { Metadata } from "next";
-import { DM_Sans, DM_Mono } from "next/font/google";
+import { Source_Serif_4, Radio_Canada, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
-const dmSans = DM_Sans({
+const sourceSerif = Source_Serif_4({
+  variable: "--font-serif",
+  subsets: ["latin"],
+});
+
+const radioCanada = Radio_Canada({
   variable: "--font-sans",
   subsets: ["latin"],
 });
 
-const dmMono = DM_Mono({
+const geistMono = Geist_Mono({
   variable: "--font-mono",
   subsets: ["latin"],
-  weight: ["300", "400", "500"],
 });
 
 export const metadata: Metadata = {
@@ -20,15 +24,15 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-  }: Readonly<{
-    children: React.ReactNode;
-  }>) {
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
     <html
       lang="en"
-      className={`${dmSans.variable} ${dmMono.variable} h-full antialiased`}
+      className={`${radioCanada.variable} ${sourceSerif.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-[#F5F5F7] text-[#0F0F0F]">{children}</body>
+      <body className="min-h-full flex flex-col bg-white text-black font-sans">{children}</body>
     </html>
   );
 }

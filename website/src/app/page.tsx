@@ -261,62 +261,73 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F9FAFB] text-[#0F0F0F] font-sans antialiased overflow-x-hidden selection:bg-neutral-200 selection:text-black">
+    <div className="min-h-screen bg-white text-black font-sans antialiased overflow-x-hidden selection:bg-neutral-200 selection:text-black">
       
+      {/* ── TOP PASTEL GRADIENT BACKDROP ── */}
+      <div className="absolute top-0 left-0 right-0 h-[1000px] bg-gradient-to-b from-[#A8D3FF] to-[#FFF4DF] -z-10 pointer-events-none" />
+
       {/* ── HEADER / FLOATING NAVBAR ── */}
       <header className="fixed top-6 left-4 right-4 z-50 flex justify-center animate-in fade-in slide-in-from-top-4 duration-500">
-        <div className="flex items-center justify-between w-full max-w-[1100px] bg-white/80 backdrop-blur-xl border border-gray-200/50 rounded-full px-6 py-3 shadow-[0_8px_30px_rgba(0,0,0,0.04)]">
+        <div className="flex items-center justify-between w-full max-w-[1100px] bg-white border border-gray-250 rounded-full px-6 py-3 shadow-[0_8px_30px_rgba(0,0,0,0.03)]">
           <a href="#" className="flex items-center gap-2.5 font-bold text-lg tracking-tight hover:opacity-90 transition-opacity duration-300">
             <span className="flex items-center">
               <Image src="/icon128.png" alt="Tonal Logo" width={24} height={24} className="rounded-lg shadow-sm" />
             </span>
-            <span className="text-[#0F0F0F]">Tonal</span>
+            <span className="font-serif font-bold text-[#0F0F0F] tracking-tight">Tonal</span>
           </a>
           <nav className="hidden md:flex items-center gap-8">
-            <a href="#demo" className="text-sm font-semibold text-gray-500 hover:text-black transition-colors duration-300">Playground</a>
-            <a href="#features" className="text-sm font-semibold text-gray-500 hover:text-black transition-colors duration-300">Features</a>
-            <a href="#install" className="text-sm font-semibold text-gray-500 hover:text-black transition-colors duration-300">Installation</a>
+            <a href="#demo" className="text-sm font-semibold text-gray-600 hover:text-black transition-colors duration-300">Playground</a>
+            <a href="#features" className="text-sm font-semibold text-gray-600 hover:text-black transition-colors duration-300">Features</a>
+            <a href="#values" className="text-sm font-semibold text-gray-600 hover:text-black transition-colors duration-300">Values</a>
+            <a href="#install" className="text-sm font-semibold text-gray-600 hover:text-black transition-colors duration-300">Installation</a>
           </nav>
-          <a href="#install" className="bg-black hover:bg-neutral-800 text-white text-xs font-bold px-5 py-2.5 rounded-full transition-all duration-300 ease-out hover:-translate-y-0.5 active:translate-y-0">
-            Download Extension
+          
+          <a href="#install" className="flex items-center gap-2 bg-black hover:bg-neutral-800 text-white font-mono text-[13px] px-5 py-2.5 rounded-sm font-medium transition-all duration-300 ease-out hover:-translate-y-0.5 active:translate-y-0">
+            <span className="w-1 h-1 rounded-full bg-white"></span>
+            <span>Download Extension</span>
           </a>
         </div>
       </header>
 
-      {/* ── HERO SECTION ── */}
-      <section className="pt-44 pb-20 text-center px-6 relative">
-        {/* Radial Glow and CSS Grid Overlay */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[1400px] h-[750px] bg-[radial-gradient(ellipse_60%_50%_at_50%_0%,rgba(99,102,241,0.03),transparent_100%)] pointer-events-none -z-10" />
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800c_1px,transparent_1px),linear-gradient(to_bottom,#8080800c_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-70 pointer-events-none -z-10" />
-        
-        {/* Release Version Badge */}
-        <div className="inline-flex items-center gap-1.5 bg-white border border-gray-200/80 rounded-full px-4 py-1.5 text-xs text-gray-500 mb-8 font-semibold animate-in fade-in slide-in-from-bottom-2 duration-500 shadow-sm">
-          <span className="w-1.5 h-1.5 rounded-full bg-indigo-650 animate-pulse"></span>
-          Tonal v5.0.0 is live
-        </div>
+      {/* ── HERO SECTION (INTRO) ── */}
+      <section className="pt-44 pb-20 text-center px-6 relative flex flex-col items-center">
+        {/* Intro content */}
+        <div className="max-w-[1030px] w-full flex flex-col items-center gap-8">
+          
+          {/* Header text container */}
+          <div className="flex flex-col items-center gap-4">
+            <h1 className="flex flex-col items-center font-normal text-black text-5xl md:text-[80px] leading-[1.0] tracking-[-0.04em]">
+              <span className="font-serif">Calibrated corporate communication,</span>
+              <span className="font-sans font-medium tracking-[-0.05em] mt-1">built for business.</span>
+            </h1>
+            
+            <p className="font-serif text-lg md:text-xl text-[#0F0F0F] leading-normal max-w-[800px] mt-4 tracking-[-0.04em]">
+              Track tone impact, reduce misunderstandings, and accelerate progress—with clarity and confidence.
+            </p>
+          </div>
 
-        <h1 className="text-6xl md:text-[92px] font-black leading-[0.9] tracking-tighter max-w-[950px] mx-auto mb-8 bg-gradient-to-b from-black to-neutral-600 bg-clip-text text-transparent animate-in fade-in slide-in-from-bottom-3 duration-500 delay-75">
-          Write without the anxiety.
-        </h1>
-        <p className="text-lg md:text-xl text-gray-500 max-w-[640px] mx-auto mb-12 leading-relaxed font-medium animate-in fade-in slide-in-from-bottom-3 duration-500 delay-150">
-          Instantly translate raw thoughts into polished work messages, or decode corporate jargon into plain English. Works right inside Gmail, Slack, and LinkedIn.
-        </p>
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-in fade-in slide-in-from-bottom-3 duration-500 delay-200">
-          <a href="#demo" className="w-full sm:w-auto bg-black hover:bg-neutral-800 text-white font-bold px-8 py-4 rounded-full shadow-[0_4px_24px_rgba(0,0,0,0.08)] transition-all duration-300 ease-out hover:-translate-y-1 active:translate-y-0 text-md">
-            Try Interactive Playground
-          </a>
-          <a href="#install" className="w-full sm:w-auto bg-white border border-gray-200 text-black font-bold px-8 py-4 rounded-full hover:bg-gray-50 hover:border-gray-300 transition-all duration-300 ease-out hover:-translate-y-1 active:translate-y-0 text-md shadow-sm">
-            Download Extension
-          </a>
+          {/* Button row */}
+          <div className="flex items-center gap-4">
+            <a href="#demo" className="flex items-center gap-2 bg-black hover:bg-neutral-800 text-white font-mono text-[14px] px-6 py-3.5 rounded-sm font-medium hover:-translate-y-0.5 transition-all shadow-sm">
+              <span className="w-1 h-1 rounded-full bg-white"></span>
+              <span>Try interactive demo</span>
+            </a>
+            <a href="#install" className="flex items-center gap-2 bg-black hover:bg-neutral-800 text-white font-mono text-[14px] px-6 py-3.5 rounded-sm font-medium hover:-translate-y-0.5 transition-all shadow-sm">
+              <span className="w-1 h-1 rounded-full bg-white"></span>
+              <span>Download Tonal</span>
+            </a>
+          </div>
+
         </div>
       </section>
 
       {/* ── INTERACTIVE PLAYGROUND (PLATFORM ADAPTER VISUALIZER) ── */}
-      <section id="demo" className="pb-28 max-w-[1050px] mx-auto px-6 relative z-10">
-        <div className="bg-white border border-gray-200/80 rounded-3xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05)] overflow-hidden flex flex-col h-[590px] animate-in fade-in zoom-in-95 duration-500 delay-300">
+      <section id="demo" className="pb-28 max-w-[1010px] mx-auto px-6 relative z-10">
+        {/* Visualizer window - heavy 2px border and border-radius 24px per Figma spec */}
+        <div className="bg-white border-2 border-black rounded-[24px] shadow-[0_20px_50px_rgba(0,0,0,0.06)] overflow-hidden flex flex-col h-[590px] animate-in fade-in zoom-in-95 duration-500 delay-300">
           
           {/* Header tabs */}
-          <div className="bg-[#FAFAFA] border-b border-gray-200/80 px-5 py-3.5 flex items-center justify-between">
+          <div className="bg-[#FAFAFA] border-b-2 border-black px-5 py-3.5 flex items-center justify-between">
             <div className="flex gap-2">
               <button 
                 onClick={() => handleTabChange("gmail")}
@@ -360,9 +371,9 @@ export default function Home() {
               </button>
             </div>
             <div className="flex gap-1.5">
-              <div className="w-2.5 h-2.5 rounded-full bg-[#E5E5EA]"></div>
-              <div className="w-2.5 h-2.5 rounded-full bg-[#E5E5EA]"></div>
-              <div className="w-2.5 h-2.5 rounded-full bg-[#E5E5EA]"></div>
+              <div className="w-2.5 h-2.5 rounded-full bg-black"></div>
+              <div className="w-2.5 h-2.5 rounded-full bg-black"></div>
+              <div className="w-2.5 h-2.5 rounded-full bg-black"></div>
             </div>
           </div>
 
@@ -907,51 +918,148 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── UNDER THE HOOD (FEATURES) ── */}
-      <section id="features" className="py-32 bg-[#F9FAFB] border-t border-gray-200/50">
+      {/* ── FEATURES SECTION ── */}
+      <section id="features" className="py-32 bg-white border-t border-gray-100">
         <div className="max-w-[1100px] mx-auto px-6">
-          <div className="flex flex-col items-center text-center mb-24">
-            <h2 className="text-4xl md:text-5xl font-black tracking-tight text-black mb-6">Enterprise privacy.<br/>Zero friction.</h2>
-            <p className="text-gray-500 text-xl max-w-2xl font-medium">Under the hood, Tonal is engineered as a lightweight, highly secure, and deeply isolated extension.</p>
+          <div className="flex flex-col items-center text-center mb-20">
+            <h2 className="text-4xl md:text-[40px] font-sans font-medium tracking-tight text-black mb-6">
+              Everything you need to calibrate, refine, and decode correspondence
+            </h2>
+          </div>
+          
+          <div className="flex flex-col lg:flex-row items-center gap-16">
+            {/* Visual Column / Image (Figma spec) */}
+            <div className="w-full lg:w-1/2 flex items-center justify-center">
+              <div className="w-full max-w-[500px] aspect-[4/3] bg-gradient-to-tr from-[#A8D3FF] to-[#FFF4DF] rounded-[24px] border-2 border-black flex flex-col items-center justify-center p-8 relative shadow-lg overflow-hidden group">
+                <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800c_1px,transparent_1px),linear-gradient(to_bottom,#8080800c_1px,transparent_1px)] bg-[size:2rem_2rem] opacity-40 pointer-events-none" />
+                <div className="w-16 h-16 rounded-full bg-white border-2 border-black flex items-center justify-center shadow-md mb-4 group-hover:scale-110 transition-transform duration-300">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-black">
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2"/>
+                    <path d="M12 8V16M8 12h8" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                  </svg>
+                </div>
+                <div className="font-mono text-xs uppercase tracking-wider text-black font-semibold mb-1">Active Monitoring</div>
+                <div className="font-serif text-sm text-center text-gray-700 max-w-xs">Extension context is rendered locally and isolated securely via Shadow DOM.</div>
+              </div>
+            </div>
+
+            {/* Feature List Column (Figma spec: divided list items) */}
+            <div className="w-full lg:w-1/2 flex flex-col gap-6">
+              
+              {/* Item 1 */}
+              <div className="border-t border-[#DBE0EC] py-6 flex flex-col gap-3">
+                <div className="flex justify-between items-baseline">
+                  <h3 className="text-xl font-medium tracking-tight text-black font-sans">
+                    Track Communication Tone
+                  </h3>
+                  <span className="font-mono text-sm text-[#6C6C6C]">001</span>
+                </div>
+                <p className="font-serif text-lg text-black/80 leading-relaxed tracking-tight">
+                  Tonal processes inputs locally to track clarity, politeness, and professional alignment across your value chain.
+                </p>
+              </div>
+
+              {/* Item 2 */}
+              <div className="border-t border-[#DBE0EC] py-6 flex flex-col gap-3">
+                <div className="flex justify-between items-baseline">
+                  <h3 className="text-xl font-medium tracking-tight text-black font-sans">
+                    Model Polished Output
+                  </h3>
+                  <span className="font-mono text-sm text-[#6C6C6C]">002</span>
+                </div>
+                <p className="font-serif text-lg text-black/80 leading-relaxed tracking-tight">
+                  Forecast audience response and dynamically translate raw thoughts into clear, business-compliant emails or messages.
+                </p>
+              </div>
+
+              {/* Item 3 */}
+              <div className="border-t border-[#DBE0EC] py-6 flex flex-col gap-3">
+                <div className="flex justify-between items-baseline">
+                  <h3 className="text-xl font-medium tracking-tight text-black font-sans">
+                    Report & Decode Jargon
+                  </h3>
+                  <span className="font-mono text-sm text-[#6C6C6C]">003</span>
+                </div>
+                <p className="font-serif text-lg text-black/80 leading-relaxed tracking-tight">
+                  Surface blunt insights and automate framework translations of confusing corporate jargon back to plain English.
+                </p>
+              </div>
+
+              {/* Item 4 */}
+              <div className="border-t border-b border-[#DBE0EC] py-6 flex flex-col gap-3">
+                <div className="flex justify-between items-baseline">
+                  <h3 className="text-xl font-medium tracking-tight text-black font-sans">
+                    Act Safely
+                  </h3>
+                  <span className="font-mono text-sm text-[#6C6C6C]">004</span>
+                </div>
+                <p className="font-serif text-lg text-black/80 leading-relaxed tracking-tight">
+                  Built on a zero-dependency architecture. Your text never leaves your browser unless sent via your secure worker proxy.
+                </p>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── VALUES SECTION (CLARITY & ACTION / BENTO-GRID) ── */}
+      <section id="values" className="py-32 bg-white border-t border-gray-100">
+        <div className="max-w-[1100px] mx-auto px-6">
+          <div className="flex flex-col items-center text-center mb-20 gap-2">
+            <h2 className="text-5xl md:text-[80px] font-normal leading-[1.0] tracking-[-0.04em]">
+              <span className="font-serif">Built for clarity,</span>
+            </h2>
+            <h2 className="text-5xl md:text-[80px] font-normal leading-[1.0] tracking-[-0.05em]">
+              <span className="font-sans font-medium">designed for action.</span>
+            </h2>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             
-            {/* Feature 1 */}
-            <div className="bg-[#F9FAFB] border border-gray-100 rounded-[2rem] p-10 flex flex-col justify-between hover:shadow-xl hover:border-gray-200 transition-all duration-300 group">
-              <div className="w-14 h-14 rounded-2xl bg-white shadow-sm flex items-center justify-center text-black mb-8 group-hover:scale-110 transition-transform duration-300 border border-gray-100">
-                <Shield className="w-6 h-6 text-black" />
+            {/* Value card 1 */}
+            <div className="bg-white border border-[#DBE0EC] rounded-[16px] p-10 flex flex-col justify-between shadow-xs hover:shadow-lg transition-all duration-300 min-h-[246px]">
+              {/* Minimal Line Art Icon per Figma spec */}
+              <div className="w-[42px] h-[42px] relative mb-6">
+                <div className="absolute w-10 h-10 left-0.5 top-0.5 border-2 border-black rounded-full" />
+                <div className="absolute w-[41px] h-0 left-5 top-0.5 border border-black rotate-90" />
+                <div className="absolute w-5 h-0 left-5 top-5 border border-black" />
               </div>
-              <div>
-                <h3 className="text-xl font-bold mb-3 text-black">Shadow DOM Isolation</h3>
-                <p className="text-gray-500 leading-relaxed font-medium">
-                  Every UI component is wrapped in isolated Shadow Roots. Host styles never bleed in, and our styles never break your page. Absolute quarantine.
+              <div className="flex flex-col gap-2">
+                <h3 className="text-xl font-medium text-black font-sans tracking-tight">Clarity drives action</h3>
+                <p className="font-serif text-lg text-black leading-relaxed tracking-[-0.04em]">
+                  We believe better corporate decisions start with better, clearer communication—measured, visible, and trusted.
                 </p>
               </div>
             </div>
 
-            {/* Feature 2 */}
-            <div className="bg-[#F9FAFB] border border-gray-100 rounded-[2rem] p-10 flex flex-col justify-between hover:shadow-xl hover:border-gray-200 transition-all duration-300 group">
-              <div className="w-14 h-14 rounded-2xl bg-white shadow-sm flex items-center justify-center text-black mb-8 group-hover:scale-110 transition-transform duration-300 border border-gray-100">
-                <Cpu className="w-6 h-6 text-black" />
+            {/* Value card 2 */}
+            <div className="bg-white border border-[#DBE0EC] rounded-[16px] p-10 flex flex-col justify-between shadow-xs hover:shadow-lg transition-all duration-300 min-h-[246px]">
+              {/* Minimal Line Art Icon 2 */}
+              <div className="w-[42px] h-[42px] relative mb-6">
+                <div className="absolute w-10 h-10 left-0.5 top-0.5 border-2 border-black rounded-full" />
+                <div className="absolute w-10 h-[18px] left-0.5 top-3 border-2 border-black rounded-full" />
+                <div className="absolute w-[18px] h-10 left-3 top-0.5 border-2 border-black rounded-full" />
               </div>
-              <div>
-                <h3 className="text-xl font-bold mb-3 text-black">Zero Dependencies</h3>
-                <p className="text-gray-500 leading-relaxed font-medium">
-                  No build step. No heavy npm packages. Written purely in Vanilla JS and CSS, heavily optimizing performance and load times.
+              <div className="flex flex-col gap-2">
+                <h3 className="text-xl font-medium text-black font-sans tracking-tight">Zero Bleeding Isolation</h3>
+                <p className="font-serif text-lg text-black leading-relaxed tracking-[-0.04em]">
+                  Every UI element is wrapped in isolated Shadow Roots. Host styles never bleed in, ensuring clean data and visual safety.
                 </p>
               </div>
             </div>
 
-            {/* Feature 3 */}
-            <div className="bg-[#F9FAFB] border border-gray-100 rounded-[2rem] p-10 flex flex-col justify-between hover:shadow-xl hover:border-gray-200 transition-all duration-300 group">
-              <div className="w-14 h-14 rounded-2xl bg-white shadow-sm flex items-center justify-center text-black mb-8 group-hover:scale-110 transition-transform duration-300 border border-gray-100">
-                <Lock className="w-6 h-6 text-black" />
+            {/* Value card 3 */}
+            <div className="bg-white border border-[#DBE0EC] rounded-[16px] p-10 flex flex-col justify-between shadow-xs hover:shadow-lg transition-all duration-300 min-h-[246px]">
+              {/* Minimal Line Art Icon 3 */}
+              <div className="w-[42px] h-[42px] relative mb-6">
+                <div className="absolute w-10 h-10 left-0.5 top-0.5 border-2 border-black rounded-full" />
+                <div className="absolute w-4 h-4 left-3.5 top-3.5 border-2 border-black" />
               </div>
-              <div>
-                <h3 className="text-xl font-bold mb-3 text-black">Secure Proxy Architecture</h3>
-                <p className="text-gray-500 leading-relaxed font-medium">
-                  No API keys stored locally. All traffic is encrypted and routed via Service Workers to a serverless Cloudflare Workers proxy.
+              <div className="flex flex-col gap-2">
+                <h3 className="text-xl font-medium text-black font-sans tracking-tight">Secure-By-Design Proxy</h3>
+                <p className="font-serif text-lg text-black leading-relaxed tracking-[-0.04em]">
+                  No local credentials. All traffic to LLM endpoints is securely handled via Cloudflare Workers to prevent credential scraping.
                 </p>
               </div>
             </div>
@@ -960,35 +1068,81 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── HOW TO INSTALL (CTA CARD) ── */}
-      <section id="install" className="py-24 px-6 bg-[#F9FAFB]">
-        <div className="max-w-[1100px] mx-auto bg-[#0F0F0F] rounded-[3rem] p-12 md:p-20 text-center relative overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.3)]">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_0%,#ffffff0a,transparent_100%)] pointer-events-none"></div>
-          
-          <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-6 text-white relative z-10">Ready to upgrade your workflow?</h2>
-          <p className="text-lg md:text-xl text-gray-400 mb-12 max-w-2xl mx-auto font-medium relative z-10">
-            Install the extension locally in seconds. Join thousands of professionals communicating with confidence.
-          </p>
-          
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 relative z-10">
-            <a href="#install" className="w-full sm:w-auto bg-white hover:bg-neutral-200 text-black font-bold px-10 py-4 rounded-full transition-all duration-300 ease-out hover:-translate-y-1 active:translate-y-0 text-lg shadow-lg">
-              Download Extension
-            </a>
-            <a href="https://github.com/kwakhare5/Tonal" target="_blank" rel="noreferrer" className="w-full sm:w-auto bg-neutral-900 text-white border border-neutral-800 font-bold px-10 py-4 rounded-full hover:bg-neutral-850 hover:border-neutral-750 transition-all duration-300 ease-out hover:-translate-y-1 active:translate-y-0 text-lg">
-              View Source Code
-            </a>
+      {/* ── TESTIMONIAL SECTION ── */}
+      <section className="py-32 bg-white border-t border-gray-100">
+        <div className="max-w-[1100px] mx-auto px-6 flex flex-col lg:flex-row items-center gap-16">
+          {/* Left testimonial image box per Figma */}
+          <div className="w-full lg:w-1/2 aspect-[4/5] bg-gradient-to-br from-[#FFF4DF] to-[#A8D3FF] rounded-[24px] border-2 border-black relative overflow-hidden shadow-lg group">
+            <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800c_1px,transparent_1px),linear-gradient(to_bottom,#8080800c_1px,transparent_1px)] bg-[size:3rem_3rem] opacity-35" />
+            <div className="absolute bottom-8 left-8 bg-white border-2 border-black p-4 rounded-xl shadow-md max-w-xs font-mono text-xs font-bold leading-tight">
+              FLUX MATERIALS INC.<br/>
+              <span className="text-gray-500 font-normal">Tone calibration client since 2026.</span>
+            </div>
           </div>
+
+          {/* Right quotation area */}
+          <div className="w-full lg:w-1/2 flex flex-col justify-center items-start gap-8 px-2">
+            <div className="text-6xl font-serif text-[#DBE0EC] select-none leading-none -mb-6 font-bold">“</div>
+            <blockquote className="font-sans font-medium text-3xl md:text-4xl text-black leading-tight tracking-tight max-w-[480px]">
+              We finally moved past spreadsheets and guesswork. Now we have real data to guide real decisions.
+            </blockquote>
+            <div className="flex flex-col gap-1">
+              <span className="font-sans font-medium text-xl text-black">Elliot Williams</span>
+              <span className="font-serif text-lg text-[#6C6C6C] tracking-tight">Head of Sustainability, Flux Materials</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── CALL TO ACTION SECTION ── */}
+      <section id="install" className="py-32 px-6 bg-[#F6F8FB] border-t border-gray-150 text-center">
+        <div className="max-w-[1100px] mx-auto flex flex-col items-center gap-8">
+          <h2 className="text-3xl md:text-[40px] font-sans font-medium text-black tracking-tight leading-none max-w-2xl">
+            Ready to operationalize your professional goals?
+          </h2>
+          <a href="#install" className="flex items-center gap-2 bg-black hover:bg-neutral-800 text-white font-mono text-[14px] px-6 py-3.5 rounded-sm font-medium hover:-translate-y-0.5 transition-all shadow-md">
+            <span className="w-1 h-1 rounded-full bg-white"></span>
+            <span>Request a demo</span>
+          </a>
         </div>
       </section>
 
       {/* ── FOOTER ── */}
-      <footer className="bg-white pb-16 text-center border-t border-gray-150 pt-12">
-        <div className="max-w-[1100px] mx-auto px-6">
-          <div className="inline-flex items-center gap-2 font-bold text-sm mb-4">
-            <Image src="/icon128.png" alt="Tonal Logo" width={24} height={24} className="rounded-lg shadow-sm" />
-            <span className="text-[#0F0F0F]">Tonal</span>
+      <footer className="bg-[#FFF546] text-black py-20 border-t-2 border-black select-none">
+        <div className="max-w-[1100px] mx-auto px-6 flex flex-col md:flex-row justify-between gap-12">
+          
+          <div className="flex flex-col gap-4">
+            <div className="flex items-center gap-2.5 font-bold text-lg">
+              <Image src="/icon128.png" alt="Tonal Logo" width={24} height={24} className="rounded-lg shadow-sm border border-black/10" />
+              <span className="font-serif">Tonal</span>
+            </div>
+            <p className="font-serif text-sm max-w-xs text-black/70">
+              Calibrated corporate correspondence, built with clarity and absolute data privacy.
+            </p>
+            <p className="font-mono text-xs text-black/50 mt-4">© 2026 Tonal. All rights reserved.</p>
           </div>
-          <p className="text-sm font-medium text-gray-500">© 2026 Tonal. Calibrated corporate correspondence.</p>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-8">
+            <div className="flex flex-col gap-3">
+              <span className="font-mono text-[11px] font-bold uppercase tracking-wider text-black/50">Product</span>
+              <a href="#demo" className="text-sm font-medium hover:underline">Playground</a>
+              <a href="#features" className="text-sm font-medium hover:underline">Features</a>
+              <a href="#values" className="text-sm font-medium hover:underline">Values</a>
+            </div>
+            <div className="flex flex-col gap-3">
+              <span className="font-mono text-[11px] font-bold uppercase tracking-wider text-black/50">Developer</span>
+              <a href="https://github.com/kwakhare5/Tonal" target="_blank" rel="noreferrer" className="text-sm font-medium hover:underline">GitHub</a>
+              <a href="#" className="text-sm font-medium hover:underline">Documentation</a>
+              <a href="#" className="text-sm font-medium hover:underline">API Status</a>
+            </div>
+            <div className="flex flex-col gap-3">
+              <span className="font-mono text-[11px] font-bold uppercase tracking-wider text-black/50">Legal</span>
+              <a href="#" className="text-sm font-medium hover:underline">Privacy Policy</a>
+              <a href="#" className="text-sm font-medium hover:underline">Terms of Service</a>
+              <a href="#" className="text-sm font-medium hover:underline">Security Audit</a>
+            </div>
+          </div>
+
         </div>
       </footer>
     </div>
