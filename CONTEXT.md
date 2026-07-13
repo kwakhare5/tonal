@@ -128,6 +128,7 @@ User triggers tone change
 | — | chrome.storage.sync for prefs | Syncs across devices (max 100KB) |
 | 2026-07-11 | CORS Origin restriction on CF Worker | Lock proxy to requests from extension or localhost only |
 | 2026-07-11 | XML prompt isolation | Wrap user input in `<user_message>` tags — defends against prompt injection |
+| 2026-07-13 | Event-Driven DOM Polling | Removed `setInterval` in favor of `MutationObserver` and `ResizeObserver` to prevent layout thrashing and high CPU idle usage |
 
 ---
 
@@ -145,3 +146,4 @@ _Append-only. Never repeat these._
 | 2026-07-11 | Viewport drift on scroll | Update Decode button/card coordinates on scroll/resize |
 | 2026-07-11 | Selection click race condition | Track mousedown to prevent selectionchange hiding Decode UI |
 | 2026-07-11 | Formatting/newlines compressed | System prompt instructs to preserve paragraph spacing |
+| 2026-07-13 | XML Tag Breakout Prompt Injection | Encode `<` and `>` as HTML entities in `worker.js` before inserting text into XML payload |
