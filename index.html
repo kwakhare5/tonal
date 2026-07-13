@@ -1,0 +1,1360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Tonal — Two-way tone translator. Convert casual thoughts to professional messages, and decode corporate jargon. Built with zero dependencies.">
+  <title>Tonal — Two-Way Tone Translator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap" rel="stylesheet">
+  <style>
+    /* ── DESIGN TOKENS (Light Mode) ────────────────────────────── */
+    :root {
+      --bg: #F5F5F7;
+      --card-bg: #FFFFFF;
+      --black: #0F0F0F;
+      --white: #FFFFFF;
+      
+      --gray-1: #1C1C1E;
+      --gray-2: #2C2C2E;
+      --gray-3: #3A3A3C;
+      --gray-4: #636366;
+      --gray-5: #AEAEB2;
+      --gray-6: #D1D1D6;
+      --gray-7: #E5E5EA;
+      --gray-8: #F2F2F7;
+      --gray-9: #F5F5F7;
+      
+      --green: #34C759;
+      --red: #FF3B30;
+      --orange: #FF9F0A;
+      
+      --font: 'DM Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --mono: 'DM Mono', 'SF Mono', ui-monospace, monospace;
+      
+      --r-sm: 8px;
+      --r-md: 12px;
+      --r-lg: 16px;
+      --r-xl: 24px;
+      --r-pill: 100px;
+      
+      --sh-xs: 0 1px 2px rgba(0, 0, 0, .05);
+      --sh-sm: 0 1px 4px rgba(0, 0, 0, .05), 0 4px 12px rgba(0, 0, 0, .05);
+      --sh-md: 0 4px 12px rgba(0, 0, 0, .05), 0 16px 40px rgba(0, 0, 0, .06);
+      --sh-lg: 0 12px 32px rgba(0, 0, 0, .08), 0 32px 80px rgba(0, 0, 0, .1);
+      
+      --ease-out: cubic-bezier(0.2, 0, 0, 1);
+      --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+      
+      --max-width: 1100px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font);
+      background-color: var(--bg);
+      color: var(--black);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    /* ── LAYOUT & HEADER ────────────────────────────────────────── */
+    .container {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    header {
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      right: 16px;
+      z-index: 1000;
+      display: flex;
+      justify-content: center;
+    }
+
+    .nav-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      max-width: var(--max-width);
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(16px) saturate(180%);
+      -webkit-backdrop-filter: blur(16px) saturate(180%);
+      border: 1px solid rgba(229, 229, 234, 0.6);
+      border-radius: var(--r-pill);
+      padding: 10px 24px;
+      box-shadow: var(--sh-sm);
+    }
+
+    .logo-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 18px;
+      letter-spacing: -0.02em;
+    }
+
+    .logo-icon {
+      display: flex;
+      align-items: center;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+    }
+
+    .nav-links a {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--gray-4);
+      transition: color 0.2s var(--ease-out);
+    }
+
+    .nav-links a:hover {
+      color: var(--black);
+    }
+
+    .nav-cta {
+      background: var(--black);
+      color: var(--white);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: var(--r-pill);
+      transition: transform 0.15s var(--ease-spring), background-color 0.2s;
+    }
+
+    .nav-cta:hover {
+      background: var(--gray-1);
+      transform: scale(1.03);
+    }
+
+    /* ── HERO SECTION ───────────────────────────────────────────── */
+    .hero {
+      padding-top: 160px;
+      padding-bottom: 64px;
+      text-align: center;
+    }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--white);
+      border: 1px solid var(--gray-7);
+      border-radius: var(--r-pill);
+      padding: 4px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+      box-shadow: var(--sh-xs);
+    }
+
+    .hero-eyebrow .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+    }
+
+    .hero h1 {
+      font-size: 54px;
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      max-width: 800px;
+      margin: 0 auto 20px auto;
+    }
+
+    .hero-sub {
+      font-size: 18px;
+      color: var(--gray-4);
+      max-width: 620px;
+      margin: 0 auto 32px auto;
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 24px;
+      font-size: 15px;
+      font-weight: 600;
+      border-radius: var(--r-md);
+      transition: transform 0.15s var(--ease-spring), background-color 0.2s, border-color 0.2s;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: var(--black);
+      color: var(--white);
+    }
+
+    .btn-primary:hover {
+      background: var(--gray-1);
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      background: var(--white);
+      color: var(--black);
+      border: 1px solid var(--gray-7);
+      box-shadow: var(--sh-xs);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--gray-5);
+      transform: translateY(-2px);
+    }
+
+    /* ── INTERACTIVE WORKSPACE ──────────────────────────────────── */
+    .workspace-section {
+      padding-bottom: 96px;
+    }
+
+    .workspace-card {
+      background: var(--card-bg);
+      border: 1px solid var(--gray-7);
+      border-radius: var(--r-xl);
+      box-shadow: var(--sh-lg);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: 520px;
+    }
+
+    .workspace-header {
+      background: var(--gray-8);
+      border-bottom: 1px solid var(--gray-7);
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .workspace-tabs {
+      display: flex;
+      gap: 8px;
+    }
+
+    .tab-btn {
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gray-4);
+      background: transparent;
+      border: none;
+      padding: 6px 14px;
+      border-radius: var(--r-pill);
+      cursor: pointer;
+      transition: all 0.2s var(--ease-out);
+    }
+
+    .tab-btn:hover {
+      color: var(--black);
+      background: rgba(0, 0, 0, 0.04);
+    }
+
+    .tab-btn.active {
+      color: var(--black);
+      background: var(--white);
+      box-shadow: var(--sh-xs);
+    }
+
+    .window-dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .window-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--gray-6);
+    }
+
+    .workspace-body {
+      flex: 1;
+      display: flex;
+      position: relative;
+      background: var(--white);
+    }
+
+    .workspace-panel {
+      display: none;
+      width: 100%;
+      height: 100%;
+      position: relative;
+    }
+
+    .workspace-panel.active {
+      display: flex;
+    }
+
+    /* ── TRANSLATE (SEND) MODE UI ───────────────────────────────── */
+    .editor-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 24px;
+      position: relative;
+    }
+
+    .editor-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--gray-5);
+      margin-bottom: 12px;
+    }
+
+    .editor-box {
+      flex: 1;
+      border: none;
+      resize: none;
+      font-family: var(--font);
+      font-size: 16px;
+      color: var(--black);
+      outline: none;
+      line-height: 1.5;
+      background: transparent;
+    }
+
+    /* Simulated Injected UI (The Pill) */
+    .injected-pill-anchor {
+      position: absolute;
+      right: 24px;
+      bottom: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+    }
+
+    .tonal-pill-trigger {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--black);
+      color: var(--white);
+      padding: 6px 12px;
+      border-radius: var(--r-pill);
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: var(--sh-sm);
+      transition: all 0.2s var(--ease-spring);
+      user-select: none;
+    }
+
+    .tonal-pill-trigger:hover {
+      transform: scale(1.04);
+      background: var(--gray-1);
+    }
+
+    .tonal-pill-trigger svg {
+      transition: transform 0.2s var(--ease-out);
+    }
+
+    .tonal-pill-trigger.active svg {
+      transform: rotate(180deg);
+    }
+
+    .tonal-menu {
+      position: absolute;
+      bottom: 36px;
+      right: 0;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid var(--gray-7);
+      border-radius: var(--r-md);
+      box-shadow: var(--sh-md);
+      padding: 6px;
+      display: none;
+      flex-direction: column;
+      gap: 2px;
+      width: 180px;
+      z-index: 100;
+      transform: translateY(8px);
+      opacity: 0;
+      transition: all 0.25s var(--ease-spring);
+    }
+
+    .tonal-menu.show {
+      display: flex;
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .tonal-menu-header {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--gray-4);
+      padding: 6px 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .tonal-option {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 10px;
+      border-radius: var(--r-sm);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--black);
+      cursor: pointer;
+      transition: background-color 0.15s;
+    }
+
+    .tonal-option:hover {
+      background: var(--gray-8);
+    }
+
+    .tonal-option .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }
+
+    .dot-casual { background: var(--gray-4); }
+    .dot-work { background: var(--orange); }
+    .dot-formal { background: var(--green); }
+
+    /* Actions Drawer */
+    .editor-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--gray-8);
+    }
+
+    .toast-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--gray-4);
+      background: var(--gray-8);
+      padding: 4px 10px;
+      border-radius: var(--r-pill);
+      opacity: 0;
+      transition: opacity 0.3s var(--ease-out);
+    }
+
+    .toast-status.show {
+      opacity: 1;
+    }
+
+    .toast-status .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }
+
+    .undo-btn {
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      background: transparent;
+      color: var(--red);
+      border: none;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .undo-btn:hover {
+      text-decoration: underline;
+    }
+
+    /* ── DECODE (RECEIVE) MODE UI ───────────────────────────────── */
+    .reader-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 24px;
+      position: relative;
+    }
+
+    .reader-content {
+      flex: 1;
+      font-size: 16px;
+      line-height: 1.7;
+      color: var(--black);
+      outline: none;
+    }
+
+    .highlighted {
+      background-color: rgba(255, 159, 10, 0.15);
+      border-bottom: 2px solid var(--orange);
+      cursor: pointer;
+      position: relative;
+    }
+
+    /* Simulated Decode Popup Button */
+    .decode-popup-trigger {
+      position: absolute;
+      top: -36px;
+      left: 50%;
+      transform: translateX(-50%) scale(0.9);
+      background: var(--black);
+      color: var(--white);
+      padding: 6px 12px;
+      border-radius: var(--r-pill);
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      box-shadow: var(--sh-sm);
+      cursor: pointer;
+      transition: all 0.2s var(--ease-spring);
+      opacity: 0;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .decode-popup-trigger.show {
+      opacity: 1;
+      transform: translateX(-50%) scale(1);
+      pointer-events: auto;
+    }
+
+    .decode-popup-trigger:hover {
+      background: var(--gray-1);
+    }
+
+    /* Simulated Result Card */
+    .decode-card {
+      position: absolute;
+      bottom: 40px;
+      left: 24px;
+      right: 24px;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--gray-7);
+      border-radius: var(--r-md);
+      box-shadow: var(--sh-lg);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transform: translateY(12px);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s var(--ease-spring);
+      z-index: 50;
+    }
+
+    .decode-card.show {
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .decode-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .decode-card-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--orange);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .decode-card-title .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--orange);
+    }
+
+    .decode-close-btn {
+      background: transparent;
+      border: none;
+      color: var(--gray-4);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px;
+      border-radius: 50%;
+    }
+
+    .decode-close-btn:hover {
+      background: var(--gray-8);
+      color: var(--black);
+    }
+
+    .decode-text {
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.5;
+      color: var(--black);
+    }
+
+    .decode-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .decode-action-btn {
+      background: var(--gray-8);
+      border: none;
+      color: var(--black);
+      padding: 6px 12px;
+      border-radius: var(--r-sm);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .decode-action-btn:hover {
+      background: var(--gray-7);
+    }
+
+    .decode-action-btn.success {
+      background: var(--green);
+      color: var(--white);
+    }
+
+    /* Typing cursor effect */
+    .typing-cursor::after {
+      content: '|';
+      animation: blink 0.8s infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    /* ── UNDER THE HOOD (FEATURES) ────────────────────────────── */
+    .features-section {
+      padding: 96px 0;
+      background: var(--white);
+      border-top: 1px solid var(--gray-7);
+      border-bottom: 1px solid var(--gray-7);
+    }
+
+    .section-title {
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 48px;
+      text-align: center;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+    }
+
+    .feature-card {
+      border: 1px solid var(--gray-8);
+      border-radius: var(--r-lg);
+      padding: 32px;
+      transition: transform 0.2s var(--ease-out), box-shadow 0.2s;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--sh-md);
+    }
+
+    .feature-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--r-md);
+      background: var(--gray-9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      color: var(--black);
+    }
+
+    .feature-card h3 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .feature-card p {
+      font-size: 14px;
+      color: var(--gray-4);
+      line-height: 1.6;
+    }
+
+    /* ── HOW TO INSTALL ─────────────────────────────────────────── */
+    .install-section {
+      padding: 96px 0;
+    }
+
+    .install-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: center;
+    }
+
+    .install-text h2 {
+      font-size: 36px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 20px;
+    }
+
+    .install-text p {
+      font-size: 16px;
+      color: var(--gray-4);
+      margin-bottom: 32px;
+    }
+
+    .steps-list {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .step-item {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    .step-number {
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gray-4);
+      background: var(--white);
+      border: 1px solid var(--gray-7);
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .step-body h4 {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .step-body p {
+      font-size: 14px;
+      color: var(--gray-4);
+      margin: 0;
+    }
+
+    .code-tag {
+      font-family: var(--mono);
+      background: var(--gray-8);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 12px;
+      color: var(--black);
+    }
+
+    .install-visual {
+      background: var(--white);
+      border: 1px solid var(--gray-7);
+      border-radius: var(--r-xl);
+      padding: 32px;
+      box-shadow: var(--sh-md);
+      position: relative;
+    }
+
+    .manifest-preview {
+      background: var(--gray-9);
+      border-radius: var(--r-md);
+      padding: 20px;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--gray-2);
+      overflow-x: auto;
+      border: 1px solid var(--gray-8);
+    }
+
+    /* ── FOOTER ─────────────────────────────────────────────────── */
+    footer {
+      background: var(--white);
+      border-top: 1px solid var(--gray-7);
+      padding: 48px 0;
+      text-align: center;
+    }
+
+    .footer-logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 16px;
+      margin-bottom: 16px;
+    }
+
+    .footer-text {
+      font-size: 14px;
+      color: var(--gray-5);
+    }
+
+    /* ── RESPONSIVE DESIGN ──────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .features-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
+      .install-layout {
+        grid-template-columns: 1fr;
+        gap: 48px;
+      }
+
+      .hero h1 {
+        font-size: 40px;
+      }
+
+      .nav-links {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER / FLOATING NAVBAR -->
+  <header>
+    <div class="nav-bar">
+      <a href="#" class="logo-link">
+        <span class="logo-icon">
+          <svg width="22" height="14" viewBox="0 0 72 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="0" y="18" width="72" height="8" rx="4" fill="#0F0F0F"/>
+            <circle cx="39" cy="22" r="16" fill="#F2F2F2"/>
+            <circle cx="39" cy="22" r="14.5" fill="white"/>
+            <circle cx="39" cy="22" r="9" fill="#1C1C1E"/>
+            <circle cx="39" cy="22" r="4" fill="#AEAEB2"/>
+          </svg>
+        </span>
+        <span>Tonal</span>
+      </a>
+      <div class="nav-links">
+        <a href="#demo">Interactive Demo</a>
+        <a href="#features">Architecture</a>
+        <a href="#install">Installation</a>
+      </div>
+      <a href="#install" class="nav-cta">Install Extension</a>
+    </div>
+  </header>
+
+  <!-- HERO SECTION -->
+  <section class="hero container">
+    <div class="hero-eyebrow">
+      <span class="dot"></span> Chrome Extension v5.0.0
+    </div>
+    <h1>Calibrate your tone.<br>Translate corporate speak in real-time.</h1>
+    <p class="hero-sub">A zero-dependency, two-way tone translator that works natively inside Gmail, Slack, and LinkedIn. Wrapped fully inside isolated Shadow DOM elements.</p>
+    <div class="hero-actions">
+      <a href="#demo" class="btn btn-primary">Try Interactive Demo</a>
+      <a href="#install" class="btn btn-secondary">Get Started</a>
+    </div>
+  </section>
+
+  <!-- INTERACTIVE PLAYGROUND -->
+  <section id="demo" class="workspace-section container">
+    <div class="workspace-card">
+      <div class="workspace-header">
+        <div class="workspace-tabs">
+          <button class="tab-btn active" onclick="switchTab('translate-mode')">Send Mode (Translate)</button>
+          <button class="tab-btn" onclick="switchTab('decode-mode')">Receive Mode (Decode)</button>
+        </div>
+        <div class="window-dots">
+          <div class="window-dot"></div>
+          <div class="window-dot"></div>
+          <div class="window-dot"></div>
+        </div>
+      </div>
+      
+      <div class="workspace-body">
+        
+        <!-- TRANSLATE MODE PANEL -->
+        <div id="translate-mode" class="workspace-panel active">
+          <div class="editor-container">
+            <div class="editor-label">Compose Message</div>
+            <textarea id="editor" class="editor-box" readonly>hey can we reschedule that call tomorrow morning? something came up</textarea>
+            
+            <div class="editor-actions">
+              <div id="toast-status" class="toast-status">
+                <span class="dot" id="toast-dot"></span>
+                <span id="toast-text">Tonal ready</span>
+              </div>
+              <button id="undo-btn" class="undo-btn" onclick="triggerUndo()">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 7v6h6M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/>
+                </svg>
+                Undo
+              </button>
+            </div>
+
+            <!-- Injected UI element -->
+            <div class="injected-pill-anchor">
+              <div id="tonal-trigger" class="tonal-pill-trigger" onclick="toggleTonalMenu(event)">
+                <span id="trigger-label">Shift Tone</span>
+                <svg width="7" height="5" viewBox="0 0 8 5" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M1 1l3 3 3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              
+              <div id="tonal-menu" class="tonal-menu">
+                <div class="tonal-menu-header">Select Target Tone</div>
+                <div class="tonal-option" onclick="selectTone('casual')">
+                  <span>Casual Texting</span>
+                  <span class="dot dot-casual"></span>
+                </div>
+                <div class="tonal-option" onclick="selectTone('work')">
+                  <span>Work Chat</span>
+                  <span class="dot dot-work"></span>
+                </div>
+                <div class="tonal-option" onclick="selectTone('formal')">
+                  <span>Formal Professional</span>
+                  <span class="dot dot-formal"></span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- DECODE MODE PANEL -->
+        <div id="decode-mode" class="workspace-panel">
+          <div class="reader-container">
+            <div class="editor-label">Received Mail</div>
+            <div class="reader-content">
+              Dear team,<br><br>
+              As we look to wrap up the quarter, <span id="jargon-text" class="highlighted" onclick="showDecodeTrigger(event)">we need to optimize our bandwidth and leverage cross-functional synergies to drive customer alignment.</span> Please make sure all dashboard deliverables are pushed by EOD.<br><br>
+              Regards,<br>
+              Management
+              
+              <!-- Floating Decode action -->
+              <div id="decode-trigger" class="decode-popup-trigger" onclick="triggerDecode(event)">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
+                  <circle cx="12" cy="12" r="3"/>
+                </svg>
+                Decode
+              </div>
+            </div>
+
+            <!-- Viewport-Aware Decode Result Card -->
+            <div id="decode-card" class="decode-card">
+              <div class="decode-card-header">
+                <div class="decode-card-title">
+                  <span class="dot"></span> Tonal Decoder
+                </div>
+                <button class="decode-close-btn" onclick="closeDecodeCard()">
+                  <svg width="10" height="10" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M1 1l12 12M13 1L1 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+              </div>
+              <div id="decode-result" class="decode-text">
+                Translating...
+              </div>
+              <div class="decode-actions">
+                <button id="copy-btn" class="decode-action-btn" onclick="copyDecodedText()">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                  </svg>
+                  <span id="copy-btn-text">Copy</span>
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES (UNDER THE HOOD) -->
+  <section id="features" class="features-section">
+    <div class="container">
+      <h2 class="section-title">Under the hood. Built for production.</h2>
+      <div class="features-grid">
+        
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+              <polyline points="2 17 12 22 22 17"/>
+              <polyline points="2 12 12 17 22 12"/>
+            </svg>
+          </div>
+          <h3>Shadow DOM Isolation</h3>
+          <p>Every Tonal UI component is fully wrapped inside isolated Shadow Roots. Host styles never bleed in, and extension styles never disrupt the page's styling rules.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+            </svg>
+          </div>
+          <h3>Zero Dependencies</h3>
+          <p>No build step. No npm. No bundlers. Written purely in Vanilla Javascript and CSS, optimizing performance, page loads, and extension package size.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+          </div>
+          <h3>Secure Proxy Architecture</h3>
+          <p>No API keys are stored in the client-side content scripts. All traffic is securely encrypted and routed via Service Workers to a serverless Cloudflare Workers proxy.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- INSTALLATION GUIDE -->
+  <section id="install" class="install-section container">
+    <div class="install-layout">
+      
+      <div class="install-text">
+        <h2>Install on Chrome</h2>
+        <p>Tonal is developed with standard manifest-driven modular scripts. You can run the extension locally in seconds by loading it unpacked.</p>
+        
+        <div class="steps-list">
+          <div class="step-item">
+            <div class="step-number">1</div>
+            <div class="step-body">
+              <h4>Clone / Download Code</h4>
+              <p>Download the codebase files and keep the directory structured as is.</p>
+            </div>
+          </div>
+          
+          <div class="step-item">
+            <div class="step-number">2</div>
+            <div class="step-body">
+              <h4>Open Extensions Panel</h4>
+              <p>Navigate to <span class="code-tag">chrome://extensions/</span> in your Chrome web browser address bar.</p>
+            </div>
+          </div>
+
+          <div class="step-item">
+            <div class="step-number">3</div>
+            <div class="step-body">
+              <h4>Toggle Developer Mode</h4>
+              <p>Switch on the <strong>Developer mode</strong> toggle located in the upper-right corner of the window.</p>
+            </div>
+          </div>
+
+          <div class="step-item">
+            <div class="step-number">4</div>
+            <div class="step-body">
+              <h4>Load Unpacked Extension</h4>
+              <p>Click the <strong>Load unpacked</strong> button on the top-left, and select the folder containing <span class="code-tag">manifest.json</span>.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="install-visual">
+        <div class="editor-label" style="margin-bottom: 8px;">manifest.json</div>
+        <pre class="manifest-preview"><code>{
+  "manifest_version": 3,
+  "name": "Tonal",
+  "version": "5.0.0",
+  "permissions": [
+    "storage"
+  ],
+  "host_permissions": [
+    "https://mail.google.com/*",
+    "https://*.slack.com/*",
+    "https://*.linkedin.com/*"
+  ]
+}</code></pre>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <div class="footer-logo">
+        <svg width="18" height="11" viewBox="0 0 72 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="0" y="18" width="72" height="8" rx="4" fill="#636366"/>
+          <circle cx="39" cy="22" r="16" fill="#F2F2F2"/>
+          <circle cx="39" cy="22" r="14.5" fill="white"/>
+          <circle cx="39" cy="22" r="9" fill="#1C1C1E"/>
+        </svg>
+        <span>Tonal</span>
+      </div>
+      <p class="footer-text">© 2026 Tonal. Calibrated corporate correspondence.</p>
+    </div>
+  </footer>
+
+  <!-- INTERACTIVE PLAYGROUND SCRIPT -->
+  <script>
+    // Tab Switching
+    function switchTab(tabId) {
+      // Toggle tab buttons
+      const currentBtn = event.currentTarget;
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      currentBtn.classList.add('active');
+
+      // Toggle panels
+      document.querySelectorAll('.workspace-panel').forEach(panel => panel.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+
+      // Close open UI popovers on tab change
+      closeTonalMenu();
+      closeDecodeCard();
+
+      // Show trigger button automatically if switching to decode-mode
+      if (tabId === 'decode-mode') {
+        setTimeout(() => {
+          const trigger = document.getElementById('decode-trigger');
+          if (trigger) trigger.classList.add('show');
+        }, 300);
+      }
+    }
+
+    // --- TRANSLATE MODE LOGIC ---
+    const originalText = "hey can we reschedule that call tomorrow morning? something came up";
+    const formalText = "Dear team, I am writing to request that we reschedule our conference call planned for tomorrow morning. Unfortunately, an urgent conflict has arisen on my end. I apologize for the inconvenience and look forward to coordinating a new time.";
+    const workText = "Hey team, could we reschedule tomorrow morning's meeting? An unexpected conflict came up on my calendar. Let me know if another time works for you.";
+    const casualText = "hey can we reschedule tomorrow's call? something came up on my end!";
+
+    let currentTimeout = null;
+    let isTyping = false;
+
+    function toggleTonalMenu(e) {
+      if (isTyping) return;
+      e.stopPropagation();
+      const menu = document.getElementById('tonal-menu');
+      const trigger = document.getElementById('tonal-trigger');
+      menu.classList.toggle('show');
+      trigger.classList.toggle('active');
+    }
+
+    function closeTonalMenu() {
+      document.getElementById('tonal-menu').classList.remove('show');
+      document.getElementById('tonal-trigger').classList.remove('active');
+    }
+
+    // Close menu when clicking anywhere else
+    document.addEventListener('click', function(e) {
+      const menu = document.getElementById('tonal-menu');
+      const trigger = document.getElementById('tonal-trigger');
+      if (menu && trigger && !menu.contains(e.target) && e.target !== trigger && !trigger.contains(e.target)) {
+        closeTonalMenu();
+      }
+    });
+
+    function selectTone(tone) {
+      closeTonalMenu();
+      if (isTyping) return;
+
+      const editor = document.getElementById('editor');
+      const trigger = document.getElementById('tonal-trigger');
+      const triggerLabel = document.getElementById('trigger-label');
+      const toast = document.getElementById('toast-status');
+      const toastText = document.getElementById('toast-text');
+      const toastDot = document.getElementById('toast-dot');
+      
+      // Update trigger to Loading State
+      trigger.style.opacity = '0.6';
+      triggerLabel.innerHTML = 'Rewriting...';
+      
+      // Show loader in toast
+      toastDot.style.background = 'var(--orange)';
+      toastText.innerText = 'Consulting AI models...';
+      toast.classList.add('show');
+
+      // Simulate API call
+      setTimeout(() => {
+        let targetText = '';
+        let dotColor = '';
+        let toneLabel = '';
+        
+        if (tone === 'formal') {
+          targetText = formalText;
+          dotColor = 'var(--green)';
+          toneLabel = 'Formal';
+        } else if (tone === 'work') {
+          targetText = workText;
+          dotColor = 'var(--orange)';
+          toneLabel = 'Work Chat';
+        } else {
+          targetText = casualText;
+          dotColor = 'var(--gray-4)';
+          toneLabel = 'Casual Text';
+        }
+
+        // Animate output text insertion
+        isTyping = true;
+        editor.classList.add('typing-cursor');
+        editor.value = '';
+        
+        let charIndex = 0;
+        if (currentTimeout) clearInterval(currentTimeout);
+        
+        currentTimeout = setInterval(() => {
+          if (charIndex < targetText.length) {
+            editor.value += targetText.charAt(charIndex);
+            charIndex++;
+            editor.scrollTop = editor.scrollHeight; // Scroll to bottom
+          } else {
+            clearInterval(currentTimeout);
+            isTyping = false;
+            editor.classList.remove('typing-cursor');
+            
+            // Restore trigger button
+            trigger.style.opacity = '1';
+            triggerLabel.innerHTML = 'Shift Tone';
+
+            // Show done toast
+            toastDot.style.background = dotColor;
+            toastText.innerText = `Translated to ${toneLabel}`;
+            document.getElementById('undo-btn').style.display = 'inline-flex';
+          }
+        }, 12);
+
+      }, 1000);
+    }
+
+    function triggerUndo() {
+      if (isTyping) return;
+      
+      const editor = document.getElementById('editor');
+      const toast = document.getElementById('toast-status');
+      
+      editor.value = originalText;
+      toast.classList.remove('show');
+      document.getElementById('undo-btn').style.display = 'none';
+    }
+
+    // --- DECODE MODE LOGIC ---
+    function showDecodeTrigger(e) {
+      e.stopPropagation();
+      const trigger = document.getElementById('decode-trigger');
+      trigger.classList.add('show');
+    }
+
+    // Auto-show Decode popup on load for better UX signposting
+    setTimeout(() => {
+      const activePanel = document.querySelector('.workspace-panel.active');
+      if (activePanel && activePanel.id === 'decode-mode') {
+        document.getElementById('decode-trigger').classList.add('show');
+      }
+    }, 1500);
+
+    function triggerDecode(e) {
+      e.stopPropagation();
+      // Hide decode floating button
+      document.getElementById('decode-trigger').classList.remove('show');
+
+      const card = document.getElementById('decode-card');
+      const result = document.getElementById('decode-result');
+      
+      card.classList.add('show');
+      result.innerText = 'Decoding corporate messaging...';
+
+      setTimeout(() => {
+        result.innerText = 'Blunt English: "We are understaffed and need to work faster to make the client happy."';
+      }, 1000);
+    }
+
+    function closeDecodeCard() {
+      document.getElementById('decode-card').classList.remove('show');
+      document.getElementById('decode-trigger').classList.remove('show');
+    }
+
+    function copyDecodedText() {
+      const text = 'We are understaffed and need to work faster to make the client happy.';
+      navigator.clipboard.writeText(text).then(() => {
+        const copyBtn = document.getElementById('copy-btn');
+        const copyText = document.getElementById('copy-btn-text');
+        
+        copyBtn.classList.add('success');
+        copyText.innerText = 'Copied!';
+        
+        setTimeout(() => {
+          copyBtn.classList.remove('success');
+          copyText.innerText = 'Copy';
+        }, 1500);
+      });
+    }
+
+    // Hide decode components when clicking background
+    document.addEventListener('click', function(e) {
+      const card = document.getElementById('decode-card');
+      const trigger = document.getElementById('decode-trigger');
+      if (card && trigger && !card.contains(e.target) && e.target !== trigger && !trigger.contains(e.target)) {
+        card.classList.remove('show');
+        trigger.classList.remove('show');
+      }
+    });
+  </script>
+</body>
+</html>

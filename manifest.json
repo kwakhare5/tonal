@@ -24,7 +24,6 @@
         "src/extension/adapters/linkedin.js",
         "src/extension/adapters/slack.js",
         "src/extension/adapters/gmail.js",
-        "src/extension/adapters/default.js",
         "src/extension/adapters/manager.js",
         "src/core/tonal.js",
         "src/extension/content.js"

@@ -1,4 +1,4 @@
-﻿# Tonal — Architecture & Implementation Reference
+# Tonal — Architecture & Implementation Reference
 
 ## Supported Platforms
 
@@ -281,20 +281,26 @@ _Auto-maintained by AI. Updated whenever a new token or class is discovered._
 ---
 
 ## Architectural Decisions (ADRs)
+ 
+ _Auto-maintained by AI. Added whenever a major technical choice is made._
+ 
+ - **2026-07-11 - Static Root Landing Page**: Built a zero-dependency HTML/CSS/JS landing page at root `index.html` featuring interactive editor simulations of the extension's actual flows rather than using a heavy framework.
+ - **2026-07-11 - Next.js Landing Page Website**: Restructured the landing page into a dedicated Next.js + TypeScript + Tailwind CSS v4 application inside a `website/` subdirectory, keeping extension code isolated at the root while offering a robust web presence.
+ 
+ ---
+ 
+ ## Session Log
+ 
+ _Auto-maintained by AI. One entry per session where code was changed._
+ 
+ ### 2026-07-11 — Created Root Landing Page
+ - **Changed:** `index.html`
+ - **Why:** Introduce users to the extension's feature set using a responsive, interactive client-side workspace playground.
+ - **Patterns introduced:** Client-side text area typewriter effects, CSS spring transition menus, and highlighted text popovers matching the design tokens.
+ - **Mistakes caught:** None.
 
-_Auto-maintained by AI. Added whenever a major technical choice is made._
-
-- **[Date] - [Decision]**: [Brief explanation, e.g., "Chose Zustand over Redux for simpler global state without boilerplate."]
-
----
-
-## Session Log
-
-_Auto-maintained by AI. One entry per session where code was changed._
-
-### [DATE] â€” [Short description of what was done]
-- **Changed:** [files changed]
-- **Why:** [reason]
-- **Patterns introduced:** [any new patterns, classes, or components created]
-- **Mistakes caught:** [any bugs or violations caught during audit]
-
+ ### 2026-07-11 — Built Next.js Website
+ - **Changed:** `website/` directory (created), `tests/worker.test.js`, `tests/worker_real_scenarios.test.js`, `ARCHITECTURE.md`
+ - **Why:** Transition the landing page into a production-ready Next.js + TypeScript project to serve as the face of the product.
+ - **Patterns introduced:** Next.js Client Component state flow to control live typing animations, dropdown menus, and copy actions in React. Integrated custom DM Sans and DM Mono fonts via Next.js Google Fonts and imported the original PNG logo using optimized `<Image>` tags. Aligned visualizer padding grids (px-4 py-3, p-5) to strict Apple HIG and Radix UI layout guidelines. Upgraded Tonal pill buttons to match Design System specs (24px height, integrated SVG logo, w-[192px] dropdown menu with 14px rounded corners). Added a dynamic Example Selector preloaded with all 15 tone and 4 decoder training datasets, alongside visual indicators showing isolated Shadow DOM (#tonal-root) boundaries. Created integration tests in `worker_real_scenarios.test.js` to simulate and verify correct backend behavior during real-world Slack, LinkedIn, and Gmail extension usage.
+ - **Mistakes caught:** Deprecated `tw-animate-css` import from default shadcn setups, unused imports causing TS typechecking compile failure, native img tag triggering LCP lint warnings, inconsistent paddings in visualizer platform tabs, custom text labels in extension pills, static text limits in interactive editor testing, and missing backend test coverage for real website origins and prompt injection scenarios.

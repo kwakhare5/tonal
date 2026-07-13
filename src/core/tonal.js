@@ -21,7 +21,7 @@ window.Tonal = (function () {
       z-index: 2147483647;
       pointer-events: none;
 
-      
+
       /* ── TOKENS ────────────────────────────────────────────────── */
       --black:    #0F0F0F;
       --gray-1:   #1C1C1E;
@@ -63,7 +63,7 @@ window.Tonal = (function () {
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; border: none; font-family: inherit; line-height: inherit; outline: none; }
-    
+
     :focus-visible { outline: 2px solid var(--gray-5) !important; outline-offset: 2px; }
 
     /* ── HITBOX ─────────────────────────────────────────────────── */
@@ -83,7 +83,7 @@ window.Tonal = (function () {
     }
     .t-pill--rest     { width: 30px; height: 16px; }
     .t-hitbox:hover .t-pill--rest { transform: scale(1.08); box-shadow: 0 2px 8px rgba(0,0,0,.2); }
-    
+
     .t-pill--expanded { height: 24px; padding: 0 9px; gap: 5px; }
     .t-pill--loading  { height: 24px; padding: 0 9px; opacity: .55; }
     .t-pill--done     { height: 24px; padding: 0 10px; background: var(--green); box-shadow: 0 1px 4px rgba(52,199,89,.35); }
@@ -92,13 +92,13 @@ window.Tonal = (function () {
     .pill-icon { display: flex; align-items: center; justify-content: center; }
     .pill-icon svg { display: block; }
     .pill-text { font-size: 10px; font-weight: 700; color: var(--white); letter-spacing: 0.01em; white-space: nowrap; font-family: var(--font); line-height: 1; }
-    
+
     .pill-dots::after { content: ''; display: inline-block; animation: dots 1.2s steps(4) infinite; }
     @keyframes dots { 0% { content: ''; } 25% { content: '.'; } 50% { content: '..'; } 75% { content: '...'; } }
 
-    .pill-chev-wrap { 
-      display: flex; align-items: center; justify-content: center; 
-      width: 14px; height: 24px; transition: transform 0.15s var(--spring); 
+    .pill-chev-wrap {
+      display: flex; align-items: center; justify-content: center;
+      width: 14px; height: 24px; transition: transform 0.15s var(--spring);
       cursor: pointer; pointer-events: auto; position: relative;
     }
     .pill-chev-wrap::after { content: ''; position: absolute; top: 0; bottom: 0; left: -5px; right: -9px; z-index: 1; }
@@ -146,14 +146,14 @@ window.Tonal = (function () {
       transition: all 0.2s var(--spring); z-index: 2147483647;
     }
     .decode-card--active { opacity: 1; transform: translateY(0); }
-    
+
     .decode-card-header { padding: 11px 14px; border-bottom: 1px solid var(--gray-8); display: flex; align-items: center; justify-content: space-between; }
     .decode-card-tag { font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--gray-4); }
     .decode-card-close { width: 18px; height: 18px; background: var(--gray-8); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--gray-4); cursor: pointer; }
-    
+
     .decode-card-body { padding: 14px; overflow-y: auto; flex: 1; }
     .decode-card-text { font-size: 14px; color: var(--black); line-height: 1.55; margin-bottom: 14px; overflow-wrap: anywhere; }
-    
+
     .decode-card-copy {
       display: inline-flex; align-items: center; justify-content: center; gap: 6px;
       background: var(--gray-9); border: 1px solid var(--gray-7); border-radius: var(--r-sm);
@@ -169,12 +169,12 @@ window.Tonal = (function () {
       display: inline-flex; align-items: center; gap: 7px; padding: 9px 16px;
       border-radius: var(--r-pill); font-size: 12px; font-weight: 600;
       background: var(--black); box-shadow: 0 2px 12px rgba(0,0,0,.15); white-space: nowrap;
-      opacity: 0; pointer-events: none; transition: transform 0.2s var(--spring), opacity 0.2s var(--spring); 
+      opacity: 0; pointer-events: none; transition: transform 0.2s var(--spring), opacity 0.2s var(--spring);
       z-index: 2147483647;
     }
     .toast--active { opacity: 1; transform: translateX(-50%) translateY(0); }
     .toast--exit { opacity: 0; transform: translateX(-50%) translateY(-12px); transition: all 0.3s ease; }
-    
+
     .toast--success { color: var(--green); }
     .toast--error   { color: var(--red); }
     .toast--warn    { color: var(--orange); }
@@ -215,6 +215,39 @@ window.Tonal = (function () {
   return {
     TONES,
     h,
+    insertText: (input, text) => {
+      input.focus();
+      if (input.tagName === "TEXTAREA" || input.tagName === "INPUT") {
+        input.value = text;
+        input.dispatchEvent(new Event("input", { bubbles: true }));
+      } else {
+        document.execCommand("selectAll", false, null);
+
+        const dataTransfer = new DataTransfer();
+        dataTransfer.setData("text/plain", text);
+        if (/<[a-z][\s\S]*>/i.test(text)) {
+          dataTransfer.setData("text/html", text);
+        }
+        const pasteEvent = new ClipboardEvent("paste", {
+          clipboardData: dataTransfer,
+          bubbles: true,
+          cancelable: true,
+        });
+
+        if (input.dispatchEvent(pasteEvent)) {
+          document.execCommand("insertText", false, text);
+        }
+
+        input.dispatchEvent(new Event("input", { bubbles: true }));
+        input.dispatchEvent(new Event("change", { bubbles: true }));
+        input.dispatchEvent(
+          new KeyboardEvent("keydown", { bubbles: true, key: " ", code: "Space" }),
+        );
+        input.dispatchEvent(
+          new KeyboardEvent("keyup", { bubbles: true, key: " ", code: "Space" }),
+        );
+      }
+    },
     CSS,
     injectStyles: (root) => {
       const style = document.createElement("style");

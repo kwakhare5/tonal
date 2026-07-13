@@ -3,30 +3,7 @@
 
 ---
 
-## FILESYSTEM LAYOUT — READ FIRST
-
-Two locations. Both must always be in sync. **Never edit one without syncing the other.**
-
-| Location | Role |
-|---|---|
-| `d:\workflow-main\01_Global_Workflow\` | **Source / test repo** — edit and test here, push to git |
-| `C:\Users\kwakh\.gemini\config\` | **Live global config** — what Gemini IDE actually reads |
-
-**Sync commands (run after ANY skill or AGENTS.md change):**
-```powershell
-robocopy "d:\workflow-main\01_Global_Workflow\skills" "C:\Users\kwakh\.gemini\config\skills" /E /XO
-robocopy "C:\Users\kwakh\.gemini\config\skills" "d:\workflow-main\01_Global_Workflow\skills" /E /XO
-Copy-Item "d:\workflow-main\01_Global_Workflow\AGENTS.md" "C:\Users\kwakh\.gemini\config\AGENTS.md" -Force
-Copy-Item "d:\workflow-main\01_Global_Workflow\AGENTS.md" "C:\Users\kwakh\.gemini\config\templates\AGENTS.md" -Force
-cd d:\workflow-main; git add -A; git commit -m "sync"; git push origin main
-```
-
-**Exception:** `impeccable` is installed via npx but lives in `config\skills\impeccable\` like all other skills. To update it: run `.\01_Global_Workflow\scripts\update-impeccable.ps1` — this handles the copy + cleanup + git push automatically.
-
----
-
 ## CORE BEHAVIOR
-
 
 - **Caveman:** Zero fluff. Short fragments. Drop pleasantries.
 - **Ponytail:** YAGNI. Min code. Existing deps first. No speculative features.
@@ -80,10 +57,6 @@ cd d:\workflow-main; git add -A; git commit -m "sync"; git push origin main
 
 Load skills only when the task matches the skill's trigger. Do not pre-announce skills loaded.
 
-**UI Design pair:**
-- `frontend-design` — building new UI from scratch (aesthetic direction, DFII scoring, design system)
-- `impeccable` — iterating/auditing existing UI (23 commands: `/impeccable audit`, `/impeccable polish`, `/impeccable bolder`, `/impeccable quieter`, etc. + 46 deterministic lint rules)
-
 ---
 
 ## CONFLICT RESOLUTION
@@ -102,7 +75,7 @@ _User triggers these explicitly. AI does not suggest them unprompted._
 | `@ASK-MATT` | Don't know which command/skill to use? Ask the router. | `ask-matt` |
 | `@GRILL` | Stress-test a code project plan and build a domain model. | `grill-with-docs` |
 | `@GRILL-ME` | Interview me about a non-code plan or design. | `grill-me` |
-| `@TO-ISSUES` | Break an agreed-upon plan/PRD into tracer-bullet tickets (supports local files, GitHub, Linear). | `to-tickets` |
+| `@TO-ISSUES` | Break an agreed-upon plan/PRD into grabbable issues. | `to-issues` |
 | `@TO-PRD` | Turn our conversation into a PRD and publish it. | `to-prd` |
 | `@TDD` | Red-Green-Refactor to build a feature or fix a bug. | `tdd` |
 | `@DIAGNOSE` | Something broken — rigorous bug diagnosis loop. | `diagnosing-bugs` |
@@ -121,7 +94,6 @@ _User triggers these explicitly. AI does not suggest them unprompted._
 | `@WIZARD` | Build an interactive bash script that walks through a manual setup procedure. | `wizard` |
 | `@RESEARCH` | Send a background agent to read docs/APIs and file a cited summary. | `research` |
 | `@TWEET` | Generate 3 ready-to-post tweets in your voice from current context. | `tweet` |
-| `/impeccable <cmd>` | Design iteration commands: `audit`, `polish`, `bolder`, `quieter`, `animate`, `colorize`, `typeset`, `distill`, `critique`, `harden`, `layout`, `delight`, `overdrive`, `clarify`. Start new projects with `/impeccable init`. | `impeccable` |
 | `/save` | Save current conversation as a wiki note to vault | `obsidian-vault` |
 | `/autoresearch [topic]` | Research loop: search → fetch → synthesize → file in vault | `obsidian-vault` |
 | `/canvas` | Create a visual Obsidian canvas from notes | `json-canvas` |

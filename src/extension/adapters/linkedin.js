@@ -70,30 +70,7 @@ window.TonalAdapters.linkedin = {
       offset = range.startOffset;
     }
 
-    document.execCommand("selectAll", false, null);
-
-    const dataTransfer = new DataTransfer();
-    dataTransfer.setData("text/plain", text);
-    const pasteEvent = new ClipboardEvent("paste", {
-      clipboardData: dataTransfer,
-      bubbles: true,
-      cancelable: true,
-    });
-
-    if (el.dispatchEvent(pasteEvent)) {
-      document.execCommand("insertText", false, text);
-    }
-
-    // LinkedIn specific: trigger events for React/Draft.js synchronization
-    el.dispatchEvent(new Event("input", { bubbles: true }));
-    el.dispatchEvent(new Event("change", { bubbles: true }));
-    // Dispatch a dummy keyboard event to wake up the Send button logic
-    el.dispatchEvent(
-      new KeyboardEvent("keydown", { bubbles: true, key: " ", code: "Space" }),
-    );
-    el.dispatchEvent(
-      new KeyboardEvent("keyup", { bubbles: true, key: " ", code: "Space" }),
-    );
+    window.Tonal.insertText(el, text);
 
     // Cursor Anchor: Robust Multi-Tick restoration for Draft.js stability
     const restore = (attempts = 0) => {

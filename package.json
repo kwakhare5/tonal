@@ -1,6 +1,7 @@
 {
   "name": "tonal",
   "version": "5.0.0",
+  "type": "module",
   "description": "Two-way tone translator Chrome Extension",
   "main": "background.js",
   "scripts": {

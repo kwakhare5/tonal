@@ -55,27 +55,11 @@ window.TonalAdapters.gmail = {
   },
 
   getValue(el) {
+    if (el.isContentEditable) return el.innerHTML.trim();
     return (el.innerText || el.textContent || "").trim();
   },
 
   insertText(input, text, isRichText = false) {
-    input.focus();
-    document.execCommand("selectAll", false, null);
-
-    const dataTransfer = new DataTransfer();
-    dataTransfer.setData("text/plain", text);
-    const pasteEvent = new ClipboardEvent("paste", {
-      clipboardData: dataTransfer,
-      bubbles: true,
-      cancelable: true,
-    });
-
-    if (input.dispatchEvent(pasteEvent)) {
-      document.execCommand("insertText", false, text);
-    }
-
-    // Sync with Gmail's Lexical/React state
-    input.dispatchEvent(new Event("input", { bubbles: true }));
-    input.dispatchEvent(new Event("change", { bubbles: true }));
+    window.Tonal.insertText(input, text);
   },
 };

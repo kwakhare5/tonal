@@ -57,25 +57,6 @@ window.TonalAdapters.slack = {
   },
 
   insertText(input, text, isRichText = false) {
-    input.focus();
-    document.execCommand("selectAll", false, null);
-
-    const dataTransfer = new DataTransfer();
-    dataTransfer.setData("text/plain", text);
-    const pasteEvent = new ClipboardEvent("paste", {
-      clipboardData: dataTransfer,
-      bubbles: true,
-      cancelable: true,
-    });
-
-    if (input.dispatchEvent(pasteEvent)) {
-      document.execCommand("insertText", false, text);
-    }
-
-    // Slack specific: trigger events so the editor updates its state
-    input.dispatchEvent(new Event("input", { bubbles: true }));
-    input.dispatchEvent(
-      new KeyboardEvent("keydown", { bubbles: true, key: " " }),
-    ); // Force update
+    window.Tonal.insertText(input, text);
   },
 };
