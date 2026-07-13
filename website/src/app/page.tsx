@@ -261,71 +261,68 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-white text-black font-sans antialiased overflow-x-hidden selection:bg-neutral-200 selection:text-black">
+    <div className="min-h-screen bg-white text-black font-sans antialiased overflow-y-scroll selection:bg-neutral-200 selection:text-black">
       
-      {/* ── TOP PASTEL GRADIENT BACKDROP ── */}
+      {/* ── TOP PASTEL GRADIENT BACKDROP (58.25% height of first section) ── */}
       <div className="absolute top-0 left-0 right-0 h-[1000px] bg-gradient-to-b from-[#A8D3FF] to-[#FFF4DF] -z-10 pointer-events-none" />
 
       {/* ── HEADER / FLOATING NAVBAR ── */}
       <header className="fixed top-6 left-4 right-4 z-50 flex justify-center animate-in fade-in slide-in-from-top-4 duration-500">
-        <div className="flex items-center justify-between w-full max-w-[1100px] bg-white border border-gray-250 rounded-full px-6 py-3 shadow-[0_8px_30px_rgba(0,0,0,0.03)]">
+        <div className="flex items-center justify-between w-full max-w-[1240px] bg-white border border-[#DBE0EC] px-6 py-3 shadow-[0_8px_30px_rgba(0,0,0,0.03)] rounded-full">
           <a href="#" className="flex items-center gap-2.5 font-bold text-lg tracking-tight hover:opacity-90 transition-opacity duration-300">
             <span className="flex items-center">
               <Image src="/icon128.png" alt="Tonal Logo" width={24} height={24} className="rounded-lg shadow-sm" />
             </span>
-            <span className="font-serif font-bold text-[#0F0F0F] tracking-tight">Tonal</span>
+            <span className="font-serif font-bold text-black tracking-tight text-xl">Tonal</span>
           </a>
           <nav className="hidden md:flex items-center gap-8">
             <a href="#demo" className="text-sm font-semibold text-gray-600 hover:text-black transition-colors duration-300">Playground</a>
             <a href="#features" className="text-sm font-semibold text-gray-600 hover:text-black transition-colors duration-300">Features</a>
             <a href="#values" className="text-sm font-semibold text-gray-600 hover:text-black transition-colors duration-300">Values</a>
-            <a href="#install" className="text-sm font-semibold text-gray-600 hover:text-black transition-colors duration-300">Installation</a>
+            <a href="#case-study" className="text-sm font-semibold text-gray-600 hover:text-black transition-colors duration-300">Case Study</a>
+            <a href="#journal" className="text-sm font-semibold text-gray-600 hover:text-black transition-colors duration-300">Journal</a>
           </nav>
           
-          <a href="#install" className="flex items-center gap-2 bg-black hover:bg-neutral-800 text-white font-mono text-[13px] px-5 py-2.5 rounded-sm font-medium transition-all duration-300 ease-out hover:-translate-y-0.5 active:translate-y-0">
+          <a href="#install" className="flex items-center gap-2 bg-black hover:bg-neutral-800 text-white font-mono text-[14px] px-5 py-2.5 rounded-none font-medium transition-all duration-300 ease-out hover:-translate-y-0.5 active:translate-y-0">
             <span className="w-1 h-1 rounded-full bg-white"></span>
             <span>Download Extension</span>
           </a>
         </div>
       </header>
 
-      {/* ── HERO SECTION (INTRO) ── */}
-      <section className="pt-44 pb-20 text-center px-6 relative flex flex-col items-center">
+      {/* ── INTRO SECTION (Figma: padding 140px 20px 0px, gap 56px) ── */}
+      <section className="pt-[140px] pb-20 px-6 flex flex-col items-center gap-[56px] w-full max-w-[1280px] mx-auto">
         {/* Intro content */}
         <div className="max-w-[1030px] w-full flex flex-col items-center gap-8">
           
           {/* Header text container */}
-          <div className="flex flex-col items-center gap-4">
-            <h1 className="flex flex-col items-center font-normal text-black text-5xl md:text-[80px] leading-[1.0] tracking-[-0.04em]">
-              <span className="font-serif">Calibrated corporate communication,</span>
-              <span className="font-sans font-medium tracking-[-0.05em] mt-1">built for business.</span>
+          <div className="flex flex-col items-center gap-4 w-full">
+            <h1 className="flex flex-col items-center text-center font-normal text-black text-5xl md:text-[80px] leading-[1.0] tracking-[-0.04em] w-full">
+              <span className="font-serif tracking-[-0.04em]">Calibrated communication,</span>
+              <span className="font-sans font-normal tracking-[-0.05em] mt-1">built for business</span>
             </h1>
             
-            <p className="font-serif text-lg md:text-xl text-[#0F0F0F] leading-normal max-w-[800px] mt-4 tracking-[-0.04em]">
+            <p className="font-serif text-xl text-black text-center leading-[1.2] max-w-[1030px] mt-4 tracking-[-0.04em] w-full">
               Track tone impact, reduce misunderstandings, and accelerate progress—with clarity and confidence.
             </p>
           </div>
 
-          {/* Button row */}
-          <div className="flex items-center gap-4">
-            <a href="#demo" className="flex items-center gap-2 bg-black hover:bg-neutral-800 text-white font-mono text-[14px] px-6 py-3.5 rounded-sm font-medium hover:-translate-y-0.5 transition-all shadow-sm">
+          {/* Button row (Figma: gap 16px, primary button px-4 py-4 Mono 14px) */}
+          <div className="flex flex-col sm:flex-row items-center gap-4 w-[394px] justify-center">
+            <a href="#demo" className="flex items-center justify-center gap-2 bg-black hover:bg-neutral-800 text-white font-mono text-[14px] px-[16px] py-[16px] w-[164px] h-[46px] rounded-none font-medium hover:-translate-y-0.5 transition-all shadow-sm">
               <span className="w-1 h-1 rounded-full bg-white"></span>
-              <span>Try interactive demo</span>
+              <span>Request a demo</span>
             </a>
-            <a href="#install" className="flex items-center gap-2 bg-black hover:bg-neutral-800 text-white font-mono text-[14px] px-6 py-3.5 rounded-sm font-medium hover:-translate-y-0.5 transition-all shadow-sm">
+            <a href="#install" className="flex items-center justify-center gap-2 bg-black hover:bg-neutral-800 text-white font-mono text-[14px] px-[16px] py-[16px] w-[214px] h-[46px] rounded-none font-medium hover:-translate-y-0.5 transition-all shadow-sm">
               <span className="w-1 h-1 rounded-full bg-white"></span>
-              <span>Download Tonal</span>
+              <span>Download Extension</span>
             </a>
           </div>
 
         </div>
-      </section>
 
-      {/* ── INTERACTIVE PLAYGROUND (PLATFORM ADAPTER VISUALIZER) ── */}
-      <section id="demo" className="pb-28 max-w-[1010px] mx-auto px-6 relative z-10">
-        {/* Visualizer window - heavy 2px border and border-radius 24px per Figma spec */}
-        <div className="bg-white border-2 border-black rounded-[24px] shadow-[0_20px_50px_rgba(0,0,0,0.06)] overflow-hidden flex flex-col h-[590px] animate-in fade-in zoom-in-95 duration-500 delay-300">
-          
+        {/* Hero image visualizer (Figma: width 960px, height 608px, border 2px solid black, border-radius 24px) */}
+        <div id="demo" className="w-full max-w-[960px] h-[608px] border-2 border-black rounded-[24px] shadow-[0_20px_50px_rgba(0,0,0,0.06)] overflow-hidden flex flex-col bg-white">
           {/* Header tabs */}
           <div className="bg-[#FAFAFA] border-b-2 border-black px-5 py-3.5 flex items-center justify-between">
             <div className="flex gap-2">
@@ -998,6 +995,14 @@ export default function Home() {
                 </p>
               </div>
 
+              {/* Request Demo Button under Feature List */}
+              <div className="pt-4">
+                <a href="#install" className="flex items-center justify-center gap-2 bg-black hover:bg-neutral-800 text-white font-mono text-[14px] px-[16px] py-[16px] w-[181px] h-[46px] rounded-none font-medium hover:-translate-y-0.5 transition-all shadow-sm">
+                  <span className="w-1 h-1 rounded-full bg-white"></span>
+                  <span>Request a demo</span>
+                </a>
+              </div>
+
             </div>
           </div>
         </div>
@@ -1068,6 +1073,121 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ── CASE STUDY SECTION (Figma: padding 120px 20px, background #F6F8FB, rounded-16px case study module) ── */}
+      <section id="case-study" className="py-32 bg-white border-t border-gray-100 flex flex-col items-center">
+        <div className="w-full max-w-[980px] px-6">
+          <div className="bg-[#F6F8FB] border border-[#DBE0EC] rounded-[16px] p-8 md:p-10 flex flex-col lg:flex-row items-center gap-[40px] w-full min-h-[320px]">
+            {/* Left Case Study image/visual box */}
+            <div className="w-full lg:w-[498px] h-[280px] bg-gradient-to-tr from-[#FFF4DF] to-[#A8D3FF] border border-neutral-300 rounded-[8px] relative overflow-hidden shrink-0 flex items-center justify-center font-mono text-xs text-black/60 shadow-inner">
+              <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800c_1px,transparent_1px),linear-gradient(to_bottom,#8080800c_1px,transparent_1px)] bg-[size:1.5rem_1.5rem] opacity-30" />
+              <span>Case Study Data Visualizer</span>
+            </div>
+            
+            {/* Right content info */}
+            <div className="flex flex-col items-start gap-8 flex-1">
+              <div className="flex flex-col gap-4">
+                <h3 className="text-xl font-medium tracking-tight text-black font-sans">
+                  Why Acme Inc chose Tonal
+                </h3>
+                <p className="font-serif text-[18px] text-black leading-[1.2] tracking-tight">
+                  With fragmented communication and growing writing anxiety, Acme turned to Tonal to streamline their ESG messaging workflows. The result? Faster decisions, fewer drafting delays, and 34% more team productivity.
+                </p>
+              </div>
+              
+              <a href="#install" className="flex items-center justify-center gap-2 bg-black hover:bg-neutral-800 text-white font-mono text-[14px] px-[12px] py-[12px] w-[150px] h-[38px] rounded-none font-medium hover:-translate-y-0.5 transition-all shadow-sm">
+                <span className="w-1 h-1 rounded-full bg-white"></span>
+                <span>Watch case study</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── BLOG/JOURNAL SECTION (Figma: padding 0px 20px, gap 40px, list item headers, blue sticker rotated overlapping) ── */}
+      <section id="journal" className="pb-32 bg-white relative">
+        <div className="max-w-[620px] mx-auto px-6 relative flex flex-col items-center gap-[40px] z-10">
+          
+          {/* Header */}
+          <h2 className="text-4xl md:text-[40px] font-sans font-medium text-black tracking-tight text-center">
+            From the journal
+          </h2>
+
+          {/* Sticker (Figma: position absolute, background #2683EB, rotated -10deg, left -287px, top -109px, width 400px, height 154px) */}
+          <div className="hidden xl:flex absolute left-[-320px] top-[-60px] w-[340px] h-[140px] bg-[#2683EB] text-white border-2 border-black rounded-lg shadow-lg flex-col justify-center p-6 transform -rotate-12 select-none z-20 group hover:rotate-[-6deg] transition-transform duration-300">
+            <div className="font-mono text-[10px] tracking-widest uppercase opacity-75">Tonal Dispatch</div>
+            <div className="font-serif text-lg leading-tight mt-1 font-semibold">100% Client-Side Private AI translation.</div>
+            <div className="absolute right-4 bottom-4 w-6 h-6 border border-white/40 rounded-full flex items-center justify-center font-serif text-[10px] font-bold">T</div>
+          </div>
+
+          {/* Journal List container */}
+          <div className="flex flex-col w-full">
+            
+            {/* Journal Item 1 */}
+            <div className="border-t border-[#DBE0EC] py-6 flex flex-row gap-6 items-start w-full">
+              {/* Mock Image placeholder */}
+              <div className="w-[165px] h-[100px] rounded-lg bg-gradient-to-br from-indigo-100 to-indigo-50 border border-gray-200 shrink-0 relative overflow-hidden flex items-center justify-center font-mono text-[9px] text-[#6C6C6C]">
+                <span>article_img_01</span>
+              </div>
+              <div className="flex flex-col gap-2">
+                <h4 className="text-lg font-medium text-black font-sans tracking-tight hover:underline cursor-pointer">
+                  How to Build a Climate-Ready Data Stack
+                </h4>
+                <div className="flex gap-2 font-mono text-xs text-[#6C6C6C]">
+                  <span>Tooling</span>
+                  <span>·</span>
+                  <span>4 min read</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Journal Item 2 */}
+            <div className="border-t border-[#DBE0EC] py-6 flex flex-row gap-6 items-start w-full">
+              {/* Mock Image 2 */}
+              <div className="w-[165px] h-[100px] rounded-lg bg-gradient-to-br from-amber-100 to-amber-50 border border-gray-200 shrink-0 relative overflow-hidden flex items-center justify-center font-mono text-[9px] text-[#6C6C6C]">
+                <span>article_img_02</span>
+              </div>
+              <div className="flex flex-col gap-2">
+                <h4 className="text-lg font-medium text-black font-sans tracking-tight hover:underline cursor-pointer">
+                  Constructive Professional Pushback: The Guide
+                </h4>
+                <div className="flex gap-2 font-mono text-xs text-[#6C6C6C]">
+                  <span>Communication</span>
+                  <span>·</span>
+                  <span>6 min read</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Journal Item 3 */}
+            <div className="border-t border-b border-[#DBE0EC] py-6 flex flex-row gap-6 items-start w-full mb-6">
+              {/* Mock Image 3 */}
+              <div className="w-[165px] h-[100px] rounded-lg bg-gradient-to-br from-emerald-100 to-emerald-50 border border-gray-200 shrink-0 relative overflow-hidden flex items-center justify-center font-mono text-[9px] text-[#6C6C6C]">
+                <span>article_img_03</span>
+              </div>
+              <div className="flex flex-col gap-2">
+                <h4 className="text-lg font-medium text-black font-sans tracking-tight hover:underline cursor-pointer">
+                  Designing Shadow DOM Components That Don't Bleed
+                </h4>
+                <div className="flex gap-2 font-mono text-xs text-[#6C6C6C]">
+                  <span>Architecture</span>
+                  <span>·</span>
+                  <span>5 min read</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Journal View All Button */}
+            <div className="flex justify-center mt-2">
+              <a href="#install" className="flex items-center justify-center gap-2 bg-black hover:bg-neutral-800 text-white font-mono text-[14px] px-[12px] py-[12px] w-[167px] h-[38px] rounded-none font-medium hover:-translate-y-0.5 transition-all shadow-sm">
+                <span className="w-1 h-1 rounded-full bg-white"></span>
+                <span>Watch case study</span>
+              </a>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
       {/* ── TESTIMONIAL SECTION ── */}
       <section className="py-32 bg-white border-t border-gray-100">
         <div className="max-w-[1100px] mx-auto px-6 flex flex-col lg:flex-row items-center gap-16">
@@ -1095,19 +1215,19 @@ export default function Home() {
       </section>
 
       {/* ── CALL TO ACTION SECTION ── */}
-      <section id="install" className="py-32 px-6 bg-[#F6F8FB] border-t border-gray-150 text-center">
+      <section className="py-32 px-6 bg-[#F6F8FB] border-t border-gray-150 text-center">
         <div className="max-w-[1100px] mx-auto flex flex-col items-center gap-8">
           <h2 className="text-3xl md:text-[40px] font-sans font-medium text-black tracking-tight leading-none max-w-2xl">
             Ready to operationalize your professional goals?
           </h2>
-          <a href="#install" className="flex items-center gap-2 bg-black hover:bg-neutral-800 text-white font-mono text-[14px] px-6 py-3.5 rounded-sm font-medium hover:-translate-y-0.5 transition-all shadow-md">
+          <a href="#install" className="flex items-center gap-2 bg-black hover:bg-neutral-800 text-white font-mono text-[14px] px-[16px] py-[16px] w-[164px] h-[46px] rounded-none font-medium hover:-translate-y-0.5 transition-all shadow-md">
             <span className="w-1 h-1 rounded-full bg-white"></span>
             <span>Request a demo</span>
           </a>
         </div>
       </section>
 
-      {/* ── FOOTER ── */}
+      {/* ── FOOTER (Figma: background #FFF546 yellow, 20px padding) ── */}
       <footer className="bg-[#FFF546] text-black py-20 border-t-2 border-black select-none">
         <div className="max-w-[1100px] mx-auto px-6 flex flex-col md:flex-row justify-between gap-12">
           
