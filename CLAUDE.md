@@ -106,16 +106,25 @@ content.js (user interaction)
 
 _AI fills this at the END of every session. Read this at the START of the next session._
 
-**Last session date:** [YYYY-MM-DD]
+**Last session date:** 2026-07-13
 
 **What we built / changed:**
-- [bullet]
+- Redesigned the Next.js landing page to a "Modern SaaS" aesthetic with a floating navbar.
+- Redesigned the landing page to mimic Framer's dark, premium bento-grid and bold-typography aesthetic.
+- Conducted a full `@ARCHITECTURE-REVIEW` of the extension.
+- Fixed a prompt injection vulnerability in `worker.js` via HTML entity encoding (`<`, `>`).
+- Optimized extension performance by removing the `setInterval` DOM polling loop in favor of robust `MutationObserver` and `ResizeObserver` tracking.
 
 **Immediate next task:**
-[Describe exactly]
+- Review the new Framer-styled landing page locally.
+- Address any outstanding UI/UX polish (e.g. mobile responsiveness for the tabs in `page.tsx` which was audited but paused).
 
 **Open blockers:**
-[Anything unresolved]
+- None.
 
 **Files most recently changed:**
-- [file path]
+- `website/src/app/page.tsx`
+- `src/backend/worker.js`
+- `src/extension/content.js`
+- `tests/worker_real_scenarios.test.js`
+- `CONTEXT.md`

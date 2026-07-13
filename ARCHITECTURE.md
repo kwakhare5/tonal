@@ -286,6 +286,8 @@ _Auto-maintained by AI. Updated whenever a new token or class is discovered._
  
  - **2026-07-11 - Static Root Landing Page**: Built a zero-dependency HTML/CSS/JS landing page at root `index.html` featuring interactive editor simulations of the extension's actual flows rather than using a heavy framework.
  - **2026-07-11 - Next.js Landing Page Website**: Restructured the landing page into a dedicated Next.js + TypeScript + Tailwind CSS v4 application inside a `website/` subdirectory, keeping extension code isolated at the root while offering a robust web presence.
+ - **2026-07-13 - Next.js Landing Page Redesign**: Upgraded the Next.js website to a "Modern SaaS" aesthetic with a floating navbar, removing the static `index.html` file.
+ - **2026-07-13 - Security & Performance Architecture Patches**: Patched prompt injection vulnerabilities in `worker.js` by encoding HTML entities (`<`, `>`). Removed layout thrashing `setInterval` polling in `content.js`, relying strictly on `MutationObserver` and `ResizeObserver`. Maintained vanilla JS monolith for content scripts to prevent injection order flakiness.
  
  ---
  
@@ -304,3 +306,9 @@ _Auto-maintained by AI. Updated whenever a new token or class is discovered._
  - **Why:** Transition the landing page into a production-ready Next.js + TypeScript project to serve as the face of the product.
  - **Patterns introduced:** Next.js Client Component state flow to control live typing animations, dropdown menus, and copy actions in React. Integrated custom DM Sans and DM Mono fonts via Next.js Google Fonts and imported the original PNG logo using optimized `<Image>` tags. Aligned visualizer padding grids (px-4 py-3, p-5) to strict Apple HIG and Radix UI layout guidelines. Upgraded Tonal pill buttons to match Design System specs (24px height, integrated SVG logo, w-[192px] dropdown menu with 14px rounded corners). Added a dynamic Example Selector preloaded with all 15 tone and 4 decoder training datasets, alongside visual indicators showing isolated Shadow DOM (#tonal-root) boundaries. Created integration tests in `worker_real_scenarios.test.js` to simulate and verify correct backend behavior during real-world Slack, LinkedIn, and Gmail extension usage.
  - **Mistakes caught:** Deprecated `tw-animate-css` import from default shadcn setups, unused imports causing TS typechecking compile failure, native img tag triggering LCP lint warnings, inconsistent paddings in visualizer platform tabs, custom text labels in extension pills, static text limits in interactive editor testing, and missing backend test coverage for real website origins and prompt injection scenarios.
+
+ ### 2026-07-13 — Modern SaaS Redesign & Architecture Patches
+ - **Changed:** `website/src/app/page.tsx`, `src/backend/worker.js`, `src/extension/content.js`, `tests/worker_real_scenarios.test.js`, `index.html` (deleted).
+ - **Why:** The user requested a "Modern SaaS" aesthetic redesign with 2px rounded corners and a floating navbar, followed by an @ARCHITECTURE-REVIEW of the entire codebase for stability.
+ - **Patterns introduced:** Floating navbar with blur, HTML entity escaping for Prompt Injection defense (`<`, `>`), and optimized DOM polling without `setInterval`.
+ - **Mistakes caught:** Attempted to split `content.js` monolith into modules, but correctly aborted the plan during the `@TDD` phase due to lack of an E2E testing framework to verify extension injection order.
