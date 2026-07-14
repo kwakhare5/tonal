@@ -106,6 +106,8 @@ html {
 body {
   font-family: var(--font-sans);
   background-color: var(--color-bg-base);
+  background-image: radial-gradient(rgba(0, 0, 0, 0.025) 1.5px, transparent 1.5px);
+  background-size: 24px 24px;
   color: var(--color-text-primary);
   line-height: 1.6;
   font-size: 16px;
@@ -125,15 +127,20 @@ body {
 .text-center { text-align: center; }
 .text-right { text-align: right; }
 
+.text-highlight {
+  color: var(--color-blue);
+  font-weight: 700;
+}
+
 .section-padding {
-  padding-top: var(--space-10);
-  padding-bottom: var(--space-10);
+  padding-top: var(--space-12);
+  padding-bottom: var(--space-12);
 }
 
 @media (min-width: 768px) {
   .section-padding {
-    padding-top: var(--space-12);
-    padding-bottom: var(--space-12);
+    padding-top: var(--space-16);
+    padding-bottom: var(--space-16);
   }
 }
 
@@ -311,18 +318,9 @@ h1, h2, h3, h4, h5, h6 {
 .hero {
   position: relative;
   overflow: hidden;
-  padding-top: calc(var(--header-height) + var(--space-10));
-  padding-bottom: var(--space-10);
+  padding-top: calc(var(--header-height) + var(--space-12));
+  padding-bottom: var(--space-12);
   border-bottom: 1px solid var(--color-border-light);
-  background-image: radial-gradient(rgba(0, 0, 0, 0.025) 1.5px, transparent 1.5px);
-  background-size: 24px 24px;
-}
-
-@media (min-width: 768px) {
-  .hero {
-    padding-top: calc(var(--header-height) + var(--space-12));
-    padding-bottom: var(--space-12);
-  }
 }
 
 .hero-content {
@@ -444,7 +442,12 @@ h1, h2, h3, h4, h5, h6 {
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
-  background: var(--white);
+  background-color: var(--white);
+  /* Ruled notebook line pattern - increased opacity for high visibility */
+  background-image: 
+    linear-gradient(90deg, transparent 40px, rgba(255, 99, 99, 0.16) 40px, rgba(255, 99, 99, 0.16) 41.5px, transparent 41.5px),
+    linear-gradient(rgba(0, 152, 242, 0.07) 1px, transparent 1px);
+  background-size: auto, 100% 24px;
   position: relative;
 }
 
@@ -544,7 +547,7 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Social Proof & Quotes */
 .social-proof {
-  background-color: var(--color-bg-base);
+  background-color: transparent;
   border-bottom: 1px solid var(--color-border-light);
 }
 
@@ -578,7 +581,7 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Who is this for Section */
 .who-is-it-for {
-  background-color: var(--color-bg-base);
+  background-color: transparent;
 }
 
 .section-header {
@@ -664,7 +667,7 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Comparison Section */
 .comparison-section {
-  background-color: var(--color-bg-base);
+  background-color: transparent;
   border-top: 1px solid var(--color-border-light);
   border-bottom: 1px solid var(--color-border-light);
 }
@@ -748,7 +751,7 @@ h1, h2, h3, h4, h5, h6 {
   margin-top: var(--space-5);
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
+  gap: var(--space-5);
 }
 
 .comp-item {
@@ -789,12 +792,12 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Features Grid */
 .features-grid-section {
-  background-color: var(--color-bg-base);
+  background-color: transparent;
 }
 
 /* Engine & Privacy Section */
 .engine-section {
-  background-color: var(--color-bg-base);
+  background-color: transparent;
   border-bottom: 1px solid var(--color-border-light);
 }
 
@@ -865,10 +868,8 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Bottom CTA */
 .bottom-cta {
-  background-color: var(--color-bg-base);
+  background-color: transparent;
   text-align: center;
-  background-image: radial-gradient(rgba(0, 0, 0, 0.025) 1.5px, transparent 1.5px);
-  background-size: 24px 24px;
 }
 
 .cta-box {
@@ -1013,7 +1014,7 @@ svg {
 
 /* FAQ Section */
 .faq-section {
-  background-color: var(--color-bg-base);
+  background-color: transparent;
   border-bottom: 1px solid var(--color-border-light);
 }
 
