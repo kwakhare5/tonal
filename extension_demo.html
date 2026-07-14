@@ -3,18 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tonal Extension UI States Playground</title>
+  <title>Tonal Extension Design System Catalog</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Lora:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet" />
   <style>
-    /* Premium Page Styles */
+    /* Design System Documentation Theme */
     :root {
-      --bg: #0B0B0C;
-      --panel: #121214;
-      --border: #1C1C1F;
-      --text: #E5E5EA;
-      --text-muted: #8E8E93;
+      --bg: #09090B;
+      --panel: #18181B;
+      --border: #27272A;
+      --text: #F4F4F5;
+      --text-muted: #A1A1AA;
       --blue: #0098f2;
       --green: #34C759;
       --red: #FF3B30;
@@ -34,7 +34,8 @@
       --white:    #FFFFFF;
       
       --font: 'DM Sans', sans-serif;
-      --mono: 'DM Sans', sans-serif;
+      --mono: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+      
       --r-sm:  6px;
       --r-md:  10px;
       --r-lg:  14px;
@@ -55,118 +56,318 @@
       color: var(--text);
       font-family: var(--font);
       min-height: 100vh;
+      padding: 48px 24px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: var(--space-8, 32px) var(--space-4, 16px);
-      overflow-x: hidden;
+      line-height: 1.5;
     }
 
+    .container {
+      width: 100%;
+      max-width: 1100px;
+      display: flex;
+      flex-direction: column;
+      gap: 56px;
+    }
+
+    /* Header styling */
     header {
-      text-align: center;
-      margin-bottom: 40px;
-      max-width: 600px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 32px;
     }
 
     header h1 {
       font-family: 'Lora', serif;
-      font-size: 36px;
+      font-size: 38px;
       font-weight: 600;
-      letter-spacing: -0.02em;
-      margin-bottom: 12px;
       color: #FFF;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
     }
 
     header p {
       color: var(--text-muted);
-      font-size: 15px;
-      line-height: 1.5;
+      font-size: 16px;
+      max-width: 700px;
     }
 
-    .main-grid {
+    /* Section Styling */
+    .section-title {
+      font-family: 'Lora', serif;
+      font-size: 22px;
+      font-weight: 600;
+      color: #FFF;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .section-title::after {
+      content: '';
+      flex-grow: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .section-desc {
+      color: var(--text-muted);
+      font-size: 14px;
+      margin-top: -16px;
+      margin-bottom: 32px;
+      max-width: 800px;
+    }
+
+    /* Code block styling */
+    code, pre {
+      font-family: var(--mono);
+      font-size: 12px;
+      background: #09090B;
+      color: #E4E4E7;
+      border-radius: 6px;
+    }
+
+    pre {
+      padding: 12px;
+      border: 1px solid var(--border);
+      overflow-x: auto;
+      margin-top: 12px;
+    }
+
+    /* Component Spec Card Grid */
+    .spec-grid {
       display: grid;
-      grid-template-columns: 1fr;
-      gap: 32px;
-      width: 100%;
-      max-width: 1000px;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 24px;
     }
 
-    @media (min-width: 900px) {
-      .main-grid {
-        grid-template-columns: 320px 1fr;
-      }
-    }
-
-    /* Controls Panel */
-    .controls-panel {
+    .spec-card {
       background: var(--panel);
       border: 1px solid var(--border);
-      border-radius: 16px;
+      border-radius: 12px;
       padding: 24px;
       display: flex;
       flex-direction: column;
-      gap: 20px;
-      height: fit-content;
+      gap: 16px;
     }
 
-    .controls-title {
+    .spec-card-title {
       font-size: 14px;
       font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--text-muted);
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 8px;
-    }
-
-    .btn-group {
+      color: #FFF;
       display: flex;
-      flex-direction: column;
-      gap: 8px;
+      justify-content: space-between;
+      align-items: center;
     }
 
-    .control-btn {
-      width: 100%;
-      background: #1C1C1F;
-      border: 1px solid #2C2C2E;
-      color: var(--text);
-      padding: 10px 14px;
+    .spec-card-badge {
+      background: #27272A;
+      color: var(--text-muted);
+      font-size: 10px;
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-family: var(--mono);
+    }
+
+    .spec-preview-box {
+      background: #09090B;
+      border: 1px dashed var(--border);
       border-radius: 8px;
-      font-size: 13px;
-      font-weight: 500;
-      cursor: pointer;
-      text-align: left;
-      transition: all 0.15s ease;
+      padding: 24px;
       display: flex;
       align-items: center;
-      gap: 10px;
+      justify-content: center;
+      min-height: 80px;
+      position: relative;
     }
 
-    .control-btn:hover {
-      background: #2C2C2E;
-      border-color: #3A3A3C;
+    .spec-card-desc {
+      font-size: 13px;
+      color: var(--text-muted);
     }
 
-    .control-btn.active {
-      background: var(--blue);
-      border-color: var(--blue);
-      color: #FFF;
+    /* Swatches Grid */
+    .swatch-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 16px;
+    }
+
+    .swatch-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .swatch-color {
+      height: 80px;
+      width: 100%;
+    }
+
+    .swatch-info {
+      padding: 12px;
+      font-size: 12px;
+    }
+
+    .swatch-name {
       font-weight: 600;
+      color: #FFF;
+      margin-bottom: 4px;
     }
 
-    .state-dot {
-      width: 8px;
-      height: 8px;
+    .swatch-value {
+      font-family: var(--mono);
+      color: var(--text-muted);
+    }
+
+    /* ── SHADOW DOM REPLICA FOR TONAL PILL ────────────────────── */
+    .t-hitbox {
+      padding: 8px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .t-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--black);
+      border-radius: var(--r-pill);
+      box-shadow: 0 1px 3px rgba(0,0,0,.16);
+      transition: transform 0.15s var(--ease-out), background 0.15s, box-shadow 0.15s, width 0.2s var(--spring), height 0.2s var(--spring);
+      overflow: hidden;
+      color: var(--white);
+    }
+    
+    .t-pill--rest     { width: 30px; height: 16px; }
+    .t-pill--expanded { height: 24px; padding: 0 9px; gap: 5px; }
+    .t-pill--loading  { height: 24px; padding: 0 9px; opacity: .55; }
+    .t-pill--done     { height: 24px; padding: 0 10px; background: var(--green); box-shadow: 0 1px 4px rgba(52,199,89,.35); }
+    .t-pill--error    { height: 24px; padding: 0 9px; background: var(--red); }
+    
+    .pill-icon { display: flex; align-items: center; justify-content: center; }
+    .pill-icon img, .pill-icon svg { display: block; }
+    
+    .pill-text {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--white);
+      letter-spacing: 0.01em;
+      white-space: nowrap;
+      font-family: var(--font);
+      line-height: 1;
+    }
+    
+    .pill-dots::after {
+      content: '';
+      display: inline-block;
+      animation: dots 1.2s steps(4) infinite;
+    }
+    @keyframes dots { 0% { content: ''; } 25% { content: '.'; } 50% { content: '..'; } 75% { content: '...'; } }
+    
+    .pill-chev-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 14px;
+      height: 24px;
+      cursor: pointer;
+      position: relative;
+    }
+
+    /* Popover styles */
+    .popover {
+      background: var(--white);
+      border-radius: var(--r-lg);
+      border: 1px solid var(--gray-7);
+      box-shadow: var(--sh-lg);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      z-index: 10;
+      color: var(--black);
+    }
+
+    .pop-item {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 11px 15px;
+      width: 100%;
+      text-align: left;
+    }
+    
+    .pop-item:not(.pop-item--active):hover { background: var(--gray-9); }
+    .pop-item--active { background: var(--black); cursor: default; }
+    
+    .pop-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+    }
+
+    .pop-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--black);
+    }
+    .pop-item--active .pop-label { color: var(--white); }
+    
+    .pop-sub {
+      font-size: 10px;
+      color: var(--gray-5);
+      margin-top: 2px;
+    }
+    .pop-item--active .pop-sub { color: var(--gray-6); }
+    
+    .pop-check {
+      font-size: 11px;
+      color: var(--black);
+      font-weight: 700;
+    }
+    .pop-item--active .pop-check { color: var(--white); }
+    
+    .pop-divider {
+      height: 1px;
+      background: var(--gray-8);
+    }
+
+    /* Static Toasts */
+    .toast-static {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 16px;
+      border-radius: var(--r-pill);
+      font-size: 12px;
+      font-weight: 600;
+      background: var(--black);
+      color: var(--white);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+      white-space: nowrap;
+    }
+    .toast-static--success { color: var(--green); }
+    .toast-static--error { color: var(--red); }
+    .toast-static--info { color: #FFF; }
+    
+    .toast-dot {
+      width: 6px;
+      height: 6px;
       border-radius: 50%;
-      background: var(--text-muted);
     }
-    .active.rest .state-dot { background: #FFF; }
-    .active.expanded .state-dot { background: #FFF; }
-    .active.loading .state-dot { background: #FFF; }
-    .active.done .state-dot { background: #FFF; }
-    .active.error .state-dot { background: #FFF; }
+    .toast-dot--success { background: var(--green); }
+    .toast-dot--error { background: var(--red); }
+    .toast-dot--info { background: #FFF; }
 
-    /* Sandbox Surface */
+    /* Sandbox Interactive area */
     .sandbox-container {
       background: var(--panel);
       border: 1px solid var(--border);
@@ -177,10 +378,9 @@
       align-items: center;
       justify-content: center;
       position: relative;
-      min-height: 450px;
+      min-height: 400px;
     }
 
-    /* Gmail Composer Mock */
     .composer-mock {
       background: var(--white);
       border-radius: var(--r-md);
@@ -233,339 +433,425 @@
       flex-grow: 1;
     }
 
-    /* ── SHADOW DOM REPLICA FOR TONAL PILL ────────────────────── */
-    .tonal-shadow-container {
+    .sandbox-pill-wrapper {
       position: absolute;
       right: 4px;
       bottom: 4px;
-      width: fit-content;
-      height: fit-content;
-      display: block;
-      pointer-events: auto;
       z-index: 200;
     }
 
-    /* Embedded tonal.css rules */
-    .t-hitbox {
-      position: relative;
-      padding: 8px;
-      cursor: pointer;
-      display: flex;
-      align-items: flex-end;
-      justify-content: flex-end;
-    }
-
-    .t-pill {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      background: var(--black);
-      border-radius: var(--r-pill);
-      box-shadow: 0 1px 3px rgba(0,0,0,.16);
-      transition: transform 0.15s var(--ease-out), background 0.15s, box-shadow 0.15s, width 0.2s var(--spring), height 0.2s var(--spring);
-      pointer-events: none;
-      overflow: hidden;
-    }
-    
-    .t-pill--rest     { width: 30px; height: 16px; }
-    .t-hitbox:hover .t-pill--rest { transform: scale(1.08); box-shadow: 0 2px 8px rgba(0,0,0,.2); }
-    
-    .t-pill--expanded { height: 24px; padding: 0 9px; gap: 5px; }
-    .t-pill--loading  { height: 24px; padding: 0 9px; opacity: .55; }
-    .t-pill--done     { height: 24px; padding: 0 10px; background: var(--green); box-shadow: 0 1px 4px rgba(52,199,89,.35); }
-    .t-pill--error    { height: 24px; padding: 0 9px; background: var(--red); }
-    
-    .pill-icon { display: flex; align-items: center; justify-content: center; }
-    .pill-icon img { display: block; }
-    
-    .pill-text {
-      font-size: 10px;
-      font-weight: 700;
-      color: var(--white);
-      letter-spacing: 0.01em;
-      white-space: nowrap;
-      font-family: var(--font);
-      line-height: 1;
-    }
-    
-    .pill-dots::after {
-      content: '';
-      display: inline-block;
-      animation: dots 1.2s steps(4) infinite;
-    }
-    @keyframes dots { 0% { content: ''; } 25% { content: '.'; } 50% { content: '..'; } 75% { content: '...'; } }
-    
-    .pill-chev-wrap {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 14px;
-      height: 24px;
-      transition: transform 0.15s var(--spring);
-      cursor: pointer;
-      pointer-events: auto;
-      position: relative;
-    }
-    .pill-chev-wrap::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      left: -5px;
-      right: -9px;
-      z-index: 1;
-    }
-
-    .popover {
+    .sandbox-popover {
       position: absolute;
       bottom: calc(100% + 4px);
       right: 8px;
       width: 192px;
-      background: var(--white);
-      border-radius: var(--r-lg);
-      border: 1px solid var(--gray-7);
-      box-shadow: var(--sh-lg);
-      overflow: hidden;
       opacity: 0;
       transform: translateY(12px) scale(0.95);
       transition: all 0.2s var(--spring);
       pointer-events: none;
-      display: flex;
-      flex-direction: column;
-      z-index: 1000;
-      transform-origin: bottom right;
     }
     
-    .popover.popover--active {
+    .sandbox-popover.active {
       opacity: 1;
       transform: translateY(0) scale(1);
       pointer-events: auto;
     }
 
-    .pop-item {
+    .sandbox-controls {
       display: flex;
-      flex-direction: column;
-      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 24px;
       justify-content: center;
-      padding: 10px 14px;
-      cursor: pointer;
-      transition: background .08s;
-      width: 100%;
-      text-align: left;
-    }
-    .pop-item:not(.pop-item--active):hover { background: var(--gray-9); }
-    .pop-item--active { background: var(--black); cursor: default; }
-    
-    .pop-header-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      width: 100%;
     }
 
-    .pop-label {
+    .sandbox-btn {
+      background: #27272A;
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 8px 16px;
+      border-radius: 8px;
       font-size: 13px;
       font-weight: 600;
-      color: var(--black);
-    }
-    .pop-item--active .pop-label { color: var(--white); }
-    
-    .pop-sub {
-      font-size: 10px;
-      color: var(--gray-5);
-      margin-top: 2px;
-    }
-    .pop-item--active .pop-sub { color: var(--gray-6); }
-    
-    .pop-check {
-      font-size: 11px;
-      color: var(--black);
-      font-weight: 700;
-    }
-    .pop-item--active .pop-check { color: var(--white); }
-    
-    .pop-divider {
-      height: 1px;
-      background: var(--gray-8);
+      cursor: pointer;
+      transition: all 0.15s ease;
     }
 
-    /* Toasts */
-    .toast {
+    .sandbox-btn:hover {
+      background: #3F3F46;
+    }
+
+    .sandbox-btn.active {
+      background: var(--blue);
+      border-color: var(--blue);
+      color: white;
+    }
+
+    .toast-live {
       position: absolute;
+      bottom: 24px;
       left: 50%;
-      bottom: 20px;
-      transform: translateX(-50%) translateY(24px);
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 9px 16px;
-      border-radius: var(--r-pill);
-      font-size: 12px;
-      font-weight: 600;
-      background: var(--black);
-      color: var(--white);
-      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
-      white-space: nowrap;
+      transform: translateX(-50%) translateY(20px);
       opacity: 0;
       pointer-events: none;
-      transition: transform 0.2s var(--spring), opacity 0.2s var(--spring);
+      transition: all 0.2s var(--spring);
       z-index: 1000;
     }
-    .toast--active {
+
+    .toast-live.active {
       opacity: 1;
       transform: translateX(-50%) translateY(0);
     }
-    .toast--success { color: var(--green); }
-    .toast--error { color: var(--red); }
-    .toast-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-    }
-    .toast-dot--success { background: var(--green); }
-    .toast-dot--error { background: var(--red); }
   </style>
 </head>
 <body>
 
-  <header>
-    <h1>Tonal Extension UI Playground</h1>
-    <p>Use the controls on the left panel to click through and preview all five active states, popover menus, and toasts of the Tonal floating composer pill.</p>
-  </header>
+  <div class="container">
+    <!-- Header -->
+    <header>
+      <h1>Tonal Extension Design System Catalog</h1>
+      <p>Official component catalog, design tokens, markup templates, and interactive state triggers for the Tonal Chrome Extension. All UI components render within an isolated Shadow DOM container in production.</p>
+    </header>
 
-  <div class="main-grid">
-    <!-- Controls Panel -->
-    <div class="controls-panel">
-      <div class="controls-title">Extension States</div>
-      <div class="btn-group">
-        <button class="control-btn active rest" onclick="setState('rest')">
-          <div class="state-dot"></div>
-          1. Rest Pill
-        </button>
-        <button class="control-btn expanded" onclick="setState('expanded')">
-          <div class="state-dot"></div>
-          2. Expanded Pill
-        </button>
-        <button class="control-btn loading" onclick="setState('loading')">
-          <div class="state-dot"></div>
-          3. Converting / Loader
-        </button>
-        <button class="control-btn done" onclick="setState('done')">
-          <div class="state-dot"></div>
-          4. Success / Undo
-        </button>
-        <button class="control-btn error" onclick="setState('error')">
-          <div class="state-dot"></div>
-          5. Failure / Retry
-        </button>
-      </div>
-
-      <div class="controls-title">Menu & Toasts</div>
-      <div class="btn-group">
-        <button class="control-btn" id="togglePopoverBtn" onclick="togglePopover()">
-          <div class="state-dot" style="background: var(--orange);"></div>
-          Toggle Selection Menu
-        </button>
-        <button class="control-btn" onclick="showToast('success', 'Text rewritten successfully')">
-          <div class="state-dot" style="background: var(--green);"></div>
-          Success Toast
-        </button>
-        <button class="control-btn" onclick="showToast('error', 'Rewriting failed. Please retry')">
-          <div class="state-dot" style="background: var(--red);"></div>
-          Error Toast
-        </button>
-      </div>
-    </div>
-
-    <!-- Sandbox Surface -->
-    <div class="sandbox-container">
-      <div class="composer-mock">
-        <div class="composer-header">
-          <span>New Message</span>
-          <span style="cursor: pointer;">✕</span>
+    <!-- Section 1: Design Tokens -->
+    <section>
+      <div class="section-title">1. Color & Typography Tokens</div>
+      <p class="section-desc">Standard styling constants used inside <code>tonal.css</code>. Ensures a consistent theme that matches the main Tonal brand.</p>
+      
+      <div class="swatch-grid">
+        <div class="swatch-card">
+          <div class="swatch-color" style="background: var(--black)"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">Black (Ink)</div>
+            <div class="swatch-value">#0F0F0F</div>
+          </div>
         </div>
-        <div class="composer-body">
-          <div class="composer-textarea-container">
-            <textarea class="composer-textarea" id="textbox" readonly>hey guys need that report asap thx</textarea>
-            
-            <!-- Shadow DOM Pill Mockup -->
-            <div class="tonal-shadow-container">
-              <!-- Popover Menu -->
-              <div class="popover" id="popoverMenu">
-                <div class="pop-item pop-item--active" onclick="selectTone('workChat', 'Work', 'Clear, concise, professional')">
-                  <div class="pop-header-row">
-                    <span class="pop-label">Work</span>
-                    <span class="pop-check">✓</span>
-                  </div>
-                  <div class="pop-sub">Clear, concise, professional</div>
-                </div>
-                <div class="pop-divider"></div>
-                <div class="pop-item" onclick="selectTone('casual', 'Casual', 'Warm, friendly, open')">
-                  <div class="pop-header-row">
-                    <span class="pop-label">Casual</span>
-                    <span class="pop-check"></span>
-                  </div>
-                  <div class="pop-sub">Warm, friendly, open</div>
-                </div>
-                <div class="pop-divider"></div>
-                <div class="pop-item" onclick="selectTone('formal', 'Formal', 'Dear team, could you please...')">
-                  <div class="pop-header-row">
-                    <span class="pop-label">Formal</span>
-                    <span class="pop-check"></span>
-                  </div>
-                  <div class="pop-sub">Polite, executive, formal</div>
-                </div>
-              </div>
-
-              <!-- Pill Element -->
-              <div class="t-hitbox" onclick="handlePillClick()">
-                <div class="t-pill t-pill--rest" id="pill">
-                  <div class="pill-icon">
-                    <img src="https://raw.githubusercontent.com/kwakhare5/Tonal/main/icons/icon128.png" style="width: 12px; height: 12px; border-radius: 2px;" />
-                  </div>
-                </div>
-              </div>
-            </div>
-
+        <div class="swatch-card">
+          <div class="swatch-color" style="background: var(--white); border-bottom: 1px solid var(--border)"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">White (Paper)</div>
+            <div class="swatch-value">#FFFFFF</div>
+          </div>
+        </div>
+        <div class="swatch-card">
+          <div class="swatch-color" style="background: var(--green)"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">Green (Success)</div>
+            <div class="swatch-value">#34C759</div>
+          </div>
+        </div>
+        <div class="swatch-card">
+          <div class="swatch-color" style="background: var(--red)"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">Red (Error)</div>
+            <div class="swatch-value">#FF3B30</div>
+          </div>
+        </div>
+        <div class="swatch-card">
+          <div class="swatch-color" style="background: var(--gray-4)"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">Muted Text</div>
+            <div class="swatch-value">#636366</div>
+          </div>
+        </div>
+        <div class="swatch-card">
+          <div class="swatch-color" style="background: var(--gray-7)"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">Borders</div>
+            <div class="swatch-value">#E5E5EA</div>
           </div>
         </div>
       </div>
+    </section>
 
-      <!-- Toast Layer -->
-      <div class="toast" id="toast">
-        <div class="toast-dot" id="toastDot"></div>
-        <span id="toastText">Action successful</span>
+    <!-- Section 2: Pill States -->
+    <section>
+      <div class="section-title">2. Floating Pill Component States</div>
+      <p class="section-desc">The floating capsule pill that anchors inside inputs. It transitions dynamically across five structural states based on current operation.</p>
+      
+      <div class="spec-grid">
+        <!-- 1. Rest State -->
+        <div class="spec-card">
+          <div class="spec-card-title">
+            <span>1. Rest State</span>
+            <span class="spec-card-badge">t-pill--rest</span>
+          </div>
+          <div class="spec-preview-box">
+            <div class="t-pill t-pill--rest">
+              <div class="pill-icon">
+                <img src="https://raw.githubusercontent.com/kwakhare5/Tonal/main/icons/icon128.png" style="width: 12px; height: 12px; border-radius: 2px;" />
+              </div>
+            </div>
+          </div>
+          <div class="spec-card-desc">Default low-profile mode shown when input is active but the user is typing without selecting a tone.</div>
+          <pre><code>&lt;div class="t-pill t-pill--rest"&gt;
+  &lt;div class="pill-icon"&gt;
+    &lt;img src="icons/icon128.png" /&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+        </div>
+
+        <!-- 2. Expanded State -->
+        <div class="spec-card">
+          <div class="spec-card-title">
+            <span>2. Expanded State</span>
+            <span class="spec-card-badge">t-pill--expanded</span>
+          </div>
+          <div class="spec-preview-box">
+            <div class="t-pill t-pill--expanded">
+              <div class="pill-icon">
+                <img src="https://raw.githubusercontent.com/kwakhare5/Tonal/main/icons/icon128.png" style="width: 12px; height: 12px; border-radius: 2px;" />
+              </div>
+              <span class="pill-text">Work</span>
+              <div class="pill-chev-wrap">
+                <svg width="7" height="5" viewBox="0 0 8 5" fill="none"><path d="M1 1l3 3 3-3" stroke="#FFFFFF" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+            </div>
+          </div>
+          <div class="spec-card-desc">Expanded mode displaying the currently selected tone option along with a chevron toggle dropdown.</div>
+          <pre><code>&lt;div class="t-pill t-pill--expanded"&gt;
+  &lt;div class="pill-icon"&gt;
+    &lt;img src="icons/icon128.png" /&gt;
+  &lt;/div&gt;
+  &lt;span class="pill-text"&gt;Work&lt;/span&gt;
+  &lt;div class="pill-chev-wrap"&gt;&lt;svg&gt;...&lt;/svg&gt;&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+        </div>
+
+        <!-- 3. Loading State -->
+        <div class="spec-card">
+          <div class="spec-card-title">
+            <span>3. Converting State</span>
+            <span class="spec-card-badge">t-pill--loading</span>
+          </div>
+          <div class="spec-preview-box">
+            <div class="t-pill t-pill--loading">
+              <span class="pill-text">Converting<span class="pill-dots"></span></span>
+            </div>
+          </div>
+          <div class="spec-card-desc">Active loading animation indicating LPU inference processing. Chevrons and logos are hidden.</div>
+          <pre><code>&lt;div class="t-pill t-pill--loading"&gt;
+  &lt;span class="pill-text"&gt;
+    Converting&lt;span class="pill-dots"&gt;&lt;/span&gt;
+  &lt;/span&gt;
+&lt;/div&gt;</code></pre>
+        </div>
+
+        <!-- 4. Done / Undo State -->
+        <div class="spec-card">
+          <div class="spec-card-title">
+            <span>4. Done State</span>
+            <span class="spec-card-badge">t-pill--done</span>
+          </div>
+          <div class="spec-preview-box">
+            <div class="t-pill t-pill--done">
+              <span class="pill-text">Undo</span>
+            </div>
+          </div>
+          <div class="spec-card-desc">Highlights green with done styling. Clicking the pill rolls back text adjustments back to original inputs.</div>
+          <pre><code>&lt;div class="t-pill t-pill--done"&gt;
+  &lt;span class="pill-text"&gt;Undo&lt;/span&gt;
+&lt;/div&gt;</code></pre>
+        </div>
+
+        <!-- 5. Error State -->
+        <div class="spec-card">
+          <div class="spec-card-title">
+            <span>5. Error / Retry State</span>
+            <span class="spec-card-badge">t-pill--error</span>
+          </div>
+          <div class="spec-preview-box">
+            <div class="t-pill t-pill--error">
+              <div class="pill-icon">
+                <svg width="10" height="10" viewBox="0 0 14 14" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 1l12 12M13 1L1 13"/></svg>
+              </div>
+              <span class="pill-text" style="margin-left: 4px;">Retry</span>
+            </div>
+          </div>
+          <div class="spec-card-desc">Highlights red. Triggered on connection loss or worker proxy failures, allowing quick request re-submits.</div>
+          <pre><code>&lt;div class="t-pill t-pill--error"&gt;
+  &lt;div class="pill-icon"&gt;&lt;svg&gt;...&lt;/svg&gt;&lt;/div&gt;
+  &lt;span class="pill-text"&gt;Retry&lt;/span&gt;
+&lt;/div&gt;</code></pre>
+        </div>
       </div>
-    </div>
+    </section>
+
+    <!-- Section 3: Popover Selector -->
+    <section>
+      <div class="section-title">3. Tone Selector Menu (Popover)</div>
+      <p class="section-desc">Positioned directly above the pill. Renders options with support summaries and active items checks.</p>
+      
+      <div style="display: grid; grid-template-columns: 1fr; gap: 32px; max-width: 600px;">
+        <div class="popover">
+          <div class="pop-item pop-item--active">
+            <div class="pop-header-row">
+              <span class="pop-label">Work</span>
+              <span class="pop-check">✓</span>
+            </div>
+            <div class="pop-sub">Clear, concise, professional</div>
+          </div>
+          <div class="pop-divider"></div>
+          <div class="pop-item">
+            <div class="pop-header-row">
+              <span class="pop-label">Casual</span>
+              <span class="pop-check"></span>
+            </div>
+            <div class="pop-sub">Warm, friendly, open</div>
+          </div>
+          <div class="pop-divider"></div>
+          <div class="pop-item">
+            <div class="pop-header-row">
+              <span class="pop-label">Formal</span>
+              <span class="pop-check"></span>
+            </div>
+            <div class="pop-sub">Polite, executive, formal</div>
+          </div>
+        </div>
+        
+        <pre><code>&lt;div class="popover popover--active" role="listbox"&gt;
+  &lt;div class="pop-item pop-item--active" role="option" aria-selected="true"&gt;
+    &lt;div class="pop-header-row"&gt;
+      &lt;span class="pop-label"&gt;Work&lt;/span&gt;
+      &lt;span class="pop-check"&gt;✓&lt;/span&gt;
+    &lt;/div&gt;
+    &lt;div class="pop-sub"&gt;Clear, concise, professional&lt;/div&gt;
+  &lt;/div&gt;
+  ...
+&lt;/div&gt;</code></pre>
+      </div>
+    </section>
+
+    <!-- Section 4: Toasts -->
+    <section>
+      <div class="section-title">4. Toast Notification Layer</div>
+      <p class="section-desc">Temporary notifications positioned at the bottom of the viewport to announce write operations.</p>
+      
+      <div style="display: flex; flex-direction: column; gap: 16px; align-items: flex-start;">
+        <div class="toast-static toast-static--success">
+          <div class="toast-dot toast-dot--success"></div>
+          <span>Text rewritten successfully</span>
+        </div>
+        <div class="toast-static toast-static--error">
+          <div class="toast-dot toast-dot--error"></div>
+          <span>Rewriting failed. Please retry</span>
+        </div>
+        <div class="toast-static toast-static--info">
+          <div class="toast-dot toast-dot--info"></div>
+          <span>Rewriting undone</span>
+        </div>
+        
+        <pre style="width: 100%; max-width: 600px;"><code>&lt;div class="toast toast--active toast--success"&gt;
+  &lt;div class="toast-dot toast-dot--success"&gt;&lt;/div&gt;
+  &lt;span&gt;Text rewritten successfully&lt;/span&gt;
+&lt;/div&gt;</code></pre>
+      </div>
+    </section>
+
+    <!-- Section 5: Interactive Sandbox -->
+    <section>
+      <div class="section-title">5. Live Interactive Sandbox</div>
+      <p class="section-desc">Try out the transitions in real-time. Use the state controls below to simulate extension logic in a mocked Gmail composer.</p>
+      
+      <div class="sandbox-container">
+        <!-- Sandbox State Controls -->
+        <div class="sandbox-controls">
+          <button class="sandbox-btn active" id="btn-rest" onclick="setSandboxState('rest')">Rest Mode</button>
+          <button class="sandbox-btn" id="btn-expanded" onclick="setSandboxState('expanded')">Expanded Mode</button>
+          <button class="sandbox-btn" id="btn-loading" onclick="setSandboxState('loading')">Converting Mode</button>
+          <button class="sandbox-btn" id="btn-done" onclick="setSandboxState('done')">Done Mode</button>
+          <button class="sandbox-btn" id="btn-error" onclick="setSandboxState('error')">Error Mode</button>
+          <button class="sandbox-btn" style="border-color: var(--orange);" onclick="toggleSandboxPopover()">Toggle Popover</button>
+        </div>
+
+        <div class="composer-mock">
+          <div class="composer-header">
+            <span>New Message</span>
+            <span>✕</span>
+          </div>
+          <div class="composer-body">
+            <div class="composer-textarea-container">
+              <textarea class="composer-textarea" id="sandbox-textarea" readonly>hey guys need that report asap thx</textarea>
+              
+              <!-- Floating Pill wrapper -->
+              <div class="sandbox-pill-wrapper">
+                <!-- Sandbox Popover -->
+                <div class="popover sandbox-popover" id="sandboxPopover">
+                  <div class="pop-item pop-item--active" onclick="triggerSandboxTone('Work')">
+                    <div class="pop-header-row">
+                      <span class="pop-label">Work</span>
+                      <span class="pop-check">✓</span>
+                    </div>
+                    <div class="pop-sub">Clear, concise, professional</div>
+                  </div>
+                  <div class="pop-divider"></div>
+                  <div class="pop-item" onclick="triggerSandboxTone('Casual')">
+                    <div class="pop-header-row">
+                      <span class="pop-label">Casual</span>
+                      <span class="pop-check"></span>
+                    </div>
+                    <div class="pop-sub">Warm, friendly, open</div>
+                  </div>
+                  <div class="pop-divider"></div>
+                  <div class="pop-item" onclick="triggerSandboxTone('Formal')">
+                    <div class="pop-header-row">
+                      <span class="pop-label">Formal</span>
+                      <span class="pop-check"></span>
+                    </div>
+                    <div class="pop-sub">Polite, executive, formal</div>
+                  </div>
+                </div>
+
+                <!-- Sandbox Pill Hitbox -->
+                <div class="t-hitbox" onclick="handleSandboxPillClick()">
+                  <div class="t-pill t-pill--rest" id="sandboxPill">
+                    <div class="pill-icon">
+                      <img src="https://raw.githubusercontent.com/kwakhare5/Tonal/main/icons/icon128.png" style="width: 12px; height: 12px; border-radius: 2px;" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- Toast Layer -->
+        <div class="toast-static toast-live" id="sandboxToast">
+          <div class="toast-dot" id="sandboxToastDot"></div>
+          <span id="sandboxToastText">Success</span>
+        </div>
+      </div>
+    </section>
   </div>
 
   <script>
-    let activeState = 'rest';
-    let isPopoverOpen = false;
-    let selectedTone = 'Work';
+    let sandboxState = 'rest';
+    let sandboxPopoverActive = false;
+    let selectedSandboxTone = 'Work';
 
-    const TEXTS = {
+    const MOCK_TEXTS = {
       original: 'hey guys need that report asap thx',
-      converted: 'Hey team, please share the latest report as soon as possible. Thanks!'
+      Work: 'Hey team, please share the latest report as soon as possible. Thanks!',
+      Casual: 'hey guys, can someone send over that report whenever you get a chance? thanks! 🙌',
+      Formal: 'Dear team, could you please send over the latest report at your earliest convenience? Thank you.'
     };
 
-    function setState(state) {
-      activeState = state;
-      isPopoverOpen = false;
-      
-      // Update buttons
-      document.querySelectorAll('.control-btn').forEach(btn => btn.classList.remove('active'));
-      const activeBtn = document.querySelector(`.control-btn.${state}`);
+    function setSandboxState(state) {
+      sandboxState = state;
+      sandboxPopoverActive = false;
+      document.getElementById('sandboxPopover').classList.remove('active');
+
+      // Update control buttons
+      document.querySelectorAll('.sandbox-btn').forEach(btn => btn.classList.remove('active'));
+      const activeBtn = document.getElementById(`btn-${state}`);
       if (activeBtn) activeBtn.classList.add('active');
 
-      // Update Pill Class
-      const pill = document.getElementById('pill');
+      // Update pill classes
+      const pill = document.getElementById('sandboxPill');
       pill.className = `t-pill t-pill--${state}`;
-      
-      // Close popover
-      document.getElementById('popoverMenu').classList.remove('popover--active');
 
-      // Set Inner HTML for State
+      // Update Pill markup
       if (state === 'rest') {
         pill.innerHTML = `
           <div class="pill-icon">
@@ -576,14 +862,14 @@
           <div class="pill-icon">
             <img src="https://raw.githubusercontent.com/kwakhare5/Tonal/main/icons/icon128.png" style="width: 12px; height: 12px; border-radius: 2px;" />
           </div>
-          <span class="pill-text">${selectedTone}</span>
-          <div class="pill-chev-wrap" onclick="event.stopPropagation(); togglePopover()">
+          <span class="pill-text">${selectedSandboxTone}</span>
+          <div class="pill-chev-wrap" onclick="event.stopPropagation(); toggleSandboxPopover()">
             <svg width="7" height="5" viewBox="0 0 8 5" fill="none"><path d="M1 1l3 3 3-3" stroke="#FFFFFF" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </div>`;
       } else if (state === 'loading') {
         pill.innerHTML = `<span class="pill-text">Converting<span class="pill-dots"></span></span>`;
       } else if (state === 'done') {
-        pill.innerHTML = `<span class="pill-text" style="cursor: pointer;">Undo</span>`;
+        pill.innerHTML = `<span class="pill-text">Undo</span>`;
       } else if (state === 'error') {
         pill.innerHTML = `
           <div class="pill-icon">
@@ -593,29 +879,29 @@
       }
     }
 
-    function togglePopover() {
-      if (activeState !== 'expanded') {
-        setState('expanded');
+    function toggleSandboxPopover() {
+      if (sandboxState !== 'expanded') {
+        setSandboxState('expanded');
       }
-      isPopoverOpen = !isPopoverOpen;
-      const popover = document.getElementById('popoverMenu');
-      if (isPopoverOpen) {
-        popover.classList.add('popover--active');
+      sandboxPopoverActive = !sandboxPopoverActive;
+      const popover = document.getElementById('sandboxPopover');
+      if (sandboxPopoverActive) {
+        popover.classList.add('active');
       } else {
-        popover.classList.remove('popover--active');
+        popover.classList.remove('active');
       }
     }
 
-    function selectTone(toneId, label, subText) {
-      selectedTone = label;
-      togglePopover();
-      setState('expanded');
-      
-      // Update check marks
-      document.querySelectorAll('.pop-item').forEach(item => {
+    function triggerSandboxTone(tone) {
+      selectedSandboxTone = tone;
+      toggleSandboxPopover();
+      setSandboxState('expanded');
+
+      // Update checks in popover
+      document.querySelectorAll('.sandbox-popover .pop-item').forEach(item => {
         const itemLabel = item.querySelector('.pop-label').innerText;
         const check = item.querySelector('.pop-check');
-        if (itemLabel === label) {
+        if (itemLabel === tone) {
           item.classList.add('pop-item--active');
           check.innerText = '✓';
         } else {
@@ -624,45 +910,45 @@
         }
       });
 
-      // Show loader simulation
+      // Simulate rewrite operation
       setTimeout(() => {
-        setState('loading');
+        setSandboxState('loading');
         setTimeout(() => {
-          document.getElementById('textbox').value = TEXTS.converted;
-          setState('done');
-          showToast('success', 'Text rewritten successfully');
+          document.getElementById('sandbox-textarea').value = MOCK_TEXTS[tone];
+          setSandboxState('done');
+          triggerLiveToast('success', 'Text rewritten successfully');
         }, 1200);
-      }, 300);
+      }, 200);
     }
 
-    function handlePillClick() {
-      if (activeState === 'rest') {
-        setState('expanded');
-      } else if (activeState === 'done') {
-        // Undo Action
-        document.getElementById('textbox').value = TEXTS.original;
-        setState('rest');
-        showToast('info', 'Rewriting undone');
-      } else if (activeState === 'error') {
-        setState('loading');
+    function handleSandboxPillClick() {
+      if (sandboxState === 'rest') {
+        setSandboxState('expanded');
+      } else if (sandboxState === 'done') {
+        // Undo rewrite
+        document.getElementById('sandbox-textarea').value = MOCK_TEXTS.original;
+        setSandboxState('rest');
+        triggerLiveToast('info', 'Rewriting undone');
+      } else if (sandboxState === 'error') {
+        setSandboxState('loading');
         setTimeout(() => {
-          document.getElementById('textbox').value = TEXTS.converted;
-          setState('done');
+          document.getElementById('sandbox-textarea').value = MOCK_TEXTS[selectedSandboxTone];
+          setSandboxState('done');
         }, 1200);
       }
     }
 
-    function showToast(type, msg) {
-      const toast = document.getElementById('toast');
-      const dot = document.getElementById('toastDot');
-      const text = document.getElementById('toastText');
+    function triggerLiveToast(type, msg) {
+      const toast = document.getElementById('sandboxToast');
+      const dot = document.getElementById('sandboxToastDot');
+      const text = document.getElementById('sandboxToastText');
 
-      toast.className = `toast toast--active toast--${type}`;
+      toast.className = `toast-static toast-live active toast-static--${type}`;
       dot.className = `toast-dot toast-dot--${type}`;
       text.innerText = msg;
 
       setTimeout(() => {
-        toast.classList.remove('toast--active');
+        toast.classList.remove('active');
       }, 3000);
     }
   </script>
