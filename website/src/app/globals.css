@@ -97,6 +97,12 @@ button, input, textarea, select {
   font-family: inherit;
 }
 
+input:focus, textarea:focus, select:focus, button:focus,
+input:active, textarea:active, select:active, button:active {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
 html {
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
@@ -1282,7 +1288,7 @@ svg {
     opacity: 1 !important;
     transform: none !important;
   }
-  
+
   .hero-glow {
     animation: none !important;
   }
