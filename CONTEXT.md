@@ -92,6 +92,7 @@ Tonal/
 │       │   └── page.tsx
 │       └── components/
 │           └── TonalMockup.tsx      ← Interactive tone selector demo
+├── tests/                           ← Backend test suite (Node --test)
 └── extension_demo.html              ← Standalone Light-Mode UI States Playground
 ```
 
@@ -154,6 +155,7 @@ User triggers tone change
 | 2026-07-14 | Authentic Dynamic Mockup Headers | Styled interactive mockup headers to dynamically adapt their backgrounds and borders matching Gmail (#F2F6FC) and Slack (#3F0E40) branding when selected. |
 | 2026-07-14 | Global Dot Grid Background | Exposed the dot-grid drafting background pattern across the entire site by setting all main section backgrounds to transparent. |
 | 2026-07-14 | Mockup Card Border | Set a solid border of rgba(0, 0, 0, 0.15) to composer-mockup to stand out clearly on the global dot-grid background. |
+| 2026-07-14 | Test Suite Restoration | Relocated tests/ folder back to root to fix relative module imports and package.json integration. |
 
 ---
 
