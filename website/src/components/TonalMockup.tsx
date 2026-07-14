@@ -83,7 +83,7 @@ export default function TonalMockup() {
   React.useEffect(() => {
     if (typeof window !== 'undefined') {
       // @ts-expect-error - tonal.js is a plain JavaScript script file, not an ES module
-      import('../extension_shared/tonal.js').then(() => {
+      import('../../../extension/tonal.js').then(() => {
         setTonalLoaded(true);
       });
     }
