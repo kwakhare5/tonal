@@ -34,3 +34,4 @@ yarn-error.log*
 
 # Build artifacts / local env
 tsconfig.tsbuildinfo
+.vercel
