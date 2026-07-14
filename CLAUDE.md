@@ -138,6 +138,7 @@ _AI fills this at the END of every session. Read this at the START of the next s
 - Loosened Comparison Spacing: Increased vertical spacing (`gap`) between list items in the comparison columns to `var(--space-5)` (20px) to make the text columns less compact.
 - Reverted Mockup Skeuomorphism: Reverted stacked paper shadows and paperclip decorations to keep the card minimal and clean.
 - Mockup Border Contrast: Added a distinct border (`1px solid rgba(0, 0, 0, 0.15)`) to the composer mockup to ensure visibility against the light background grid.
+- Focus Outline Removal: Added `outline: none !important` and `box-shadow: none !important` rules to the composer textarea and its container on focus states to prevent browser-default outline boxes.
 
 **Immediate next task:**
 - None. Website design is polished, fully responsive, and branding is cohesive.
