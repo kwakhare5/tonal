@@ -142,6 +142,7 @@ _AI fills this at the END of every session. Read this at the START of the next s
 - BUG-4b Fixed: Groq 429 rate limit now returns proper 429 with user-friendly message instead of swallowing into 502.
 - BUG-6 Fixed: `TonalMockup.tsx` LinkedIn tab added; refs cleaned up (only one branch renders at a time via &&).
 - TDD: 8 new regression tests added to `tests/bug_regression.test.js`. Full suite 16/16 green.
+- Website Redesign: Replaced hero blue underline with a warm yellow highlighter tone, boosted dot-grid opacity to 0.065, and cast blue, purple, and magenta gradients behind mockup visualizers to eliminate monochrome feedback.
 
 **Immediate next task:**
 - Deploy backend to Cloudflare: `npm run deploy` from root (requires Wrangler auth)
@@ -149,10 +150,12 @@ _AI fills this at the END of every session. Read this at the START of the next s
 - Reload extension in Chrome after `tonal.js` + `background.js` changes
 
 **Open blockers:**
-- None. All 6 bugs fixed and test-verified.
+- None. All bugs and visual adjustments fixed.
 
 **Files most recently changed:**
-- `website/src/components/TonalMockup.tsx`
 - `website/src/app/globals.css`
 - `website/src/app/page.tsx`
+- `website/src/components/TonalMockup.tsx`
+- `CONTEXT.md`
+- `ARCHITECTURE.md`
 - `CLAUDE.md`

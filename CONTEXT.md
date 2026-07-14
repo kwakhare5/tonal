@@ -159,6 +159,7 @@ User triggers tone change
 | 2026-07-14 | Dynamic Mockup Height (480px) and Flex Sizing | Defined a fixed mockup height of 480px in globals.css and refactored inner container layouts to size dynamically using CSS Flexbox. |
 | 2026-07-14 | Scoped Text Selection Scoping Fix | Replaced global selectAll execution inside tonal.js with node-level scoped selection to protect external document text inputs. |
 | 2026-07-14 | Cloudflare Pages CORS and Rate-Limit Response Patches | Allowed Cloudflare Pages origins dynamically in worker.js and structured Groq API 429 rate limit exceptions into human-readable JSON payloads. |
+| 2026-07-14 | Website Contrast & Highlight Redesign | Replaced hero blue underline with a warm yellow highlighter tone, boosted dot-grid opacity to 0.065, and cast blue, purple, and magenta gradients behind mockup visualizers to eliminate monochrome feedback. |
 
 ---
 

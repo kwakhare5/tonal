@@ -302,6 +302,7 @@ _Auto-maintained by AI. Updated whenever a new token or class is discovered._
  - **2026-07-14 - Dynamic Mockup Height (480px) and Flex Sizing**: Defined a fixed mockup height of 480px in globals.css and refactored inner container layouts to size dynamically using CSS Flexbox.
  - **2026-07-14 - Scoped Text Selection Scoping Fix**: Replaced global selectAll execution inside tonal.js with node-level scoped selection to protect external document text inputs.
  - **2026-07-14 - Cloudflare Pages CORS and Rate-Limit Response Patches**: Allowed Cloudflare Pages origins dynamically in worker.js and structured Groq API 429 rate limit exceptions into human-readable JSON payloads.
+ - **2026-07-14 - Website Contrast & Highlight Redesign**: Replaced hero blue underline with a warm yellow highlighter tone, boosted dot-grid opacity to 0.065, and cast blue, purple, and magenta gradients behind mockup visualizers to eliminate monochrome feedback.
  
  ---
  
@@ -344,3 +345,9 @@ _Auto-maintained by AI. Updated whenever a new token or class is discovered._
  - **Why:** Scoped text insertion selection to target element nodes to stop page-level text corruption on Gmail, resolved inactive tab contrast issues, added LinkedIn mockup view, enabled worker to allow Cloudflare Pages CORS requests, and mapped Groq API rate limit responses.
  - **Patterns introduced:** Dynamic opacity transitions matching active header luminance, env-based allowed CORS origins, and regression tests verifying platform payload context mapping.
  - **Mistakes caught:** Duplicate React mockup refs mounted in different tabs resulting in mounting race conditions, and selectAll triggering page-wide text input resets.
+
+ ### 2026-07-14 — Website Contrast & Highlight Redesign
+ - **Changed:** `website/src/app/globals.css`
+ - **Why:** Replaced the blue accent highlight with a yellow highlighter tone, increased dot grid matrix background opacity, and cast vibrant neon color gradients behind the visualizer container to reduce monochrome style feedback.
+ - **Patterns introduced:** Yellow highlighter highlighter marker elements, high-contrast matrix patterns, and multi-color gradient blur backdrops.
+ - **Mistakes caught:** None.
