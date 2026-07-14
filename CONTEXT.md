@@ -156,6 +156,9 @@ User triggers tone change
 | 2026-07-14 | Global Dot Grid Background | Exposed the dot-grid drafting background pattern across the entire site by setting all main section backgrounds to transparent. |
 | 2026-07-14 | Mockup Card Border | Set a solid border of rgba(0, 0, 0, 0.15) to composer-mockup to stand out clearly on the global dot-grid background. |
 | 2026-07-14 | Test Suite Restoration | Relocated tests/ folder back to root to fix relative module imports and package.json integration. |
+| 2026-07-14 | Dynamic Mockup Height (480px) and Flex Sizing | Defined a fixed mockup height of 480px in globals.css and refactored inner container layouts to size dynamically using CSS Flexbox. |
+| 2026-07-14 | Scoped Text Selection Scoping Fix | Replaced global selectAll execution inside tonal.js with node-level scoped selection to protect external document text inputs. |
+| 2026-07-14 | Cloudflare Pages CORS and Rate-Limit Response Patches | Allowed Cloudflare Pages origins dynamically in worker.js and structured Groq API 429 rate limit exceptions into human-readable JSON payloads. |
 
 ---
 
@@ -181,3 +184,8 @@ _Append-only. Never repeat these._
 | 2026-07-14 | Missing Text Field Validation | Added TDD checks and separated input validation to distinguish missing/invalid text variables from short inputs. |
 | 2026-07-14 | Mockup Tab Contrast Issue | Standardized active/inactive tab text colors dynamically based on header background brightness to prevent illegible gray text on eggplant purple. |
 | 2026-07-14 | Ruled Line Visibility | Increased contrast opacity of ruled writing lines inside the mockup body to prevent them from looking unnoticeably faint. |
+| 2026-07-14 | Global SelectAll Extension Text Corruption | Scoped text insertion selection to the input node container in `tonal.js` to prevent resetting unrelated fields. |
+| 2026-07-14 | Missing Background Platform Context | Read `sender.tab.url` inside `background.js` and forwarded platform identifiers in payloads to enable context-specific formatting prompts. |
+| 2026-07-14 | HTML Leakage in Gmail Input | Restored Gmail input adapters to fetch plaintext textContent rather than innerHTML to secure LLM pipelines. |
+| 2026-07-14 | Mockup Tab React Ref Race | Separated ref bindings from conditional mount pipelines to resolve UI element registration glitches. |
+| 2026-07-14 | Mockup Inactive Tab Text Visibility | Configured dynamic opacity scaling for mockup tabs based on Gmail/Slack/LinkedIn header brightness transitions. |

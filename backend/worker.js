@@ -137,13 +137,22 @@ OUTPUT: The ₹45,000 invoice hasn't been paid. Pay it now.
 Now decode this message. Wrap your final plain English explanation inside <tonal_output>...</tonal_output> tags.`,
 };
 
-function getCorsHeaders(origin) {
-  const isAllowed = origin === "" || 
-                    origin.startsWith("chrome-extension://") || 
-                    origin.startsWith("http://localhost") || 
-                    origin.startsWith("http://127.0.0.1");
+function isAllowedOrigin(origin, environment) {
+  if (!origin) return true; // No origin = direct request (CLI, curl, etc.)
+  if (origin.startsWith("chrome-extension://")) return true;
+  if (origin.startsWith("http://localhost")) return true;
+  if (origin.startsWith("http://127.0.0.1")) return true;
+  // Cloudflare Pages domains
+  if (origin.endsWith(".pages.dev")) return true;
+  // Configurable production domain via env var
+  if (environment?.ALLOWED_ORIGIN && origin === environment.ALLOWED_ORIGIN) return true;
+  return false;
+}
+
+function getCorsHeaders(origin, environment) {
+  const allowed = isAllowedOrigin(origin, environment);
   return {
-    "Access-Control-Allow-Origin": isAllowed ? (origin || "*") : "null",
+    "Access-Control-Allow-Origin": allowed ? (origin || "*") : "null",
     "Access-Control-Allow-Methods": "POST, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type",
   };
@@ -152,17 +161,12 @@ function getCorsHeaders(origin) {
 export default {
   async fetch(request, environment) {
     const origin = request.headers.get("Origin") || "";
-    const corsHeaders = getCorsHeaders(origin);
+    const corsHeaders = getCorsHeaders(origin, environment);
 
     if (request.method === "OPTIONS")
       return new Response(null, { status: 204, headers: corsHeaders });
 
-    const isAllowed = origin === "" || 
-                      origin.startsWith("chrome-extension://") || 
-                      origin.startsWith("http://localhost") || 
-                      origin.startsWith("http://127.0.0.1");
-
-    if (!isAllowed) {
+    if (!isAllowedOrigin(origin, environment)) {
       return json({ success: false, error: "Forbidden origin" }, 403, corsHeaders);
     }
 
@@ -222,6 +226,17 @@ export default {
             body: JSON.stringify(payload),
           },
         );
+
+        // Handle Groq rate limiting with a user-friendly message
+        if (response.status === 429) {
+          const retryAfter = response.headers.get("retry-after") || "60";
+          return json({
+            success: false,
+            error: "Taking a break. Try in 1 min.",
+            retryAfter: parseInt(retryAfter, 10),
+          }, 429, corsHeaders);
+        }
+
         if (response.ok) {
           const data = await response.json();
           let rawText = data.choices?.[0]?.message?.content?.trim() || "";
@@ -235,8 +250,16 @@ export default {
             provider: "groq",
           }, 200, corsHeaders);
         }
+
+        // Other non-ok Groq responses (500, 503, etc.)
+        const errData = await response.json().catch(() => ({}));
+        const serverMsg = errData?.error?.message || `Server Error: ${response.status}`;
+        console.error("Groq Error:", response.status, serverMsg);
+        return json({ success: false, error: "AI is busy. Try again soon." }, 502, corsHeaders);
+
       } catch (e) {
         console.error("Groq Failed:", e);
+        return json({ success: false, error: "Check your internet connection" }, 503, corsHeaders);
       }
     }
 

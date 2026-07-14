@@ -55,7 +55,8 @@ window.TonalAdapters.gmail = {
   },
 
   getValue(el) {
-    if (el.isContentEditable) return el.innerHTML.trim();
+    // Always return plain text for AI processing — never innerHTML.
+    // Gmail's paste handler reconstructs the rich-text HTML structure on insert.
     return (el.innerText || el.textContent || "").trim();
   },
 

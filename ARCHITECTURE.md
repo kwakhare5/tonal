@@ -299,6 +299,9 @@ _Auto-maintained by AI. Updated whenever a new token or class is discovered._
  - **2026-07-14 - Unified Branding Assets**: Replaced vector SVGs with the official rounded square `icon128.png` branding across all files (mockups, navbar, popup, floating pill).
  - **2026-07-14 - Purposeful Motion & Animation**: Implemented CSS fades, ambient glows, Intersection Observer scroll reveals, and responsive active button feedback.
  - **2026-07-14 - Standalone Light-Mode Visual Spec**: Created a clean visual states catalog in `extension_demo.html` with no codes or technical bloat, styled in light mode.
+ - **2026-07-14 - Dynamic Mockup Height (480px) and Flex Sizing**: Defined a fixed mockup height of 480px in globals.css and refactored inner container layouts to size dynamically using CSS Flexbox.
+ - **2026-07-14 - Scoped Text Selection Scoping Fix**: Replaced global selectAll execution inside tonal.js with node-level scoped selection to protect external document text inputs.
+ - **2026-07-14 - Cloudflare Pages CORS and Rate-Limit Response Patches**: Allowed Cloudflare Pages origins dynamically in worker.js and structured Groq API 429 rate limit exceptions into human-readable JSON payloads.
  
  ---
  
@@ -335,3 +338,9 @@ _Auto-maintained by AI. Updated whenever a new token or class is discovered._
  - **Why:** Unified the brand logo to the original rounded square `icon128.png` everywhere, built clean light-mode visual speculation playground showcasing all pill/popover/toast states, and integrated scroll fade & active animations.
  - **Patterns introduced:** Light-mode layout catalogs, visual speculative layouts without codes, dynamic checkbox/subtext toggling in popover DOM mocks, and scroll reveal handlers.
  - **Mistakes caught:** Custom popover menu mocks in sandbox originally had header wrappers that differed from extension content script DOM renders; successfully aligned them to match `tonal.js` item builder outputs.
+
+ ### 2026-07-14 — Extension Fixes & Mockup Sizing Pass
+ - **Changed:** `extension/tonal.js`, `extension/background.js`, `extension/adapters/gmail.js`, `backend/worker.js`, `website/src/components/TonalMockup.tsx`, `website/src/app/globals.css`, `tests/bug_regression.test.js`
+ - **Why:** Scoped text insertion selection to target element nodes to stop page-level text corruption on Gmail, resolved inactive tab contrast issues, added LinkedIn mockup view, enabled worker to allow Cloudflare Pages CORS requests, and mapped Groq API rate limit responses.
+ - **Patterns introduced:** Dynamic opacity transitions matching active header luminance, env-based allowed CORS origins, and regression tests verifying platform payload context mapping.
+ - **Mistakes caught:** Duplicate React mockup refs mounted in different tabs resulting in mounting race conditions, and selectAll triggering page-wide text input resets.

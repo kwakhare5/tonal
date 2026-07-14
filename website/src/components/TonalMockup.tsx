@@ -70,9 +70,12 @@ export default function TonalMockup() {
   const [showPopover, setShowPopover] = useState(false);
   const [activeTone, setActiveTone] = useState<ToneId>('workChat');
   const [isTyping, setIsTyping] = useState(false);
-  const [platform, setPlatform] = useState<'gmail' | 'slack'>('gmail');
+  const [platform, setPlatform] = useState<'gmail' | 'slack' | 'linkedin'>('gmail');
 
   const [tonalLoaded, setTonalLoaded] = useState(false);
+  // Refs live outside platform branches — only one branch renders at a time via &&
+  // so there is never a duplicate mount. Previously both branches mounted to the same
+  // ref simultaneously, causing the Gmail refs to be overwritten by Slack's mount.
   const pillRef = React.useRef<HTMLDivElement>(null);
   const popoverRef = React.useRef<HTMLDivElement>(null);
 
@@ -268,7 +271,7 @@ export default function TonalMockup() {
     };
   }, [platform]);
 
-  
+  const inactiveColor = platform === 'gmail' ? 'rgba(0, 0, 0, 0.54)' : 'rgba(255, 255, 255, 0.65)';
 
   return (
     <div className={`composer-mockup composer-mockup--${platform}`}>
@@ -277,11 +280,11 @@ export default function TonalMockup() {
         className="composer-header" 
         style={{ 
           padding: '10px 16px', 
-          background: platform === 'gmail' ? '#F2F6FC' : '#3F0E40', 
+          background: platform === 'gmail' ? '#F2F6FC' : platform === 'slack' ? '#3F0E40' : '#0A66C2', 
           display: 'flex', 
           alignItems: 'center', 
           justifyContent: 'space-between', 
-          borderBottom: platform === 'gmail' ? '1px solid #dadce0' : '1px solid #522653',
+          borderBottom: platform === 'gmail' ? '1px solid #dadce0' : platform === 'slack' ? '1px solid #522653' : '1px solid #0055a0',
           transition: 'background-color 0.3s ease, border-color 0.3s ease'
         }}
       >
@@ -300,7 +303,7 @@ export default function TonalMockup() {
             onClick={() => setPlatform('gmail')}
             style={{
               background: platform === 'gmail' ? 'var(--white)' : 'transparent',
-              color: platform === 'gmail' ? '#1f1f1f' : 'rgba(255, 255, 255, 0.7)',
+              color: platform === 'gmail' ? '#1f1f1f' : inactiveColor,
               boxShadow: platform === 'gmail' ? '0 1px 3px rgba(0,0,0,0.08)' : 'none',
               padding: '3px 10px',
               borderRadius: 'var(--radius-full)',
@@ -319,7 +322,7 @@ export default function TonalMockup() {
             onClick={() => setPlatform('slack')}
             style={{
               background: platform === 'slack' ? 'var(--white)' : 'transparent',
-              color: platform === 'slack' ? '#3F0E40' : '#5f6368',
+              color: platform === 'slack' ? '#3F0E40' : inactiveColor,
               boxShadow: platform === 'slack' ? '0 1px 3px rgba(0,0,0,0.08)' : 'none',
               padding: '3px 10px',
               borderRadius: 'var(--radius-full)',
@@ -332,6 +335,25 @@ export default function TonalMockup() {
           >
             Slack
           </button>
+          <button
+            type="button"
+            className="mockup-tab-btn"
+            onClick={() => setPlatform('linkedin')}
+            style={{
+              background: platform === 'linkedin' ? 'var(--white)' : 'transparent',
+              color: platform === 'linkedin' ? '#0A66C2' : inactiveColor,
+              boxShadow: platform === 'linkedin' ? '0 1px 3px rgba(0,0,0,0.08)' : 'none',
+              padding: '3px 10px',
+              borderRadius: 'var(--radius-full)',
+              fontSize: '11px',
+              fontWeight: 600,
+              cursor: 'pointer',
+              transition: 'all 0.15s ease',
+              border: 'none'
+            }}
+          >
+            LinkedIn
+          </button>
         </div>
 
         {/* Balance Spacer */}
@@ -341,7 +363,7 @@ export default function TonalMockup() {
       {/* Platform content adapters */}
       {platform === 'gmail' && (
         <>
-          <div className="composer-body" style={{ flex: 1, display: 'flex', flexDirection: 'column', height: '380px', padding: '16px' }}>
+          <div className="composer-body" style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '16px' }}>
             <div className="composer-fields" style={{ display: 'flex', flexDirection: 'column', gap: '8px', borderBottom: '1px solid var(--color-border-light)', paddingBottom: '12px' }}>
               <div className="composer-field" style={{ display: 'flex', fontSize: '13px', alignItems: 'center', gap: '8px' }}>
                 <span className="composer-field-label" style={{ color: 'var(--color-text-muted)', width: '48px', flexShrink: 0 }}>To</span>
@@ -389,7 +411,7 @@ export default function TonalMockup() {
 
       {platform === 'slack' && (
         <>
-          <div className="composer-body" style={{ flex: 1, display: 'flex', flexDirection: 'column', height: '380px', padding: '16px', background: 'var(--white)' }}>
+          <div className="composer-body" style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '16px', background: 'var(--white)' }}>
             {/* Channel header info */}
             <div className="composer-fields" style={{ display: 'flex', borderBottom: '1px solid var(--color-border-light)', paddingBottom: '12px', alignItems: 'center', gap: '8px' }}>
               <span className="composer-field-value" style={{ color: 'var(--color-text-primary)', fontWeight: 700, fontSize: '14px' }}># marketing-team</span>
@@ -428,6 +450,50 @@ export default function TonalMockup() {
                 </button>
               </div>
             </div>
+          </div>
+        </>
+      )}
+
+      {platform === 'linkedin' && (
+        <>
+          <div className="composer-body" style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '16px', background: 'var(--white)' }}>
+            {/* InMail header */}
+            <div className="composer-fields" style={{ display: 'flex', borderBottom: '1px solid var(--color-border-light)', paddingBottom: '12px', alignItems: 'center', gap: '10px' }}>
+              <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: '#0A66C2', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              </div>
+              <div>
+                <div style={{ fontWeight: 700, fontSize: '13px', color: 'var(--color-text-primary)' }}>Priya Mehta</div>
+                <div style={{ fontSize: '11px', color: 'var(--color-text-muted)' }}>Product Manager at Acme Corp · 2nd</div>
+              </div>
+            </div>
+
+            {/* InMail message box */}
+            <div className="composer-textarea-container" style={{ flex: 1, display: 'flex', flexDirection: 'column', position: 'relative', marginTop: '12px' }}>
+              <div style={{ fontSize: '12px', fontWeight: 600, color: 'var(--color-text-muted)', marginBottom: '6px' }}>Message</div>
+              <textarea
+                className="composer-textarea"
+                style={{ width: '100%', border: '1px solid var(--color-border)', borderRadius: '6px', outline: 'none', padding: '10px 12px', fontFamily: 'var(--font-sans)', fontSize: '14px', color: 'var(--color-text-primary)', lineHeight: 1.5, resize: 'none', background: 'transparent', flexGrow: 1, minHeight: '120px' }}
+                value={text}
+                onChange={(e) => setText(e.target.value)}
+                placeholder="Write a message to Priya..."
+                disabled={isTyping || pillState === 'loading'}
+              />
+
+              {/* Floating Pill */}
+              <div className="mock-pill-anchor" style={{ position: 'absolute', right: '6px', bottom: '6px' }}>
+                <div style={{ position: 'relative' }}>
+                  <div ref={popoverRef} />
+                  <div ref={pillRef} />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* LinkedIn InMail Footer */}
+          <div className="composer-footer" style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', padding: '10px 16px', background: 'var(--gray-9)', borderTop: '1px solid var(--color-border-light)', gap: '8px' }}>
+            <button type="button" style={{ background: 'transparent', color: 'var(--gray-4)', border: '1px solid var(--color-border)', borderRadius: '20px', padding: '6px 14px', fontSize: '13px', fontWeight: 600, cursor: 'pointer' }}>Discard</button>
+            <button type="button" style={{ background: '#0A66C2', color: 'white', border: 'none', borderRadius: '20px', padding: '6px 14px', fontWeight: 600, fontSize: '13px', cursor: 'pointer' }}>Send</button>
           </div>
         </>
       )}

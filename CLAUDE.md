@@ -122,6 +122,9 @@ content.js (user interaction)
 <!-- Format: [YYYY-MM-DD] What went wrong → What to do instead -->
 - [2026-07-14] Module format mismatch when importing extension files into Next.js → Used `.cjs` extension and `tsconfig.json` paths to ensure Next.js Turbopack resolves external CommonJS files correctly.
 - [2026-07-14] Removed adapters/manager.js from manifest.json when refactoring paths → Always double-check every item in manifest script arrays to prevent breaking extension initialization.
+- [2026-07-14] `document.execCommand("selectAll")` is GLOBAL — selects entire page on Gmail, corrupts To:/Subject fields → Use `range.selectNodeContents(el)` scoped to the target element only.
+- [2026-07-14] `background.js` message listener drops the `sender` param → Always accept `(request, sender, sendResponse)` and use `sender.tab?.url` to detect platform for worker context injection.
+- [2026-07-14] `getValue()` returning `innerHTML` sends raw HTML tags to AI → Always return `innerText` for AI input; the paste handler reconstructs HTML on insert.
 
 ---
 
@@ -132,20 +135,21 @@ _AI fills this at the END of every session. Read this at the START of the next s
 **Last session date:** 2026-07-14
 
 **What we built / changed:**
-- Brand Mockup Adaptations: Implemented authentic brand theme colors dynamically for the interactive mockup headers (Gmail blue-gray `#F2F6FC` vs Slack eggplant purple `#3F0E40` with custom borders and text color transitions when switching tabs).
-- Global Dot Grid Background: Set all main landing page section backgrounds to transparent, allowing the body's subtle dot-grid pattern to show through consistently as you scroll.
-- Spacing System Restored: Reverted vertical section padding back to its original values (`var(--space-12)` mobile, `var(--space-16)` desktop) for standard layout hierarchy.
-- Loosened Comparison Spacing: Increased vertical spacing (`gap`) between list items in the comparison columns to `var(--space-5)` (20px) to make the text columns less compact.
-- Reverted Mockup Skeuomorphism: Reverted stacked paper shadows and paperclip decorations to keep the card minimal and clean.
-- Mockup Border Contrast: Added a distinct border (`1px solid rgba(0, 0, 0, 0.15)`) to the composer mockup to ensure visibility against the light background grid.
-- Focus Outline Removal: Added `outline: none !important` and `box-shadow: none !important` rules to the composer textarea and its container on focus states to prevent browser-default outline boxes.
-- Test Suite Restoration: Relocated `tests/` directory from `media/tests/` back to the project root, fixing module resolution imports and aligning with the root test scripts.
+- BUG-1 Fixed: `document.execCommand("selectAll")` in `tonal.js` → replaced with `range.selectNodeContents(el)` scoped to element. Root cause of Gmail subject/To field corruption.
+- BUG-2 Fixed: `background.js` now detects platform from `sender.tab.url` and passes it to worker → platform-specific prompts now fire for Gmail/Slack/LinkedIn.
+- BUG-3 Fixed: `adapters/gmail.js` `getValue()` now returns `innerText` not `innerHTML` → AI receives plain text, not HTML tags.
+- BUG-4 Fixed: `worker.js` CORS now allows `*.pages.dev` + `ALLOWED_ORIGIN` env var for production website.
+- BUG-4b Fixed: Groq 429 rate limit now returns proper 429 with user-friendly message instead of swallowing into 502.
+- BUG-6 Fixed: `TonalMockup.tsx` LinkedIn tab added; refs cleaned up (only one branch renders at a time via &&).
+- TDD: 8 new regression tests added to `tests/bug_regression.test.js`. Full suite 16/16 green.
 
 **Immediate next task:**
-- None. Website design is polished, fully responsive, and branding is cohesive.
+- Deploy backend to Cloudflare: `npm run deploy` from root (requires Wrangler auth)
+- Add `ALLOWED_ORIGIN` secret in Cloudflare dashboard if using a custom domain
+- Reload extension in Chrome after `tonal.js` + `background.js` changes
 
 **Open blockers:**
-- None.
+- None. All 6 bugs fixed and test-verified.
 
 **Files most recently changed:**
 - `website/src/components/TonalMockup.tsx`

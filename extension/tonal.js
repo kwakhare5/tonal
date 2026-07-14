@@ -46,7 +46,13 @@ window.Tonal = (function () {
         input.value = text;
         input.dispatchEvent(new Event("input", { bubbles: true }));
       } else {
-        document.execCommand("selectAll", false, null);
+        // Scope selection to THIS element only — never use document.execCommand("selectAll")
+        // which selects the entire page (breaks Gmail subject/To fields).
+        const selection = window.getSelection();
+        const range = document.createRange();
+        range.selectNodeContents(input);
+        selection.removeAllRanges();
+        selection.addRange(range);
 
         const dataTransfer = new DataTransfer();
         dataTransfer.setData("text/plain", text);
@@ -59,12 +65,17 @@ window.Tonal = (function () {
           cancelable: true,
         });
 
-        if (input.dispatchEvent(pasteEvent)) {
+        // Attempt paste-event interception (Lexical/Draft.js prefer this)
+        const pasted = input.dispatchEvent(pasteEvent);
+
+        // Fallback: execCommand operates on the current selection (now element-scoped)
+        if (pasted) {
           document.execCommand("insertText", false, text);
         }
 
         input.dispatchEvent(new Event("input", { bubbles: true }));
         input.dispatchEvent(new Event("change", { bubbles: true }));
+        // Slack's Lexical editor commits state on Space keypress
         input.dispatchEvent(
           new KeyboardEvent("keydown", { bubbles: true, key: " ", code: "Space" }),
         );

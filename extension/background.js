@@ -7,6 +7,19 @@ const CONFIG = {
 };
 
 /**
+ * Detects the platform from a tab URL.
+ * @param {string} url
+ * @returns {'gmail'|'slack'|'linkedin'|'general'}
+ */
+function detectPlatform(url) {
+  if (!url) return "general";
+  if (url.includes("mail.google.com")) return "gmail";
+  if (url.includes("slack.com")) return "slack";
+  if (url.includes("linkedin.com")) return "linkedin";
+  return "general";
+}
+
+/**
  * Message Router: Listens for rephrasing or decoding requests.
  */
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
@@ -15,20 +28,25 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   );
   if (!isTonalRequest) return;
 
-  handleRequest(request, sendResponse);
+  const platform = detectPlatform(sender.tab?.url);
+  handleRequest(request, sendResponse, platform);
   return true; // Keep channel open for async response
 });
 
 /**
  * Processes the AI task by calling the Cloudflare Proxy.
+ * @param {object} request
+ * @param {function} sendResponse
+ * @param {string} platform
  */
-async function handleRequest(request, sendResponse) {
+async function handleRequest(request, sendResponse, platform) {
   const mode = request.type === "TONESHIFT_DECODE" ? "decode" : "convert";
 
   const payload = {
     text: request.text?.substring(0, 5000), // Safety limit
     toneLevel: request.toneLevel || "workChat",
     mode: mode,
+    platform: platform, // Enables platform-specific prompts in the worker
   };
 
   try {
@@ -52,3 +70,4 @@ async function handleRequest(request, sendResponse) {
     sendResponse({ success: false, error: err.message });
   }
 }
+
