@@ -273,7 +273,18 @@ export default function TonalMockup() {
   return (
     <div className={`composer-mockup composer-mockup--${platform}`}>
       {/* Window Header */}
-      <div className="composer-header" style={{ padding: '10px 16px', background: 'var(--gray-9)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid var(--color-border-light)' }}>
+      <div 
+        className="composer-header" 
+        style={{ 
+          padding: '10px 16px', 
+          background: platform === 'gmail' ? '#F2F6FC' : '#3F0E40', 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'space-between', 
+          borderBottom: platform === 'gmail' ? '1px solid #dadce0' : '1px solid #522653',
+          transition: 'background-color 0.3s ease, border-color 0.3s ease'
+        }}
+      >
         {/* macOS colored dots */}
         <div className="composer-dots" style={{ display: 'flex', gap: '6px', width: '42px' }}>
           <div className="composer-dot" style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#FF5F56' }}></div>
@@ -282,14 +293,14 @@ export default function TonalMockup() {
         </div>
 
         {/* Center Toggle */}
-        <div style={{ display: 'flex', background: 'rgba(0,0,0,0.05)', padding: '2px', borderRadius: 'var(--radius-full)', gap: '2px' }}>
+        <div style={{ display: 'flex', background: platform === 'gmail' ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.12)', padding: '2px', borderRadius: 'var(--radius-full)', gap: '2px', transition: 'background-color 0.3s ease' }}>
           <button
             type="button"
             className="mockup-tab-btn"
             onClick={() => setPlatform('gmail')}
             style={{
               background: platform === 'gmail' ? 'var(--white)' : 'transparent',
-              color: platform === 'gmail' ? 'var(--black)' : 'var(--gray-4)',
+              color: platform === 'gmail' ? '#1f1f1f' : 'rgba(255, 255, 255, 0.7)',
               boxShadow: platform === 'gmail' ? '0 1px 3px rgba(0,0,0,0.08)' : 'none',
               padding: '3px 10px',
               borderRadius: 'var(--radius-full)',
@@ -308,7 +319,7 @@ export default function TonalMockup() {
             onClick={() => setPlatform('slack')}
             style={{
               background: platform === 'slack' ? 'var(--white)' : 'transparent',
-              color: platform === 'slack' ? 'var(--black)' : 'var(--gray-4)',
+              color: platform === 'slack' ? '#3F0E40' : '#5f6368',
               boxShadow: platform === 'slack' ? '0 1px 3px rgba(0,0,0,0.08)' : 'none',
               padding: '3px 10px',
               borderRadius: 'var(--radius-full)',

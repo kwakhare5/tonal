@@ -132,35 +132,20 @@ _AI fills this at the END of every session. Read this at the START of the next s
 **Last session date:** 2026-07-14
 
 **What we built / changed:**
-- Swiss Neo-Minimalist Redesign: Removed card blocks and borders. Sections are now separated by thin `1px` structural borders and plenty of whitespace.
-- Exclusively Lora and DM Sans: Configured the website typography stack to load and apply only Lora and DM Sans, completely removing Cormorant Garamond and DM Mono.
-- Font Inheritance & Reset: Fixed website font consistency by using Next.js `next/font/google` in layout.tsx and adding a CSS reset rule in globals.css so all input elements, buttons, and textareas inherit the correct fonts.
-- Spacing System Consolidation: Scanned all sections and components and replaced remaining hardcoded pixel values (margins, paddings, gaps) with design tokens (`var(--space-*)`), ensuring 100% spacing consistency across all sections.
-- Responsive Column Dividers (Mobile): Added neat horizontal divider borders and vertical padding scales to Comparison and Engine columns on mobile, matching the desktop columns' layout.
-- FAQ & Mockup Accessibility Fixed: Implemented full key down listeners, tabIndex focus boundaries, and ARIA expansion attributes to the FAQ Section.
-- Mockup Touch Target Expansion: Added hit area expansion overlays to the Gmail and Slack platform tab selectors to comply with WCAG 44x44px target guidelines.
-- Restored Supported Platforms Badge: Added back the "Gmail, Slack, and LinkedIn" pill at the top of the hero section and fixed its text color class.
-- Professional Value-Prop Copy: Removed Llama 3.3 and Groq LPU "flex" jargon from the hero section, replacing it with a refined, value-focused copy ("Adjust your tone without breaking focus."). Also polished the workflow comparison text.
-- Dynamic Mockup Glows (Borderless): Swapped the mockup outer border with an active-platform reacting box-shadow (soft blue for Gmail, soft aubergine for Slack) with ambient glows.
-- Dot-Grid Background Textures: Added subtle dot-grid background textures and soft blurred color blobs behind the Hero and bottom CTA sections.
-- Prototypes: Evaluated text effect options (gradients, underlines, highlights) and selected the clean Option 3 "Highlight Background Blob" marker stroke on the header.
-- Added Author Credits: Added "Karan Wakhare" name in footer branding and copyright notes, and hyperlinked credits to Groq, Llama, and Cloudflare.
-- Brand Logo Unification: Replaced all instances of the vector slider SVGs with the official rounded square `icon128.png` brand logo (in the navbar, footer, extension popup header, extension injected pill, website interactive mockup, and browser tab favicon metadata).
-- SVG GitHub Logo: Replaced the text-only GitHub navigation link with a clean inline SVG.
-- Purposeful Animations: Implemented CSS page-load fades, ambient glows, and Intersection Observer scroll reveals for sections (with staggered item loading for list/FAQ items) and active-feedback transitions for buttons with full reduced-motion support.
-- Interactive Extension UI States Design System: Created a complete design system template in `extension_demo.html` showing all Tonal floating pill states (Rest, Expanded, Loading, Success, Error), popover selectors, and toasts side-by-side with source code snippets, color palettes, and an interactive sandbox composer.
-- Standalone Light-Mode Visual Spec: Created a clean visual states catalog in `extension_demo.html` with no codes or technical bloat, styled in light mode.
-- Centralized UI Spec Playground Styling: Refactored `extension_demo.html` to load `extension/core/tonal.css` directly and aligned HTML class names with extension CSS selectors, removing all duplicate styling declarations.
+- Brand Mockup Adaptations: Implemented authentic brand theme colors dynamically for the interactive mockup headers (Gmail blue-gray `#F2F6FC` vs Slack eggplant purple `#3F0E40` with custom borders and text color transitions when switching tabs).
+- Global Dot Grid Background: Set all main landing page section backgrounds to transparent, allowing the body's subtle dot-grid pattern to show through consistently as you scroll.
+- Spacing System Restored: Reverted vertical section padding back to its original values (`var(--space-12)` mobile, `var(--space-16)` desktop) for standard layout hierarchy.
+- Loosened Comparison Spacing: Increased vertical spacing (`gap`) between list items in the comparison columns to `var(--space-5)` (20px) to make the text columns less compact.
+- Reverted Mockup Skeuomorphism: Reverted stacked paper shadows and paperclip decorations to keep the card minimal and clean, while retaining the high-visibility message guidelines.
 
 **Immediate next task:**
-- Perform end-to-end testing of the zipped extension inside Google Chrome on live Gmail, Slack, and LinkedIn inputs.
+- None. Website design is polished, fully responsive, and branding is cohesive.
 
 **Open blockers:**
 - None.
 
 **Files most recently changed:**
-- `extension/core/tonal.css`
-- `extension/core/tonal.js`
 - `website/src/components/TonalMockup.tsx`
-- `extension_demo.html`
+- `website/src/app/globals.css`
+- `website/src/app/page.tsx`
 - `CLAUDE.md`
