@@ -22,12 +22,12 @@ export default function Home() {
         <div className="container navbar-container" style={{ paddingLeft: 0, paddingRight: 0 }}>
           <a href="#" className="logo">
             <svg width="24" height="15" viewBox="0 0 72 44" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ marginRight: 'var(--space-2)', verticalAlign: 'middle' }}>
-              <rect x="0" y="18" width="72" height="8" rx="4" fill="var(--color-border)" />
-              <rect x="0" y="18" width="39" height="8" rx="4" fill="var(--color-text-primary)" />
-              <circle cx="39" cy="22" r="16" fill="#f8f9fa" />
-              <circle cx="39" cy="22" r="14.5" fill="var(--white)" />
-              <circle cx="39" cy="22" r="9" fill="var(--color-text-primary)" />
-              <circle cx="39" cy="22" r="4" fill="var(--color-text-secondary)" />
+              <rect x="0" y="18" width="72" height="8" rx="4" fill="#2C2C2E" />
+              <rect x="0" y="18" width="39" height="8" rx="4" fill="white" />
+              <circle cx="39" cy="22" r="16" fill="#F2F2F2" />
+              <circle cx="39" cy="22" r="14.5" fill="white" />
+              <circle cx="39" cy="22" r="9" fill="#1C1C1E" />
+              <circle cx="39" cy="22" r="4" fill="#3A3A3C" />
             </svg>
             <span>Tonal</span>
           </a>
@@ -211,12 +211,12 @@ export default function Home() {
             <div className="footer-logo-col">
               <a href="#" className="logo">
                 <svg width="28" height="17" viewBox="0 0 72 44" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ marginRight: 'var(--space-2)', verticalAlign: 'middle' }}>
-                  <rect x="0" y="18" width="72" height="8" rx="4" fill="var(--color-border)" />
-                  <rect x="0" y="18" width="39" height="8" rx="4" fill="var(--color-text-primary)" />
-                  <circle cx="39" cy="22" r="16" fill="#f8f9fa" />
-                  <circle cx="39" cy="22" r="14.5" fill="var(--white)" />
-                  <circle cx="39" cy="22" r="9" fill="var(--color-text-primary)" />
-                  <circle cx="39" cy="22" r="4" fill="var(--color-text-secondary)" />
+                  <rect x="0" y="18" width="72" height="8" rx="4" fill="#2C2C2E" />
+                  <rect x="0" y="18" width="39" height="8" rx="4" fill="white" />
+                  <circle cx="39" cy="22" r="16" fill="#F2F2F2" />
+                  <circle cx="39" cy="22" r="14.5" fill="white" />
+                  <circle cx="39" cy="22" r="9" fill="#1C1C1E" />
+                  <circle cx="39" cy="22" r="4" fill="#3A3A3C" />
                 </svg>
                 <span>Tonal</span>
               </a>
