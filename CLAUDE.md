@@ -148,6 +148,7 @@ _AI fills this at the END of every session. Read this at the START of the next s
 - Added Author Credits: Added "Karan Wakhare" name in footer branding and copyright notes, and hyperlinked credits to Groq, Llama, and Cloudflare.
 - Brand Logo Unification: Replaced all instances of the vector slider SVGs with the official rounded square `icon128.png` brand logo (in the navbar, footer, extension popup header, extension injected pill, website interactive mockup, and browser tab favicon metadata).
 - SVG GitHub Logo: Replaced the text-only GitHub navigation link with a clean inline SVG.
+- Purposeful Animations: Implemented CSS page-load fades, ambient glows, and Intersection Observer scroll reveals for sections (with staggered item loading for list/FAQ items) and active-feedback transitions for buttons with full reduced-motion support.
 
 **Immediate next task:**
 - Perform end-to-end testing of the zipped extension inside Google Chrome on live Gmail, Slack, and LinkedIn inputs.
