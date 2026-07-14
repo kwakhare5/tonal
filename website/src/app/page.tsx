@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import Image from 'next/image';
 import TonalMockup from '../components/TonalMockup';
 import FaqSection from '../components/FaqSection';
 
@@ -22,7 +21,14 @@ export default function Home() {
       <nav className={`navbar ${scrolled ? 'navbar--scrolled' : ''}`}>
         <div className="container navbar-container" style={{ paddingLeft: 0, paddingRight: 0 }}>
           <a href="#" className="logo">
-            <Image src="/icons/icon128.png" alt="Tonal Logo" width={20} height={20} style={{ borderRadius: 'var(--radius-xs)', marginRight: 'var(--space-1)' }} />
+            <svg width="24" height="15" viewBox="0 0 72 44" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ marginRight: 'var(--space-2)', verticalAlign: 'middle' }}>
+              <rect x="0" y="18" width="72" height="8" rx="4" fill="var(--color-border)" />
+              <rect x="0" y="18" width="39" height="8" rx="4" fill="var(--color-text-primary)" />
+              <circle cx="39" cy="22" r="16" fill="#f8f9fa" />
+              <circle cx="39" cy="22" r="14.5" fill="var(--white)" />
+              <circle cx="39" cy="22" r="9" fill="var(--color-text-primary)" />
+              <circle cx="39" cy="22" r="4" fill="var(--color-text-secondary)" />
+            </svg>
             <span>Tonal</span>
           </a>
 
@@ -204,7 +210,14 @@ export default function Home() {
           <div className="footer-grid">
             <div className="footer-logo-col">
               <a href="#" className="logo">
-                <Image src="/icons/icon128.png" alt="Tonal Logo" width={24} height={24} style={{ borderRadius: 'var(--radius-xs)', marginRight: 'var(--space-1)' }} />
+                <svg width="28" height="17" viewBox="0 0 72 44" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ marginRight: 'var(--space-2)', verticalAlign: 'middle' }}>
+                  <rect x="0" y="18" width="72" height="8" rx="4" fill="var(--color-border)" />
+                  <rect x="0" y="18" width="39" height="8" rx="4" fill="var(--color-text-primary)" />
+                  <circle cx="39" cy="22" r="16" fill="#f8f9fa" />
+                  <circle cx="39" cy="22" r="14.5" fill="var(--white)" />
+                  <circle cx="39" cy="22" r="9" fill="var(--color-text-primary)" />
+                  <circle cx="39" cy="22" r="4" fill="var(--color-text-secondary)" />
+                </svg>
                 <span>Tonal</span>
               </a>
               <p className="footer-tagline">Open Source Inline AI Assistant</p>
