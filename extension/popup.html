@@ -28,7 +28,6 @@
 
         /* Unified Font Stack (Design System + Project) */
         --font: "DM Sans", sans-serif;
-        --mono: "DM Sans", sans-serif;
 
         /* Radius Tokens */
         --r-sm: 6px;
@@ -40,7 +39,6 @@
         --sh-xs: 0 1px 2px rgba(0, 0, 0, 0.06);
         --sh-sm: 0 1px 4px rgba(0, 0, 0, 0.06), 0 4px 12px rgba(0, 0, 0, 0.06);
         --sh-md: 0 2px 8px rgba(0, 0, 0, 0.06), 0 12px 32px rgba(0, 0, 0, 0.08);
-        --sh-lg: 0 8px 24px rgba(0, 0, 0, 0.1), 0 24px 64px rgba(0, 0, 0, 0.12);
       }
 
       * {
@@ -67,18 +65,17 @@
 
       /* ── POPUP HEAD ────────────────────────────────────────────── */
       .popup-head {
-        padding: 18px 18px 14px;
-        border-bottom: 1px solid var(--gray-8);
+        padding: 14px 16px 10px;
         display: flex;
         align-items: center;
-        gap: 12px;
+        gap: 10px;
       }
 
       .popup-logo {
-        width: 36px;
-        height: 36px;
+        width: 28px;
+        height: 28px;
         background: var(--black);
-        border-radius: 9px;
+        border-radius: 7px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -86,7 +83,7 @@
       }
 
       .popup-title {
-        font-size: 16px;
+        font-size: 14px;
         font-weight: 700;
         color: var(--black);
         letter-spacing: -0.02em;
@@ -94,45 +91,142 @@
       }
 
       .popup-sub {
-        font-size: 11px;
+        font-size: 10px;
         color: var(--gray-4);
-        margin-top: 1px;
       }
 
-      /* ── POPUP BODY ────────────────────────────────────────────── */
+      /* ── TABS ──────────────────────────────────────────────────── */
+      .tabs {
+        display: flex;
+        background: var(--gray-8);
+        padding: 2px;
+        gap: 2px;
+        margin: 0 16px 8px;
+        border-radius: var(--r-sm);
+      }
+
+      .tab-btn {
+        flex: 1;
+        padding: 6px 0;
+        font-size: 11px;
+        font-weight: 600;
+        text-align: center;
+        cursor: pointer;
+        border: none;
+        background: transparent;
+        color: var(--gray-4);
+        font-family: var(--font);
+        border-radius: 5px;
+        transition: all 0.15s ease;
+      }
+
+      .tab-btn--active {
+        background: var(--white);
+        color: var(--black);
+        box-shadow: var(--sh-xs);
+      }
+
+      /* ── POPUP BODY (VIEWS WRAPPER) ────────────────────────────── */
       .popup-body {
-        padding: 16px 18px;
+        width: 280px;
+        overflow: hidden;
       }
 
-      .popup-badge {
+      .views-wrapper {
+        display: flex;
+        width: 560px;
+        transition: transform 0.25s cubic-bezier(0.2, 0, 0, 1);
+      }
+
+      .view-panel {
+        width: 280px;
+        flex-shrink: 0;
+        padding: 8px 16px 14px;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* ── SETTINGS VIEW ─────────────────────────────────────────── */
+      .toggle-item {
         display: flex;
         align-items: center;
-        gap: 7px;
-        background: #f0fdf4;
-        border: 1px solid #d1fae5;
-        border-radius: var(--r-md);
-        padding: 8px 12px;
-        margin-bottom: 16px;
-        font-size: 12px;
-        font-weight: 500;
-        color: #059669;
+        justify-content: space-between;
+        margin-bottom: 12px;
       }
 
-      .popup-badge-dot {
-        width: 7px;
-        height: 7px;
-        border-radius: 50%;
-        background: var(--green);
+      .toggle-info {
+        display: flex;
+        flex-direction: column;
+        gap: 1px;
+      }
+
+      .toggle-title {
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--black);
+      }
+
+      .toggle-sub {
+        font-size: 9px;
+        color: var(--gray-4);
+      }
+
+      /* iOS Toggle Switch */
+      .switch {
+        position: relative;
+        display: inline-block;
+        width: 32px;
+        height: 18px;
         flex-shrink: 0;
       }
 
+      .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+
+      .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: var(--gray-7);
+        transition: 0.2s ease;
+        border-radius: 9px;
+      }
+
+      .slider:before {
+        position: absolute;
+        content: "";
+        height: 14px;
+        width: 14px;
+        left: 2px;
+        bottom: 2px;
+        background-color: var(--white);
+        transition: 0.2s ease;
+        border-radius: 50%;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+      }
+
+      input:checked + .slider {
+        background-color: var(--green);
+      }
+
+      input:checked + .slider:before {
+        transform: translateX(14px);
+      }
+
       .popup-field-label {
-        font-size: 10px;
+        font-size: 9px;
         font-weight: 700;
         letter-spacing: 0.08em;
         text-transform: uppercase;
         color: var(--gray-5);
-        margin-bottom: 7px;
+        margin-bottom: 6px;
+        margin-top: 4px;
       }
 
       .segmented {
@@ -154,7 +248,7 @@
         border-radius: var(--r-sm);
         cursor: pointer;
         font-family: var(--font);
-        transition: all 0.2s;
+        transition: all 0.15s ease;
       }
 
       .seg-item--active {
@@ -170,21 +264,58 @@
         color: var(--white);
         border: none;
         border-radius: var(--r-md);
-        padding: 10px;
-        font-size: 13px;
+        padding: 9px;
+        font-size: 12px;
         font-weight: 600;
         cursor: pointer;
         font-family: var(--font);
         letter-spacing: -0.01em;
-        transition: all 0.2s;
+        transition: all 0.15s ease;
       }
+
       .popup-save:active {
         transform: scale(0.98);
       }
 
+      /* ── ACTIVITY VIEW ─────────────────────────────────────────── */
+      .stats-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        margin-bottom: 8px;
+      }
+
+      .stats-card {
+        background: var(--gray-9);
+        border: 1px solid var(--gray-8);
+        border-radius: var(--r-md);
+        padding: 10px 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+
+      .stats-card--full {
+        grid-column: span 2;
+      }
+
+      .stats-val {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--black);
+      }
+
+      .stats-label {
+        font-size: 9px;
+        font-weight: 600;
+        color: var(--gray-4);
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+      }
+
       /* ── POPUP FOOTER ──────────────────────────────────────────── */
       .popup-footer {
-        padding: 12px 18px;
+        padding: 10px 16px 12px;
         border-top: 1px solid var(--gray-8);
         display: flex;
         align-items: center;
@@ -194,31 +325,45 @@
       .popup-platforms {
         display: flex;
         gap: 4px;
-        flex-wrap: wrap;
       }
 
       .platform-tag {
         background: var(--gray-8);
         border-radius: 4px;
         padding: 2px 6px;
-        font-size: 10px;
+        font-size: 9px;
         font-weight: 500;
         color: var(--gray-4);
       }
 
       .popup-status {
-        font-family: var(--mono);
-        font-size: 10px;
-        color: var(--gray-5);
+        font-size: 9px;
+        font-weight: 700;
+        color: var(--green);
         text-transform: uppercase;
         letter-spacing: 0.05em;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+
+      .popup-status:before {
+        content: "";
+        width: 5px;
+        height: 5px;
+        background: currentColor;
+        border-radius: 50%;
       }
     </style>
   </head>
   <body>
     <div class="popup-head">
       <div class="popup-logo">
-        <img src="icons/icon128.png" alt="Tonal Logo" style="width: 100%; height: 100%; border-radius: inherit; display: block;" />
+        <img
+          src="icons/icon128.png"
+          alt="Tonal Logo"
+          style="width: 16px; height: 16px; border-radius: inherit; display: block;"
+        />
       </div>
       <div>
         <div class="popup-title">Tonal</div>
@@ -226,18 +371,68 @@
       </div>
     </div>
 
+    <!-- Tab Selector -->
+    <div class="tabs">
+      <button class="tab-btn tab-btn--active" id="tab-settings">Settings</button>
+      <button class="tab-btn" id="tab-activity">Activity</button>
+    </div>
+
+    <!-- Sliding View Panel -->
     <div class="popup-body">
-      <div class="popup-badge">
-        <div class="popup-badge-dot"></div>
-        Ready to use — no setup needed
+      <div class="views-wrapper" id="viewsWrapper">
+        <!-- Panel 1: Settings -->
+        <div class="view-panel" id="settingsPanel">
+          <!-- Toggle 1: Pill Helper -->
+          <div class="toggle-item">
+            <div class="toggle-info">
+              <span class="toggle-title">Tone Pill Helper</span>
+              <span class="toggle-sub">Show float helper in fields</span>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="toggle-pill" checked />
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <!-- Toggle 2: Decode Helper -->
+          <div class="toggle-item">
+            <div class="toggle-info">
+              <span class="toggle-title">Highlight to Decode</span>
+              <span class="toggle-sub">Explain selection jargon</span>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="toggle-decode" checked />
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <div class="popup-field-label">Default tone</div>
+          <div class="segmented" id="toneSelector">
+            <div class="seg-item" data-tone="casual">Casual</div>
+            <div class="seg-item" data-tone="workChat">Work</div>
+            <div class="seg-item" data-tone="formal">Formal</div>
+          </div>
+          <button class="popup-save" id="saveBtn">Save preference</button>
+        </div>
+
+        <!-- Panel 2: Activity Stats -->
+        <div class="view-panel" id="activityPanel">
+          <div class="stats-grid">
+            <div class="stats-card">
+              <span class="stats-val" id="stat-rewrites">142</span>
+              <span class="stats-label">Rewrites</span>
+            </div>
+            <div class="stats-card">
+              <span class="stats-val" id="stat-decoded">1,085</span>
+              <span class="stats-label">Words Decoded</span>
+            </div>
+            <div class="stats-card stats-card--full">
+              <span class="stats-val" id="stat-time">24 mins</span>
+              <span class="stats-label">Focus Time Saved</span>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="popup-field-label">Default tone</div>
-      <div class="segmented" id="toneSelector">
-        <div class="seg-item" data-tone="casual">Casual</div>
-        <div class="seg-item" data-tone="workChat">Work</div>
-        <div class="seg-item" data-tone="formal">Formal</div>
-      </div>
-      <button class="popup-save" id="saveBtn">Save preference</button>
     </div>
 
     <div class="popup-footer">

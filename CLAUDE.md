@@ -83,11 +83,9 @@
   popup.js          — popup controller
   background.js     — service worker, handles API calls to Cloudflare Worker
   content.js        — injected into pages, handles UI and watchdog
+  tonal.css         — core design system styles
+  tonal.js          — core UI rendering components
   package.json      — local package overrides (e.g. type: commonjs)
-  /core
-    config.cjs      — shared configuration for tone definitions
-    tonal.css       — shared core design system styles
-    tonal.js        — core UI rendering components
   /adapters         — per-platform injection adapters
     manager.js      — registers all adapters
     [platform].js   — platform adapter (gmail, slack, linkedin)
@@ -123,6 +121,7 @@ content.js (user interaction)
 <!-- AI appends here after every VERIFY failure -->
 <!-- Format: [YYYY-MM-DD] What went wrong → What to do instead -->
 - [2026-07-14] Module format mismatch when importing extension files into Next.js → Used `.cjs` extension and `tsconfig.json` paths to ensure Next.js Turbopack resolves external CommonJS files correctly.
+- [2026-07-14] Removed adapters/manager.js from manifest.json when refactoring paths → Always double-check every item in manifest script arrays to prevent breaking extension initialization.
 
 ---
 

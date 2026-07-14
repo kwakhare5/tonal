@@ -20,7 +20,7 @@
     ],
     "paths": {
       "@/*": ["./src/*"],
-      "@tonal-core/*": ["../extension/core/*"]
+      "@tonal-core/*": ["../extension/*"]
     }
   },
   "include": [

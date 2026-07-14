@@ -3,13 +3,67 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tonal Extension UI States Catalog</title>
+  <title>Tonal</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="extension/core/tonal.css?v=2" />
+  <link rel="stylesheet" href="extension/tonal.css?v=2" />
+  <script src="extension/tonal.js"></script>
   <style>
     /* Clean Light Mode Documentation Theme */
+    /* Spec Target Position Override Guards */
+    .spec-preview-box {
+      position: relative;
+    }
+    .spec-preview-box .t-hitbox {
+      position: relative !important;
+      right: auto !important;
+      bottom: auto !important;
+      padding: 0 !important;
+      z-index: 1 !important;
+    }
+    #popover-target {
+      position: relative;
+      min-height: 180px;
+    }
+    #popover-target .popover {
+      position: relative !important;
+      bottom: auto !important;
+      right: auto !important;
+      opacity: 1 !important;
+      transform: none !important;
+      pointer-events: auto !important;
+      z-index: 1 !important;
+    }
+    #decode-float-target {
+      position: relative;
+    }
+    #decode-float-target .decode-float {
+      position: relative !important;
+      top: auto !important;
+      left: auto !important;
+      right: auto !important;
+      bottom: auto !important;
+      opacity: 1 !important;
+      transform: none !important;
+      pointer-events: auto !important;
+      z-index: 1 !important;
+    }
+    #decode-card-target {
+      position: relative;
+    }
+    #decode-card-target .decode-card {
+      position: relative !important;
+      top: auto !important;
+      left: auto !important;
+      right: auto !important;
+      bottom: auto !important;
+      opacity: 1 !important;
+      transform: none !important;
+      pointer-events: auto !important;
+      z-index: 1 !important;
+    }
+
     :root {
       --bg: #F9FAFB;
       --panel: #FFFFFF;
@@ -179,165 +233,6 @@
       width: fit-content !important;
     }
 
-    /* Popup styling overrides for documentation preview */
-    .popup-container {
-      width: 280px;
-      border: 1px solid var(--gray-8);
-      background: var(--white);
-      border-radius: var(--r-lg);
-      box-shadow: var(--sh-md);
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      text-align: left;
-    }
-
-    .popup-head {
-      padding: 18px 18px 14px;
-      border-bottom: 1px solid var(--gray-8);
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .popup-logo {
-      width: 36px;
-      height: 36px;
-      background: var(--black);
-      border-radius: 9px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-
-    .popup-title {
-      font-size: 16px;
-      font-weight: 700;
-      color: var(--black);
-      letter-spacing: -0.02em;
-      line-height: 1.2;
-    }
-
-    .popup-sub {
-      font-size: 11px;
-      color: var(--gray-4);
-      margin-top: 1px;
-    }
-
-    .popup-body {
-      padding: 16px 18px;
-    }
-
-    .popup-badge {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      background: #f0fdf4;
-      border: 1px solid #d1fae5;
-      border-radius: var(--r-md);
-      padding: 8px 12px;
-      margin-bottom: 16px;
-      font-size: 12px;
-      font-weight: 500;
-      color: #059669;
-    }
-
-    .popup-badge-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: var(--green);
-      flex-shrink: 0;
-    }
-
-    .popup-field-label {
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--gray-5);
-      margin-bottom: 7px;
-    }
-
-    .segmented {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      background: var(--gray-8);
-      border-radius: var(--r-md);
-      padding: 3px;
-      gap: 2px;
-      margin-bottom: 14px;
-    }
-
-    .seg-item {
-      padding: 7px 4px;
-      text-align: center;
-      font-size: 11px;
-      font-weight: 500;
-      color: var(--gray-4);
-      border-radius: var(--r-sm);
-      cursor: pointer;
-      font-family: var(--font);
-      transition: all 0.2s;
-    }
-
-    .seg-item--active {
-      background: var(--white);
-      color: var(--black);
-      font-weight: 600;
-      box-shadow: var(--sh-xs);
-    }
-
-    .popup-save {
-      width: 100%;
-      background: var(--black);
-      color: var(--white);
-      border: none;
-      border-radius: var(--r-md);
-      padding: 10px;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      font-family: var(--font);
-      letter-spacing: -0.01em;
-      transition: all 0.2s;
-    }
-    .popup-save:active {
-      transform: scale(0.98);
-    }
-
-    .popup-footer {
-      padding: 12px 18px;
-      border-top: 1px solid var(--gray-8);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .popup-platforms {
-      display: flex;
-      gap: 4px;
-      flex-wrap: wrap;
-    }
-
-    .platform-tag {
-      background: var(--gray-8);
-      border-radius: 4px;
-      padding: 2px 6px;
-      font-size: 10px;
-      font-weight: 500;
-      color: var(--gray-4);
-    }
-
-    .popup-status {
-      font-family: var(--font);
-      font-size: 10px;
-      color: var(--gray-5);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
     /* Sandbox Interactive area */
     .sandbox-container {
       background: var(--panel);
@@ -463,58 +358,31 @@
         <!-- 1. Rest State -->
         <div class="spec-card">
           <div class="spec-card-title">Rest State</div>
-          <div class="spec-preview-box">
-            <div class="t-pill t-pill--rest">
-              <div class="pill-icon"><div class="pill-logo"></div></div>
-            </div>
-          </div>
+          <div class="spec-preview-box" id="pill-rest-target"></div>
         </div>
 
         <!-- 2. Expanded State -->
         <div class="spec-card">
           <div class="spec-card-title">Expanded State</div>
-          <div class="spec-preview-box">
-            <div class="t-pill t-pill--expanded">
-              <div class="pill-icon"><div class="pill-logo"></div></div>
-              <span class="pill-text">Work</span>
-              <div class="pill-chev-wrap">
-                <svg width="7" height="5" viewBox="0 0 8 5" fill="none"><path d="M1 1l3 3 3-3" stroke="#FFFFFF" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </div>
-            </div>
-          </div>
+          <div class="spec-preview-box" id="pill-expanded-target"></div>
         </div>
 
         <!-- 3. Loading State -->
         <div class="spec-card">
           <div class="spec-card-title">Converting State</div>
-          <div class="spec-preview-box">
-            <div class="t-pill t-pill--loading">
-              <span class="pill-text">Converting<span class="pill-dots"></span></span>
-            </div>
-          </div>
+          <div class="spec-preview-box" id="pill-loading-target"></div>
         </div>
 
         <!-- 4. Done / Undo State -->
         <div class="spec-card">
           <div class="spec-card-title">Done State</div>
-          <div class="spec-preview-box">
-            <div class="t-pill t-pill--done">
-              <span class="pill-text">Undo</span>
-            </div>
-          </div>
+          <div class="spec-preview-box" id="pill-done-target"></div>
         </div>
 
         <!-- 5. Error State -->
         <div class="spec-card">
           <div class="spec-card-title">Error / Retry</div>
-          <div class="spec-preview-box">
-            <div class="t-pill t-pill--error">
-              <div class="pill-icon">
-                <svg width="8" height="8" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1l12 12M13 1L1 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </div>
-              <span class="pill-text" style="margin-left: 4px;">Retry</span>
-            </div>
-          </div>
+          <div class="spec-preview-box" id="pill-error-target"></div>
         </div>
       </div>
     </section>
@@ -524,24 +392,7 @@
       <!-- Popover Section -->
       <div class="side-panel">
         <div class="side-panel-title">2. Tone Selector Popover</div>
-        <div style="display: flex; justify-content: center; padding: 20px 0;">
-          <div class="popover">
-            <div class="pop-item pop-item--active">
-              <span class="pop-label">Work</span>
-              <span class="pop-check">✓</span>
-            </div>
-            <div class="pop-divider"></div>
-            <div class="pop-item">
-              <span class="pop-label">Casual</span>
-              <span class="pop-sub">Warm, friendly, open</span>
-            </div>
-            <div class="pop-divider"></div>
-            <div class="pop-item">
-              <span class="pop-label">Formal</span>
-              <span class="pop-sub">Polite, executive, formal</span>
-            </div>
-          </div>
-        </div>
+        <div style="display: flex; justify-content: center; padding: 20px 0;" id="popover-target"></div>
       </div>
 
       <!-- Toasts Section -->
@@ -569,33 +420,13 @@
       <!-- Decode Float Section -->
       <div class="side-panel">
         <div class="side-panel-title">4. Decode Floating Button</div>
-        <div style="display: flex; justify-content: center; padding: 20px 0; align-items: center; min-height: 180px;">
-          <div class="decode-float decode-float--active" style="cursor: default;">
-            Decode
-          </div>
-        </div>
+        <div style="display: flex; justify-content: center; padding: 20px 0; align-items: center; min-height: 180px;" id="decode-float-target"></div>
       </div>
 
       <!-- Decode Card Section -->
       <div class="side-panel">
         <div class="side-panel-title">5. Decode Result Card</div>
-        <div style="display: flex; justify-content: center; padding: 20px 0;">
-          <div class="decode-card decode-card--active">
-            <div class="decode-card-header">
-              <span class="decode-card-tag">Tone Translation</span>
-              <div class="decode-card-close">
-                <svg width="8" height="8" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1l12 12M13 1L1 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </div>
-            </div>
-            <div class="decode-card-body">
-              <div class="decode-card-text">Hey team, please share the latest report as soon as possible. Thanks!</div>
-              <button class="decode-card-copy">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-                <span>Copy text</span>
-              </button>
-            </div>
-          </div>
-        </div>
+        <div style="display: flex; justify-content: center; padding: 20px 0;" id="decode-card-target"></div>
       </div>
     </div>
 
@@ -607,40 +438,7 @@
         <!-- Popup Default state -->
         <div class="side-panel" style="align-items: center; justify-content: center;">
           <div class="side-panel-title" style="width: 100%;">Default Popup View</div>
-          <div class="popup-container">
-            <div class="popup-head">
-              <div class="popup-logo">
-                <img src="extension/icons/icon128.png" alt="Tonal Logo" style="width: 100%; height: 100%; border-radius: inherit; display: block;" />
-              </div>
-              <div>
-                <div class="popup-title">Tonal</div>
-                <div class="popup-sub">Two-way tone translator</div>
-              </div>
-            </div>
-
-            <div class="popup-body">
-              <div class="popup-badge">
-                <div class="popup-badge-dot"></div>
-                Ready to use — no setup needed
-              </div>
-              <div class="popup-field-label">Default tone</div>
-              <div class="segmented">
-                <div class="seg-item seg-item--active">Casual</div>
-                <div class="seg-item">Work</div>
-                <div class="seg-item">Formal</div>
-              </div>
-              <button class="popup-save" style="cursor: default;">Save preference</button>
-            </div>
-
-            <div class="popup-footer">
-              <div class="popup-platforms">
-                <span class="platform-tag">Gmail</span>
-                <span class="platform-tag">Slack</span>
-                <span class="platform-tag">LinkedIn</span>
-              </div>
-              <span class="popup-status">Active</span>
-            </div>
-          </div>
+          <iframe src="extension/popup.html" style="width: 282px; height: 310px; border: 1px solid var(--border); border-radius: 12px; box-shadow: var(--sh-md); display: block; margin: 0 auto; overflow: hidden;" scrolling="no"></iframe>
         </div>
 
         <!-- Popup info -->
@@ -685,93 +483,123 @@
 
               <!-- Floating Pill wrapper -->
               <div class="sandbox-pill-wrapper">
-                <!-- Sandbox Popover -->
-                <div class="popover sandbox-popover" id="sandboxPopover">
-                  <div class="pop-item pop-item--active" onclick="triggerSandboxTone('Work')">
-                    <span class="pop-label">Work</span>
-                    <span class="pop-check">✓</span>
-                  </div>
-                  <div class="pop-divider"></div>
-                  <div class="pop-item" onclick="triggerSandboxTone('Casual')">
-                    <span class="pop-label">Casual</span>
-                    <span class="pop-sub">Warm, friendly, open</span>
-                  </div>
-                  <div class="pop-divider"></div>
-                  <div class="pop-item" onclick="triggerSandboxTone('Formal')">
-                    <span class="pop-label">Formal</span>
-                    <span class="pop-sub">Polite, executive, formal</span>
-                  </div>
-                </div>
-
-                <!-- Sandbox Pill Hitbox -->
-                <div class="t-hitbox" onclick="handleSandboxPillClick()">
-                  <div class="t-pill t-pill--rest" id="sandboxPill">
-                    <div class="pill-icon"><div class="pill-logo"></div></div>
-                  </div>
-                </div>
+                <!-- Sandbox Popover Container -->
+                <div id="sandbox-popover-container"></div>
+                <!-- Sandbox Pill Container -->
+                <div id="sandbox-pill-container"></div>
               </div>
 
             </div>
           </div>
         </div>
 
-        <!-- Toast Layer -->
-        <div class="toast" id="sandboxToast">
-          <div class="toast-dot" id="sandboxToastDot"></div>
-          <span id="sandboxToastText">Success</span>
-        </div>
+
       </div>
     </section>
   </div>
 
   <script>
+    // Render static specs on load
+    window.addEventListener('DOMContentLoaded', () => {
+      // Helper to render pills inside wrappers to preserve spec box styles
+      const renderPillInBox = (targetId, state, toneId) => {
+        const box = document.getElementById(targetId);
+        const wrapper = document.createElement('div');
+        box.appendChild(wrapper);
+        Tonal.renderPill(wrapper, state, toneId, false, {
+          onClick: () => {},
+          onHover: () => {},
+          onTogglePopover: () => {}
+        });
+      };
+
+      // 1. Pill States
+      renderPillInBox('pill-rest-target', 'rest', 'workChat');
+      renderPillInBox('pill-expanded-target', 'expanded', 'workChat');
+      renderPillInBox('pill-loading-target', 'loading', 'workChat');
+      renderPillInBox('pill-done-target', 'done', 'workChat');
+      renderPillInBox('pill-error-target', 'error', 'workChat');
+
+      // 2. Popover Spec
+      const popoverSpec = Tonal.createPopover('workChat', () => {}, () => {}, () => {}, () => {});
+      document.getElementById('popover-target').appendChild(popoverSpec);
+
+      // 4. Decode Float Spec
+      const floatSpec = Tonal.createDecodeFloat(() => {});
+      floatSpec.classList.add('decode-float--active');
+      document.getElementById('decode-float-target').appendChild(floatSpec);
+
+      // 5. Decode Card Spec
+      const cardSpec = Tonal.createDecodeCard('Hey team, please share the latest report as soon as possible. Thanks!', () => {});
+      cardSpec.classList.add('decode-card--active');
+      document.getElementById('decode-card-target').appendChild(cardSpec);
+
+      // Initialize Sandbox
+      updateSandboxPill();
+      renderSandboxPopover();
+    });
+
     let sandboxState = 'rest';
     let sandboxPopoverActive = false;
-    let selectedSandboxTone = 'Work';
+    let selectedSandboxTone = 'workChat';
 
     const MOCK_TEXTS = {
       original: 'hey guys need that report asap thx',
-      Work: 'Hey team, please share the latest report as soon as possible. Thanks!',
-      Casual: 'hey guys, can someone send over that report whenever you get a chance? thanks! 🙌',
-      Formal: 'Dear team, could you please send over the latest report at your earliest convenience? Thank you.'
+      workChat: 'Hey team, please share the latest report as soon as possible. Thanks!',
+      casual: 'hey guys, can someone send over that report whenever you get a chance? thanks! 🙌',
+      formal: 'Dear team, could you please send over the latest report at your earliest convenience? Thank you.'
     };
 
     function setSandboxState(state) {
       sandboxState = state;
       sandboxPopoverActive = false;
-      document.getElementById('sandboxPopover').classList.remove('popover--active');
+      renderSandboxPopover();
 
       // Update control buttons
       document.querySelectorAll('.sandbox-btn').forEach(btn => btn.classList.remove('active'));
       const activeBtn = document.getElementById(`btn-${state}`);
       if (activeBtn) activeBtn.classList.add('active');
 
-      // Update pill classes
-      const pill = document.getElementById('sandboxPill');
-      pill.className = `t-pill t-pill--${state}`;
+      updateSandboxPill();
+    }
 
-      // Update Pill markup
-      if (state === 'rest') {
-        pill.innerHTML = `
-          <div class="pill-icon"><div class="pill-logo"></div></div>`;
-      } else if (state === 'expanded') {
-        pill.innerHTML = `
-          <div class="pill-icon"><div class="pill-logo"></div></div>
-          <span class="pill-text">${selectedSandboxTone}</span>
-          <div class="pill-chev-wrap" onclick="event.stopPropagation(); toggleSandboxPopover()">
-            <svg width="7" height="5" viewBox="0 0 8 5" fill="none"><path d="M1 1l3 3 3-3" stroke="#FFFFFF" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </div>`;
-      } else if (state === 'loading') {
-        pill.innerHTML = `<span class="pill-text">Converting<span class="pill-dots"></span></span>`;
-      } else if (state === 'done') {
-        pill.innerHTML = `<span class="pill-text">Undo</span>`;
-      } else if (state === 'error') {
-        pill.innerHTML = `
-          <div class="pill-icon">
-            <svg width="8" height="8" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1l12 12M13 1L1 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </div>
-          <span class="pill-text" style="margin-left: 4px;">Retry</span>`;
+    function updateSandboxPill() {
+      const container = document.getElementById('sandbox-pill-container');
+      Tonal.renderPill(
+        container,
+        sandboxState,
+        selectedSandboxTone,
+        sandboxPopoverActive,
+        {
+          onClick: handleSandboxPillClick,
+          onHover: (hovering) => {
+            if (sandboxState === 'rest' && hovering) setSandboxState('hover');
+            if (sandboxState === 'hover' && !hovering) setSandboxState('rest');
+          },
+          onTogglePopover: toggleSandboxPopover
+        }
+      );
+    }
+
+    function renderSandboxPopover() {
+      const container = document.getElementById('sandbox-popover-container');
+      container.innerHTML = '';
+      if (sandboxPopoverActive) {
+        const pop = Tonal.createPopover(
+          selectedSandboxTone,
+          (toneId) => {
+            triggerSandboxTone(toneId);
+          },
+          () => {
+            toggleSandboxPopover();
+          },
+          () => {},
+          () => {}
+        );
+        container.appendChild(pop);
       }
+      // Sync chevron rotation
+      updateSandboxPill();
     }
 
     function toggleSandboxPopover() {
@@ -779,49 +607,14 @@
         setSandboxState('expanded');
       }
       sandboxPopoverActive = !sandboxPopoverActive;
-      const popover = document.getElementById('sandboxPopover');
-      if (sandboxPopoverActive) {
-        popover.classList.add('popover--active');
-      } else {
-        popover.classList.remove('popover--active');
-      }
+      renderSandboxPopover();
     }
 
     function triggerSandboxTone(toneId) {
-      const toneMap = {
-        Work: { label: 'Work', sub: 'Clear, concise, professional' },
-        Casual: { label: 'Casual', sub: 'Warm, friendly, open' },
-        Formal: { label: 'Formal', sub: 'Polite, executive, formal' }
-      };
-
       selectedSandboxTone = toneId;
-      toggleSandboxPopover();
+      sandboxPopoverActive = false;
+      renderSandboxPopover();
       setSandboxState('expanded');
-
-      // Update popover items
-      document.querySelectorAll('.sandbox-popover .pop-item').forEach(item => {
-        const labelText = item.querySelector('.pop-label').innerText;
-        const matchingToneKey = Object.keys(toneMap).find(k => toneMap[k].label === labelText);
-        const toneData = toneMap[matchingToneKey];
-
-        // Remove existing second child span (check or sub)
-        const secondChild = item.children[1];
-        if (secondChild) item.removeChild(secondChild);
-
-        if (matchingToneKey === toneId) {
-          item.classList.add('pop-item--active');
-          const checkSpan = document.createElement('span');
-          checkSpan.className = 'pop-check';
-          checkSpan.innerText = '✓';
-          item.appendChild(checkSpan);
-        } else {
-          item.classList.remove('pop-item--active');
-          const subSpan = document.createElement('span');
-          subSpan.className = 'pop-sub';
-          subSpan.innerText = toneData.sub;
-          item.appendChild(subSpan);
-        }
-      });
 
       // Simulate rewrite operation
       setTimeout(() => {
@@ -829,19 +622,21 @@
         setTimeout(() => {
           document.getElementById('sandbox-textarea').value = MOCK_TEXTS[toneId];
           setSandboxState('done');
-          triggerLiveToast('success', 'Text rewritten successfully');
+          Tonal.showToast(document.body, 'Text rewritten successfully', 'success');
         }, 1200);
       }, 200);
     }
 
     function handleSandboxPillClick() {
-      if (sandboxState === 'rest') {
+      if (sandboxState === 'rest' || sandboxState === 'hover') {
         setSandboxState('expanded');
+      } else if (sandboxState === 'expanded') {
+        toggleSandboxPopover();
       } else if (sandboxState === 'done') {
         // Undo rewrite
         document.getElementById('sandbox-textarea').value = MOCK_TEXTS.original;
         setSandboxState('rest');
-        triggerLiveToast('info', 'Rewriting undone');
+        Tonal.showToast(document.body, 'Rewriting undone', 'success');
       } else if (sandboxState === 'error') {
         setSandboxState('loading');
         setTimeout(() => {
@@ -849,20 +644,6 @@
           setSandboxState('done');
         }, 1200);
       }
-    }
-
-    function triggerLiveToast(type, msg) {
-      const toast = document.getElementById('sandboxToast');
-      const dot = document.getElementById('sandboxToastDot');
-      const text = document.getElementById('sandboxToastText');
-
-      toast.className = `toast toast--active toast--${type}`;
-      dot.className = `toast-dot toast-dot--${type}`;
-      text.innerText = msg;
-
-      setTimeout(() => {
-        toast.classList.remove('toast--active');
-      }, 3000);
     }
   </script>
 </body>

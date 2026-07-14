@@ -1,4 +1,4 @@
-@import "../../../extension/core/tonal.css";
+@import "../../../extension/tonal.css";
 
 /* ==========================================================================
    TONAL DESIGN SYSTEM & LANDING PAGE STYLING
@@ -126,14 +126,14 @@ body {
 .text-right { text-align: right; }
 
 .section-padding {
-  padding-top: var(--space-12);
-  padding-bottom: var(--space-12);
+  padding-top: var(--space-10);
+  padding-bottom: var(--space-10);
 }
 
 @media (min-width: 768px) {
   .section-padding {
-    padding-top: var(--space-16);
-    padding-bottom: var(--space-16);
+    padding-top: var(--space-12);
+    padding-bottom: var(--space-12);
   }
 }
 
@@ -311,11 +311,18 @@ h1, h2, h3, h4, h5, h6 {
 .hero {
   position: relative;
   overflow: hidden;
-  padding-top: calc(var(--header-height) + var(--space-12));
-  padding-bottom: var(--space-12);
+  padding-top: calc(var(--header-height) + var(--space-10));
+  padding-bottom: var(--space-10);
   border-bottom: 1px solid var(--color-border-light);
   background-image: radial-gradient(rgba(0, 0, 0, 0.025) 1.5px, transparent 1.5px);
   background-size: 24px 24px;
+}
+
+@media (min-width: 768px) {
+  .hero {
+    padding-top: calc(var(--header-height) + var(--space-12));
+    padding-bottom: var(--space-12);
+  }
 }
 
 .hero-content {
@@ -903,12 +910,18 @@ h1, h2, h3, h4, h5, h6 {
 
 
 
-/* Footer */
 .footer {
   background-color: var(--color-bg-alt);
-  padding-top: var(--space-16);
-  padding-bottom: var(--space-12);
+  padding-top: var(--space-10);
+  padding-bottom: var(--space-10);
   border-top: 1px solid var(--color-border-light);
+}
+
+@media (min-width: 768px) {
+  .footer {
+    padding-top: var(--space-12);
+    padding-bottom: var(--space-12);
+  }
 }
 
 .footer-grid {

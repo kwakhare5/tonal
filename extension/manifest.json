@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Tonal — Two-Way Tone Translator",
+  "name": "Tonal",
   "version": "1.0.0",
   "description": "Two-way tone translator. Convert casual to formal, or decode corporate speak — inside Gmail, Slack, and LinkedIn.",
   "permissions": ["storage"],
@@ -25,8 +25,7 @@
         "adapters/slack.js",
         "adapters/gmail.js",
         "adapters/manager.js",
-        "core/config.cjs",
-        "core/tonal.js",
+        "tonal.js",
         "content.js"
       ],
       "run_at": "document_idle"
@@ -34,7 +33,7 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": ["core/tonal.css"],
+      "resources": ["tonal.css"],
       "matches": ["<all_urls>"]
     }
   ],

@@ -12,7 +12,11 @@ window.Tonal = (function () {
     CHECK: `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5" /></svg>`,
   };
 
-  const TONES = window.TonalConfig ? window.TonalConfig.TONES : [];
+  const TONES = [
+    { id: "casual", l: "Casual", s: "texting" },
+    { id: "workChat", l: "Work Chat", s: "natural" },
+    { id: "formal", l: "Formal", s: "professional" },
+  ];
 
   function h(tag, props = {}, ...children) {
     const el = document.createElement(tag);
@@ -72,7 +76,7 @@ window.Tonal = (function () {
     injectStyles: (root) => {
       const link = document.createElement("link");
       link.rel = "stylesheet";
-      link.href = chrome.runtime.getURL("core/tonal.css");
+      link.href = chrome.runtime.getURL("tonal.css");
       root.appendChild(link);
     },
     injectFonts: () => {
@@ -101,7 +105,7 @@ window.Tonal = (function () {
       if (!container.dataset.tonalInited) {
         container.className = "t-hitbox";
         container.setAttribute("role", "button");
-        container.setAttribute("aria-label", "Tonal AI Tone Selector");
+        container.setAttribute("aria-label", "Tonal Tone Selector");
         container.setAttribute("tabindex", "0");
 
         const pill = h("div", { className: "t-pill" });
@@ -141,7 +145,7 @@ window.Tonal = (function () {
       } else if (state === "done") {
         pill.innerHTML = `<span class="pill-text">Undo</span>`;
       } else if (state === "error") {
-        pill.innerHTML = `<div class="pill-icon"><svg width="10" height="10" viewBox="0 0 14 14" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 1l12 12M13 1L1 13"/></svg></div><span class="pill-text" style="margin-left: 4px;">Retry</span>`;
+        pill.innerHTML = `<div class="pill-icon"><svg width="8" height="8" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1l12 12M13 1L1 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="pill-text" style="margin-left: 4px;">Retry</span>`;
       }
     },
     createPopover: (

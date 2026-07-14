@@ -16,8 +16,8 @@ const lora = Lora({
 });
 
 export const metadata: Metadata = {
-  title: "Tonal — AI-Powered Inline Tone Adjustment Chrome Extension",
-  description: "Adjust the tone of your text directly inside any input field. No copying, no pasting, no extra tabs. Instant inline rewrites powered by Groq & Llama 3.3.",
+  title: "Tonal",
+  description: "Inline Tone Adjustment Chrome Extension",
   icons: {
     icon: "/icons/icon48.png",
     shortcut: "/icons/icon16.png",

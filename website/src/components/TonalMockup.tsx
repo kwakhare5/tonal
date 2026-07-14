@@ -1,5 +1,32 @@
 'use client';
 
+declare global {
+  interface Window {
+    Tonal: {
+      TONES: Array<{ id: string; l: string; s: string }>;
+      renderPill: (
+        container: HTMLElement,
+        state: PillState,
+        toneId: ToneId,
+        isPopoverOpen: boolean,
+        callbacks: {
+          onClick: () => void;
+          onHover: (hovering: boolean) => void;
+          onTogglePopover: () => void;
+        }
+      ) => void;
+      createPopover: (
+        activeId: string,
+        onSelect: (toneId: string) => void,
+        onClose: () => void,
+        onMouseEnter: () => void,
+        onMouseLeave: () => void
+      ) => HTMLElement;
+      showToast?: (root: HTMLElement, msg: string, type?: string) => void;
+    };
+  }
+}
+
 import React, { useState } from 'react';
 
 type PillState = 'rest' | 'hover' | 'expanded' | 'loading' | 'done';
@@ -12,7 +39,11 @@ interface ToneOption {
   fallback: string;
 }
 
-import { TONES as CONFIG_TONES } from '@tonal-core/config.cjs';
+const CONFIG_TONES = [
+  { id: 'casual', l: 'Casual', s: 'texting' },
+  { id: 'workChat', l: 'Work Chat', s: 'natural' },
+  { id: 'formal', l: 'Formal', s: 'professional' }
+];
 
 const FALLBACKS: Record<ToneId, string> = {
   workChat: 'Hey team, please share the latest report as soon as possible. Thanks!',
@@ -29,115 +60,9 @@ const TONES: ToneOption[] = (CONFIG_TONES as Array<{id: string, l: string, s: st
 
 const INITIAL_TEXT = 'hey need that report asap thx';
 
-// Real SVGs from extension
-const SVGS = {
-  LOGO: (
-    <div className="pill-logo" />
-  ),
-  CHEV: (
-    <svg width="7" height="5" viewBox="0 0 8 5" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M1 1l3 3 3-3" stroke="#FFFFFF" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  )
-};
 
-interface MockTonalPillProps {
-  pillState: PillState;
-  setPillState: React.Dispatch<React.SetStateAction<PillState>>;
-  showPopover: boolean;
-  activeTone: ToneId;
-  currentToneObj: ToneOption;
-}
 
-function MockTonalPill({
-  pillState,
-  setPillState,
-  showPopover,
-  activeTone,
-  currentToneObj
-}: MockTonalPillProps) {
-  return (
-    <>
-      {/* Popover */}
-      {showPopover && (
-        <div className="popover-container" style={{ bottom: '34px' }}>
-          <div className="popover popover--active" style={{ opacity: 1, pointerEvents: 'auto', transform: 'none' }}>
-            {TONES.map((t, idx) => (
-              <React.Fragment key={t.id}>
-                <button
-                  type="button"
-                  className={`pop-item ${activeTone === t.id ? 'pop-item--active' : ''}`}
-                  onClick={() => {}}
-                >
-                  <div style={{ display: 'flex', flexDirection: 'column' }}>
-                    <span className="pop-label">{t.label}</span>
-                  </div>
-                  {activeTone === t.id ? (
-                    <span className="pop-check" style={{ color: 'white' }}>✓</span>
-                  ) : (
-                    <span className="pop-sub">{t.sub}</span>
-                  )}
-                </button>
-                {idx < TONES.length - 1 && <div className="pop-divider" />}
-              </React.Fragment>
-            ))}
-          </div>
-        </div>
-      )}
 
-      {/* Tonal Pill */}
-      <div
-        className="t-hitbox"
-        style={{ position: 'relative', right: 0, bottom: 0, padding: 0 }}
-        onMouseEnter={() => {
-          if (pillState === 'rest') setPillState('hover');
-        }}
-        onMouseLeave={() => {
-          if (pillState === 'hover') setPillState('rest');
-        }}
-        onClick={() => {}}
-      >
-        <div
-          className={`t-pill t-pill--${pillState}`}
-          style={{
-            width: pillState === 'rest' || pillState === 'hover' ? '30px' : undefined,
-            height: pillState === 'rest' || pillState === 'hover' ? '16px' : '24px',
-            display: 'inline-flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            background: pillState === 'done' ? 'var(--color-green)' : 'var(--black)',
-          }}
-        >
-          {(pillState === 'rest' || pillState === 'hover' || pillState === 'expanded') && (
-            <div className="pill-icon">{SVGS.LOGO}</div>
-          )}
-          {pillState === 'expanded' && (
-            <>
-              <span className="pill-text" style={{ marginLeft: '4px', marginRight: '4px', lineHeight: 1 }}>
-                {currentToneObj.label}
-              </span>
-              <div
-                className="pill-chev-wrap"
-                style={{
-                  transform: showPopover ? 'rotate(180deg)' : 'none',
-                  transition: 'transform 0.15s ease',
-                }}
-              >
-                {SVGS.CHEV}
-              </div>
-            </>
-          )}
-          {pillState === 'loading' && (
-            <span className="pill-text pill-dots" style={{ padding: '0 8px' }}>Converting</span>
-          )}
-          {pillState === 'done' && (
-            <span className="pill-text" style={{ padding: '0 8px' }}>Undo</span>
-          )}
-        </div>
-      </div>
-    </>
-  );
-}
 
 export default function TonalMockup() {
   const [text, setText] = useState(INITIAL_TEXT);
@@ -146,6 +71,104 @@ export default function TonalMockup() {
   const [activeTone, setActiveTone] = useState<ToneId>('workChat');
   const [isTyping, setIsTyping] = useState(false);
   const [platform, setPlatform] = useState<'gmail' | 'slack'>('gmail');
+
+  const [tonalLoaded, setTonalLoaded] = useState(false);
+  const pillRef = React.useRef<HTMLDivElement>(null);
+  const popoverRef = React.useRef<HTMLDivElement>(null);
+
+  // Client-side load of tonal.js
+  React.useEffect(() => {
+    if (typeof window !== 'undefined') {
+      // @ts-expect-error - tonal.js is a plain JavaScript script file, not an ES module
+      import('../../../extension/tonal.js').then(() => {
+        setTonalLoaded(true);
+      });
+    }
+  }, []);
+
+  // Sync Pill Rendering
+  React.useEffect(() => {
+    const container = pillRef.current;
+    if (!container || typeof window === 'undefined' || !window.Tonal) return;
+
+    container.innerHTML = '';
+    const wrapper = document.createElement('div');
+    container.appendChild(wrapper);
+
+    window.Tonal.renderPill(
+      wrapper,
+      pillState,
+      activeTone,
+      showPopover,
+      {
+        onClick: () => {
+          if (pillState === 'rest' || pillState === 'hover') {
+            setPillState('expanded');
+          } else if (pillState === 'expanded') {
+            setShowPopover(prev => !prev);
+          } else if (pillState === 'done') {
+            setText(INITIAL_TEXT);
+            setPillState('rest');
+            if (window.Tonal.showToast) {
+              window.Tonal.showToast(document.body, 'Rewriting undone', 'success');
+            }
+          }
+        },
+        onHover: (hovering: boolean) => {
+          if (pillState === 'rest' && hovering) setPillState('hover');
+          if (pillState === 'hover' && !hovering) setPillState('rest');
+        },
+        onTogglePopover: () => {
+          setShowPopover(prev => !prev);
+        }
+      }
+    );
+
+    wrapper.style.position = 'relative';
+    wrapper.style.right = '0';
+    wrapper.style.bottom = '0';
+    wrapper.style.padding = '0';
+    wrapper.style.zIndex = '1';
+  }, [pillState, activeTone, showPopover, platform, tonalLoaded]);
+
+  // Sync Popover Rendering
+  React.useEffect(() => {
+    const container = popoverRef.current;
+    if (!container || typeof window === 'undefined' || !window.Tonal) return;
+
+    container.innerHTML = '';
+    if (showPopover) {
+      const pop = window.Tonal.createPopover(
+        activeTone,
+        (toneId: string) => {
+          setActiveTone(toneId as ToneId);
+          setShowPopover(false);
+          setPillState('expanded');
+
+          // Simulate translation rewrite
+          setTimeout(() => {
+            setPillState('loading');
+            setTimeout(() => {
+              setText(FALLBACKS[toneId as ToneId]);
+              setPillState('done');
+              if (window.Tonal.showToast) {
+                window.Tonal.showToast(document.body, 'Text rewritten successfully', 'success');
+              }
+            }, 1200);
+          }, 200);
+        },
+        () => {
+          setShowPopover(false);
+        },
+        () => {},
+        () => {}
+      );
+      container.appendChild(pop);
+      pop.style.position = 'absolute';
+      pop.style.bottom = 'calc(100% + 8px)';
+      pop.style.right = '0';
+    }
+  }, [showPopover, activeTone, platform, tonalLoaded]);
   // Motion Graphic Loop Effect
   React.useEffect(() => {
     let isCancelled = false;
@@ -245,7 +268,7 @@ export default function TonalMockup() {
     };
   }, [platform]);
 
-  const currentToneObj = TONES.find(t => t.id === activeTone) || TONES[0];
+  
 
   return (
     <div className={`composer-mockup composer-mockup--${platform}`}>
@@ -331,13 +354,10 @@ export default function TonalMockup() {
 
               {/* Floating Pill and Popover Wrapper */}
               <div className="mock-pill-anchor" style={{ position: 'absolute', right: '0', bottom: '0' }}>
-                <MockTonalPill
-                  pillState={pillState}
-                  setPillState={setPillState}
-                  showPopover={showPopover}
-                  activeTone={activeTone}
-                  currentToneObj={currentToneObj}
-                />
+                <div style={{ position: 'relative' }}>
+                  <div ref={popoverRef} />
+                  <div ref={pillRef} />
+                </div>
               </div>
             </div>
           </div>
@@ -378,13 +398,10 @@ export default function TonalMockup() {
 
               {/* Floating Pill inside Slack editor */}
               <div className="mock-pill-anchor" style={{ position: 'absolute', right: '10px', bottom: '48px' }}>
-                <MockTonalPill
-                  pillState={pillState}
-                  setPillState={setPillState}
-                  showPopover={showPopover}
-                  activeTone={activeTone}
-                  currentToneObj={currentToneObj}
-                />
+                <div style={{ position: 'relative' }}>
+                  <div ref={popoverRef} />
+                  <div ref={pillRef} />
+                </div>
               </div>
 
               {/* Slack bottom toolbar inside editor */}

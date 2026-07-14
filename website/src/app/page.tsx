@@ -227,7 +227,7 @@ export default function Home() {
                 <Image src="/icons/icon128.png" alt="Tonal Logo" width={24} height={24} style={{ borderRadius: 'var(--radius-xs)', marginRight: 'var(--space-1)' }} />
                 <span>Tonal</span>
               </a>
-              <p className="footer-tagline">Open Source Inline AI Assistant</p>
+              <p className="footer-tagline">Open Source Inline Assistant</p>
               <p className="footer-author" style={{ fontSize: '12px', color: 'var(--gray-4)', marginTop: 'var(--space-2)' }}>
                 Created by <a href="https://github.com/kwakhare5" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-blue)', textDecoration: 'none' }}>Karan Wakhare</a>
               </p>
