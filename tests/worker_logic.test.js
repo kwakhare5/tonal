@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert';
-import worker from '../src/backend/worker.js';
+import worker from '../backend/worker.js';
 
 test('Worker — CORS Allowed Origin', async () => {
   const req = new Request('http://tonal-proxy.kwakhare5.workers.dev', {

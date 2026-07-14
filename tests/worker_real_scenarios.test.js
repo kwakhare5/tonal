@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert';
-import worker from '../src/backend/worker.js';
+import worker from '../backend/worker.js';
 
 test('Worker — Real Gmail Scenario (Formal Tone)', async () => {
   let capturedPayload = null;

@@ -95,7 +95,7 @@ INPUT_DATA: {TEXT}
 - **Dual Trigger**: Uses 1.5s **Heartbeat Watchdog** + immediate **Focus Trap** (focusin).
 - **Shadow Scanning**: Scans for host Shadow Roots to find nested text boxes.
 
-- **Zero Drift**: All CSS is inlined in `tonal.js`. DO NOT use external CSS files for injected UI.
+- **Zero Drift**: All UI styling is stored in `core/tonal.css` and injected dynamically inside the Shadow DOM using `chrome.runtime.getURL`. Do NOT use inline CSS in JS.
 - **Shadow DOM**: Every Tonal component MUST be wrapped in an isolated Shadow Root.
 - **Scoping**: All design tokens (variables) MUST be scoped to `:host` inside the Shadow Root.
 - **Docking**: Use a high-frequency `requestAnimationFrame` watchdog to maintain coordinates.
@@ -114,8 +114,9 @@ INPUT_DATA: {TEXT}
 ```json
 {
   "manifest_version": 3,
-  "name": "Tonal â€” Two-Way Tone Translator",
-  "description": "Two-way tone translator. Convert casual to formal, or decode corporate speak â€” inside Gmail, Slack, and LinkedIn.",
+  "name": "Tonal — Two-Way Tone Translator",
+  "version": "1.0.0",
+  "description": "Two-way tone translator. Convert casual to formal, or decode corporate speak — inside Gmail, Slack, and LinkedIn.",
   "permissions": ["storage"],
   "host_permissions": [
     "https://mail.google.com/*",
@@ -124,7 +125,7 @@ INPUT_DATA: {TEXT}
     "https://tonal-proxy.kwakhare5.workers.dev/*"
   ],
   "background": {
-    "service_worker": "src/extension/background.js"
+    "service_worker": "background.js"
   },
   "content_scripts": [
     {
@@ -134,15 +135,21 @@ INPUT_DATA: {TEXT}
         "https://*.linkedin.com/*"
       ],
       "js": [
-        "src/extension/adapters/linkedin.js",
-        "src/extension/adapters/slack.js",
-        "src/extension/adapters/gmail.js",
-        "src/extension/adapters/default.js",
-        "src/extension/adapters/manager.js",
-        "src/core/tonal.js",
-        "src/extension/content.js"
+        "adapters/linkedin.js",
+        "adapters/slack.js",
+        "adapters/gmail.js",
+        "adapters/manager.js",
+        "core/config.cjs",
+        "core/tonal.js",
+        "content.js"
       ],
       "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["core/tonal.css"],
+      "matches": ["<all_urls>"]
     }
   ],
   "action": {
@@ -151,18 +158,12 @@ INPUT_DATA: {TEXT}
       "48": "icons/icon48.png",
       "128": "icons/icon128.png"
     },
-    "default_popup": "src/extension/popup.html"
+    "default_popup": "popup.html"
   },
   "icons": {
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
-  },
-  "browser_specific_settings": {
-    "gecko": {
-      "id": "tonal@tonal.ai",
-      "strict_min_version": "109.0"
-    }
   }
 }
 ```
@@ -288,6 +289,8 @@ _Auto-maintained by AI. Updated whenever a new token or class is discovered._
  - **2026-07-11 - Next.js Landing Page Website**: Restructured the landing page into a dedicated Next.js + TypeScript + Tailwind CSS v4 application inside a `website/` subdirectory, keeping extension code isolated at the root while offering a robust web presence.
  - **2026-07-13 - Next.js Landing Page Redesign**: Upgraded the Next.js website to a "Modern SaaS" aesthetic with a floating navbar, removing the static `index.html` file.
  - **2026-07-13 - Security & Performance Architecture Patches**: Patched prompt injection vulnerabilities in `worker.js` by encoding HTML entities (`<`, `>`). Removed layout thrashing `setInterval` polling in `content.js`, relying strictly on `MutationObserver` and `ResizeObserver`. Maintained vanilla JS monolith for content scripts to prevent injection order flakiness.
+ - **2026-07-14 - Visualizer Resizing & Floating Navbar Redesign**: Redesigned the floating navbar to include scroll states and section links (integrating `FaqSection`), and scaled the interactive mockup to `860px` max-width with a `340px` body height.
+ - **2026-07-14 - Static JSDoc Type-Checking for Vanilla JS Extension**: Introduced `jsconfig.json` and `globals.d.ts` inside the `/extension` directory to enable TypeScript-based code analysis on Vanilla JS files without compilation overhead.
  
  ---
  
@@ -312,3 +315,9 @@ _Auto-maintained by AI. Updated whenever a new token or class is discovered._
  - **Why:** The user requested a "Modern SaaS" aesthetic redesign with 2px rounded corners and a floating navbar, followed by an @ARCHITECTURE-REVIEW of the entire codebase for stability.
  - **Patterns introduced:** Floating navbar with blur, HTML entity escaping for Prompt Injection defense (`<`, `>`), and optimized DOM polling without `setInterval`.
  - **Mistakes caught:** Attempted to split `content.js` monolith into modules, but correctly aborted the plan during the `@TDD` phase due to lack of an E2E testing framework to verify extension injection order.
+
+ ### 2026-07-14 — LinkedIn Adapter Completion, UI Resizing & Tooling Overhaul
+ - **Changed:** `extension/adapters/linkedin.js`, `website/src/app/page.tsx`, `website/src/app/globals.css`, `website/src/components/TonalMockup.tsx`, `package.json`, `extension/jsconfig.json` (created), `extension/globals.d.ts` (created), `tests/` path updates.
+ - **Why:** Complete the LinkedIn Platform adapter (Draft.js modal targetings), enlarge the website preview visualizer, redesign the floating navbar to include middle links and scroll states, fix root package.json dev scripts, and introduce TypeScript checkJs validation.
+ - **Patterns introduced:** Recursive DOM child node scanning to identify the last text node for cursor snapping, React hook-based header scroll shrink transition, component extraction in [TonalMockup.tsx](file:///d:/Tonal/website/src/components/TonalMockup.tsx) for `<MockTonalPill />` reuse, and JSDoc-based TS analysis configuration.
+ - **Mistakes caught:** Broken test imports pointing to obsolete `src/backend/` folders, duplicate `.hero` class rule override in globals.css, and multiple unused/stale templated default SVGs in public assets (all cleaned).

@@ -5,9 +5,10 @@
   "description": "Two-way tone translator Chrome Extension",
   "main": "background.js",
   "scripts": {
-    "deploy": "cd src/backend && wrangler deploy",
-    "dev": "cd src/backend && wrangler dev",
-    "zip": "powershell compress-archive -Path manifest.json, src, icons -DestinationPath tonal-v5.0.0.zip",
+    "deploy": "cd backend && wrangler deploy",
+    "dev": "cd backend && wrangler dev",
+    "zip": "powershell -Command \"Compress-Archive -Path extension/* -DestinationPath website/public/tonal-extension.zip -Force\"",
+    "test": "node --test tests/worker.test.js tests/worker_logic.test.js tests/worker_real_scenarios.test.js",
     "kill": "npx kill-port 3000 3001 3002 8080",
     "save": "git add -A && git commit -m \"checkpoint: [timestamp]\" && git push"
   },

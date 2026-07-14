@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert';
-import { extractOutput } from '../src/backend/worker.js';
+import { extractOutput } from '../backend/worker.js';
 
 test('extractOutput - XML Tag Wrapping', () => {
   // Case 1: Standard wrapped content

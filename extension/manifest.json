@@ -1,0 +1,60 @@
+{
+  "manifest_version": 3,
+  "name": "Tonal — Two-Way Tone Translator",
+  "version": "1.0.0",
+  "description": "Two-way tone translator. Convert casual to formal, or decode corporate speak — inside Gmail, Slack, and LinkedIn.",
+  "permissions": ["storage"],
+  "host_permissions": [
+    "https://mail.google.com/*",
+    "https://*.slack.com/*",
+    "https://*.linkedin.com/*",
+    "https://tonal-proxy.kwakhare5.workers.dev/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://mail.google.com/*",
+        "https://*.slack.com/*",
+        "https://*.linkedin.com/*"
+      ],
+      "js": [
+        "adapters/linkedin.js",
+        "adapters/slack.js",
+        "adapters/gmail.js",
+        "adapters/manager.js",
+        "core/config.cjs",
+        "core/tonal.js",
+        "content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["core/tonal.css"],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "action": {
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    },
+    "default_popup": "popup.html"
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "tonal@tonal.ai",
+      "strict_min_version": "109.0"
+    }
+  }
+}

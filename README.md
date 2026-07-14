@@ -124,7 +124,9 @@ Tonal/
 ├── manifest.json                # Extension configuration (MV3)
 ├── src/
 │   ├── core/
-│   │   └── tonal.js             # Design System tokens & classes
+│   │   ├── config.cjs           # Shared configuration for tone definitions
+│   │   ├── tonal.css            # Shared core design system styles
+│   │   └── tonal.js             # Core UI rendering components
 │   └── extension/
 │       ├── adapters/            # Platform-specific (Gmail/Slack/LinkedIn)
 │       ├── background.js        # Service worker (Proxy handler)

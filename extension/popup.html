@@ -1,0 +1,258 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        /* Colour Tokens */
+        --black: #0f0f0f;
+        --gray-1: #1c1c1e;
+        --gray-2: #2c2c2e;
+        --gray-3: #3a3a3c;
+        --gray-4: #636366;
+        --gray-5: #aeaeb2;
+        --gray-6: #d1d1d6;
+        --gray-7: #e5e5ea;
+        --gray-8: #f2f2f7;
+        --gray-9: #f5f5f7;
+        --white: #ffffff;
+        --green: #34c759;
+        --red: #ff3b30;
+        --orange: #ff9f0a;
+
+        /* Unified Font Stack (Design System + Project) */
+        --font: "DM Sans", sans-serif;
+        --mono: "DM Sans", sans-serif;
+
+        /* Radius Tokens */
+        --r-sm: 6px;
+        --r-md: 10px;
+        --r-lg: 14px;
+        --r-xl: 20px;
+
+        /* Shadow Tokens */
+        --sh-xs: 0 1px 2px rgba(0, 0, 0, 0.06);
+        --sh-sm: 0 1px 4px rgba(0, 0, 0, 0.06), 0 4px 12px rgba(0, 0, 0, 0.06);
+        --sh-md: 0 2px 8px rgba(0, 0, 0, 0.06), 0 12px 32px rgba(0, 0, 0, 0.08);
+        --sh-lg: 0 8px 24px rgba(0, 0, 0, 0.1), 0 24px 64px rgba(0, 0, 0, 0.12);
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: inherit;
+      }
+
+      html {
+        width: 280px;
+        background: var(--white);
+      }
+
+      body {
+        width: 280px;
+        background: var(--white);
+        font-family: var(--font);
+        -webkit-font-smoothing: antialiased;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      /* ── POPUP HEAD ────────────────────────────────────────────── */
+      .popup-head {
+        padding: 18px 18px 14px;
+        border-bottom: 1px solid var(--gray-8);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .popup-logo {
+        width: 36px;
+        height: 36px;
+        background: var(--black);
+        border-radius: 9px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+
+      .popup-title {
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--black);
+        letter-spacing: -0.02em;
+        line-height: 1.2;
+      }
+
+      .popup-sub {
+        font-size: 11px;
+        color: var(--gray-4);
+        margin-top: 1px;
+      }
+
+      /* ── POPUP BODY ────────────────────────────────────────────── */
+      .popup-body {
+        padding: 16px 18px;
+      }
+
+      .popup-badge {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        background: #f0fdf4;
+        border: 1px solid #d1fae5;
+        border-radius: var(--r-md);
+        padding: 8px 12px;
+        margin-bottom: 16px;
+        font-size: 12px;
+        font-weight: 500;
+        color: #059669;
+      }
+
+      .popup-badge-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--green);
+        flex-shrink: 0;
+      }
+
+      .popup-field-label {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--gray-5);
+        margin-bottom: 7px;
+      }
+
+      .segmented {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        background: var(--gray-8);
+        border-radius: var(--r-md);
+        padding: 3px;
+        gap: 2px;
+        margin-bottom: 14px;
+      }
+
+      .seg-item {
+        padding: 7px 4px;
+        text-align: center;
+        font-size: 11px;
+        font-weight: 500;
+        color: var(--gray-4);
+        border-radius: var(--r-sm);
+        cursor: pointer;
+        font-family: var(--font);
+        transition: all 0.2s;
+      }
+
+      .seg-item--active {
+        background: var(--white);
+        color: var(--black);
+        font-weight: 600;
+        box-shadow: var(--sh-xs);
+      }
+
+      .popup-save {
+        width: 100%;
+        background: var(--black);
+        color: var(--white);
+        border: none;
+        border-radius: var(--r-md);
+        padding: 10px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        font-family: var(--font);
+        letter-spacing: -0.01em;
+        transition: all 0.2s;
+      }
+      .popup-save:active {
+        transform: scale(0.98);
+      }
+
+      /* ── POPUP FOOTER ──────────────────────────────────────────── */
+      .popup-footer {
+        padding: 12px 18px;
+        border-top: 1px solid var(--gray-8);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .popup-platforms {
+        display: flex;
+        gap: 4px;
+        flex-wrap: wrap;
+      }
+
+      .platform-tag {
+        background: var(--gray-8);
+        border-radius: 4px;
+        padding: 2px 6px;
+        font-size: 10px;
+        font-weight: 500;
+        color: var(--gray-4);
+      }
+
+      .popup-status {
+        font-family: var(--mono);
+        font-size: 10px;
+        color: var(--gray-5);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="popup-head">
+      <div class="popup-logo">
+        <svg width="24" height="14" viewBox="0 0 72 44" fill="none">
+          <rect x="0" y="18" width="72" height="8" rx="4" fill="#2C2C2E" />
+          <rect x="0" y="18" width="39" height="8" rx="4" fill="#FFFFFF" />
+          <circle cx="39" cy="22" r="14" fill="white" />
+          <circle cx="39" cy="22" r="8" fill="#0F0F0F" />
+        </svg>
+      </div>
+      <div>
+        <div class="popup-title">Tonal</div>
+        <div class="popup-sub">Two-way tone translator</div>
+      </div>
+    </div>
+
+    <div class="popup-body">
+      <div class="popup-badge">
+        <div class="popup-badge-dot"></div>
+        Ready to use — no setup needed
+      </div>
+      <div class="popup-field-label">Default tone</div>
+      <div class="segmented" id="toneSelector">
+        <div class="seg-item" data-tone="casual">Casual</div>
+        <div class="seg-item" data-tone="workChat">Work</div>
+        <div class="seg-item" data-tone="formal">Formal</div>
+      </div>
+      <button class="popup-save" id="saveBtn">Save preference</button>
+    </div>
+
+    <div class="popup-footer">
+      <div class="popup-platforms">
+        <span class="platform-tag">Gmail</span>
+        <span class="platform-tag">Slack</span>
+        <span class="platform-tag">LinkedIn</span>
+      </div>
+      <span class="popup-status">Active</span>
+    </div>
+    <script src="popup.js"></script>
+  </body>
+</html>

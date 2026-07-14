@@ -36,7 +36,7 @@
 | Gmail | `adapters/gmail.js` | 🟢 Live |
 | Slack | `adapters/slack.js` | 🟢 Live |
 | Default (generic) | `adapters/default.js` | 🟢 Live |
-| LinkedIn | `adapters/linkedin.js` | 🔨 Building |
+| LinkedIn | `adapters/linkedin.js` | 🟢 Live |
 | Twitter/X | — | ⏸️ Paused |
 
 _Always register new adapters in `adapters/manager.js` and add `host_permissions` in `manifest.json`._
@@ -54,7 +54,7 @@ _Always register new adapters in `adapters/manager.js` and add `host_permissions
 | Floating Decode button | 🟢 Live | Appears on text selection |
 | Decode result card | 🟢 Live | Viewport-aware, auto-dismiss, Copy button |
 | Real-time pref sync | 🟢 Live | Popup changes → all tabs instantly |
-| LinkedIn adapter | 🔨 Building | `adapters/linkedin.js` exists, WIP |
+| LinkedIn adapter | 🟢 Live | `adapters/linkedin.js` fully integrated and validated |
 | Twitter/X adapter | ⏸️ Paused | Not yet implemented |
 | Tone history drawer | ⏸️ Paused | Last 5 rewrites via chrome.storage |
 
@@ -63,27 +63,35 @@ _Always register new adapters in `adapters/manager.js` and add `host_permissions
 ## Real File Map
 
 ```
-tonal/
-├── manifest.json                    ← MV3. host_permissions: gmail, slack, linkedin, CF worker
-├── src/
+Tonal/
+├── extension/                       ← self-contained Chrome Extension (MV3)
+│   ├── manifest.json                ← MV3 configuration
+│   ├── background.js                ← Service Worker → Cloudflare Worker proxy
+│   ├── content.js                   ← Scan loop + UI orchestration
+│   ├── popup.html
+│   ├── popup.js
 │   ├── core/
-│   │   └── tonal.js                 ← Design system tokens + classes
-│   ├── extension/
-│   │   ├── adapters/
-│   │   │   ├── manager.js           ← Adapter orchestration (register here)
-│   │   │   ├── gmail.js
-│   │   │   ├── linkedin.js
-│   │   │   ├── slack.js
-│   │   │   └── default.js
-│   │   ├── background.js            ← Service Worker → Cloudflare proxy
-│   │   ├── content.js               ← Scan loop + orchestration + UI injection
-│   │   ├── popup.html
-│   │   └── popup.js
-│   └── backend/
-│       ├── worker.js                ← Cloudflare Worker source (holds API key)
-│       └── wrangler.toml
-└── design/
-    └── tonal-design-system-v2.html  ← SOURCE OF TRUTH for all design tokens
+│   │   ├── config.cjs               ← Shared configuration for tone definitions
+│   │   ├── tonal.css                ← Shared core design system styles
+│   │   └── tonal.js                 ← Core UI rendering components
+│   └── adapters/
+│       ├── manager.js               ← Adapter orchestration (register here)
+│       ├── gmail.js
+│       ├── linkedin.js
+│       ├── slack.js
+│       └── default.js
+├── backend/                         ← Cloudflare Worker API proxy
+│   ├── worker.js                    ← Backend worker script
+│   └── wrangler.toml
+└── website/                         ← Next.js App Router website
+    ├── next.config.ts
+    ├── tsconfig.json                ← Path aliases for shared @tonal-core modules
+    └── src/
+        ├── app/
+        │   ├── globals.css          ← Imports shared extension tonal.css
+        │   └── page.tsx
+        └── components/
+            └── TonalMockup.tsx      ← Interactive tone selector demo
 ```
 
 **AI model:** Groq Llama 3.3 70B via `https://api.groq.com/openai/v1/chat/completions`
@@ -127,8 +135,11 @@ User triggers tone change
 | — | chrome.storage.local for data | localStorage doesn’t persist across pages in MV3 |
 | — | chrome.storage.sync for prefs | Syncs across devices (max 100KB) |
 | 2026-07-11 | CORS Origin restriction on CF Worker | Lock proxy to requests from extension or localhost only |
-| 2026-07-11 | XML prompt isolation | Wrap user input in `<user_message>` tags — defends against prompt injection |
 | 2026-07-13 | Event-Driven DOM Polling | Removed `setInterval` in favor of `MutationObserver` and `ResizeObserver` to prevent layout thrashing and high CPU idle usage |
+| 2026-07-14 | Centralized Architecture & Design System | Unified the Extension and Next.js styles by extracting a shared `extension/core/tonal.css` and `config.cjs`, removing over 200 lines of duplicate CSS and JS configuration. |
+| 2026-07-14 | Swiss Neo-Minimalist Redesign | Transitioned the landing page to a pure white grid layout using Lora (headings) and DM Sans (body) to present a premium bespoke design. |
+| 2026-07-14 | Visualizer Resizing & Floating Navbar Redesign | Redesigned floating pill navbar, added scroll states, section links, and scaled visualizer to 860px max-width / 340px height. |
+| 2026-07-14 | Static JSDoc Type-Checking for Vanilla JS Extension | Created `jsconfig.json` and `globals.d.ts` to enable static type analysis without typescript build overhead. |
 
 ---
 
@@ -147,3 +158,7 @@ _Append-only. Never repeat these._
 | 2026-07-11 | Selection click race condition | Track mousedown to prevent selectionchange hiding Decode UI |
 | 2026-07-11 | Formatting/newlines compressed | System prompt instructs to preserve paragraph spacing |
 | 2026-07-13 | XML Tag Breakout Prompt Injection | Encode `<` and `>` as HTML entities in `worker.js` before inserting text into XML payload |
+| 2026-07-14 | Next.js Hydration & Cache Lock | Cleared Turbopack build cache, terminated stuck dev process, and moved link tags with precedence="default" to body to fix Google Fonts loading. |
+| 2026-07-14 | Stale/Broken Root package.json Scripts | Pointed dev/deploy/zip scripts to correct backend and extension directories, and added Node test suite command. |
+| 2026-07-14 | Broken Backend Test Imports | Updated test files to reference the Cloudflare Worker under the new `/backend` path, restoring test correctness. |
+| 2026-07-14 | Draft.js Selection/Cursor Offset Snapping | Implemented recursive text node child scanning down to leaf nodeType 3 to restore correct focus anchor selection inside LinkedIn modals. |
