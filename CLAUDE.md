@@ -149,6 +149,7 @@ _AI fills this at the END of every session. Read this at the START of the next s
 - Brand Logo Unification: Replaced all instances of the vector slider SVGs with the official rounded square `icon128.png` brand logo (in the navbar, footer, extension popup header, extension injected pill, website interactive mockup, and browser tab favicon metadata).
 - SVG GitHub Logo: Replaced the text-only GitHub navigation link with a clean inline SVG.
 - Purposeful Animations: Implemented CSS page-load fades, ambient glows, and Intersection Observer scroll reveals for sections (with staggered item loading for list/FAQ items) and active-feedback transitions for buttons with full reduced-motion support.
+- Interactive Extension UI States Playground: Created a standalone interactive playground in `extension_demo.html` with real CSS, JS logic states toggles, and live mockup.
 
 **Immediate next task:**
 - Perform end-to-end testing of the zipped extension inside Google Chrome on live Gmail, Slack, and LinkedIn inputs.
@@ -164,4 +165,5 @@ _AI fills this at the END of every session. Read this at the START of the next s
 - `website/src/components/FaqSection.tsx`
 - `extension/core/tonal.js`
 - `extension/popup.html`
+- `extension_demo.html`
 - `CLAUDE.md`
