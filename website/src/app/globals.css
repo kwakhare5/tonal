@@ -1104,13 +1104,13 @@ svg {
   right: -4px;
   bottom: 0px;
   height: 45%;
-  background: linear-gradient(90deg, rgba(255, 211, 0, 0.2) 0%, rgba(255, 255, 0, 0.75) 50%, rgba(255, 211, 0, 0.2) 100%);
+  background: linear-gradient(90deg, rgba(255, 211, 0, 0.15) 0%, rgba(255, 211, 0, 0.32) 50%, rgba(255, 211, 0, 0.15) 100%);
   background-size: 200% auto;
   z-index: -1;
   border-radius: 4px;
   transform: scaleX(0);
   transform-origin: left;
-  animation: draw-highlight 0.8s 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards, highlighter-shimmer 2s 1.6s infinite ease-in-out;
+  animation: draw-highlight 0.8s 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards, highlighter-shimmer 3s 1.6s infinite linear;
 }
 
 @keyframes draw-highlight {
@@ -1122,15 +1122,9 @@ svg {
 @keyframes highlighter-shimmer {
   0% {
     background-position: 200% center;
-    transform: scaleX(1) scaleY(1);
-  }
-  50% {
-    background-position: 100% center;
-    transform: scaleX(1) scaleY(1.15);
   }
   100% {
     background-position: 0% center;
-    transform: scaleX(1) scaleY(1);
   }
 }
 
