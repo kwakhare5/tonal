@@ -16,6 +16,26 @@ export default function Home() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+          }
+        });
+      },
+      { threshold: 0.05 }
+    );
+
+    const elements = document.querySelectorAll('.reveal-on-scroll');
+    elements.forEach((el) => observer.observe(el));
+
+    return () => {
+      elements.forEach((el) => observer.unobserve(el));
+    };
+  }, []);
+
   return (
     <>
       {/* Navigation */}
@@ -46,18 +66,18 @@ export default function Home() {
       <section className="hero">
         <div className="container hero-content">
           <div className="hero-text">
-            <span className="badge badge-blue" style={{ fontWeight: 600, marginBottom: 'var(--space-6)', display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+            <span className="badge badge-blue hero-badge" style={{ fontWeight: 600, marginBottom: 'var(--space-6)', display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
               Gmail, Slack, and LinkedIn
             </span>
-            <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(36px, 6vw, 52px)', letterSpacing: '-0.02em', marginBottom: 'var(--space-6)', fontWeight: 700 }}>
+            <h1 className="hero-title" style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(36px, 6vw, 52px)', letterSpacing: '-0.02em', marginBottom: 'var(--space-6)', fontWeight: 700 }}>
               Adjust your tone <span className="text-highlight">without breaking focus</span>.
             </h1>
-            <p className="hero-description" style={{ fontSize: '16px', maxWidth: '520px', marginBottom: 'var(--space-8)' }}>
+            <p className="hero-description hero-desc" style={{ fontSize: '16px', maxWidth: '520px', marginBottom: 'var(--space-8)' }}>
               Rewrite text directly inside any input field. Eliminate context switching and craft professional communication instantly.
             </p>
             <div className="hero-cta">
-              <a href="/tonal-extension.zip" download className="btn btn-primary" style={{ padding: 'var(--space-2) var(--space-4)', fontSize: '14px', fontWeight: 500 }}>
+              <a href="/tonal-extension.zip" download className="btn btn-primary hero-cta-btn" style={{ padding: 'var(--space-2) var(--space-4)', fontSize: '14px', fontWeight: 500 }}>
                 Download for Chrome
               </a>
             </div>
@@ -65,7 +85,7 @@ export default function Home() {
 
           <div className="hero-visual">
             <div className="hero-glow"></div>
-            <div className="hero-mockup-container">
+            <div className="hero-mockup-container hero-mockup-reveal">
               <TonalMockup />
             </div>
           </div>
@@ -73,7 +93,7 @@ export default function Home() {
       </section>
 
       {/* Comparison / Problem Section */}
-      <section className="comparison-section section-padding" id="features">
+      <section className="comparison-section section-padding reveal-on-scroll" id="features">
         <div className="container">
           <div className="section-header" style={{ textAlign: 'center', marginBottom: 'var(--space-10)' }}>
             <span className="badge badge-red" style={{ fontWeight: 600 }}>The Copy-Paste Tax</span>
@@ -131,7 +151,7 @@ export default function Home() {
       </section>
 
       {/* Engine & Security Section */}
-      <section className="engine-section section-padding" id="security">
+      <section className="engine-section section-padding reveal-on-scroll" id="security">
         <div className="container">
           <div className="section-header" style={{ textAlign: 'center', marginBottom: 'var(--space-10)' }}>
             <span className="badge badge-orange" style={{ fontWeight: 600 }}>The Engine</span>
@@ -184,7 +204,7 @@ export default function Home() {
       <FaqSection />
 
       {/* Bottom CTA Section */}
-      <section className="bottom-cta section-padding" style={{ borderBottom: '1px solid var(--color-border-light)' }}>
+      <section className="bottom-cta section-padding reveal-on-scroll" style={{ borderBottom: '1px solid var(--color-border-light)' }}>
         <div className="container" style={{ textAlign: 'center' }}>
           <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(36px, 5vw, 52px)', marginBottom: 'var(--space-4)', fontWeight: 600 }}>
             Compose with perfect tone, in one tap

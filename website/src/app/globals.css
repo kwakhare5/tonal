@@ -1101,3 +1101,167 @@ svg {
   right: -8px;
   display: block;
 }
+
+/* ==========================================================================
+   PURPOSEFUL MOTION & INTERACTION SYSTEM
+   ========================================================================== */
+
+/* Hero page load reveals */
+.hero-badge {
+  opacity: 0;
+  animation: fade-up-reveal 0.8s var(--ease-out-expo) forwards;
+}
+
+.hero-title {
+  opacity: 0;
+  animation: fade-up-reveal 0.8s 0.1s var(--ease-out-expo) forwards;
+}
+
+.hero-desc {
+  opacity: 0;
+  animation: fade-up-reveal 0.8s 0.2s var(--ease-out-expo) forwards;
+}
+
+.hero-cta-btn {
+  opacity: 0;
+  animation: fade-up-reveal 0.8s 0.3s var(--ease-out-expo) forwards;
+}
+
+.hero-mockup-reveal {
+  opacity: 0;
+  animation: fade-up-reveal 1s 0.2s var(--ease-out-expo) forwards;
+}
+
+@keyframes fade-up-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Ambient glow pulsing */
+.hero-glow {
+  animation: glow-pulse 10s infinite alternate ease-in-out;
+}
+
+@keyframes glow-pulse {
+  0% {
+    opacity: 0.3;
+    transform: scale(0.95);
+  }
+  100% {
+    opacity: 0.6;
+    transform: scale(1.05);
+  }
+}
+
+/* Scroll-triggered reveal sections */
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.8s var(--ease-out-expo), transform 0.8s var(--ease-out-expo);
+}
+
+.reveal-on-scroll.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Sibling List Stagger: Comparison Section */
+.comp-item {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.5s var(--ease-out-expo), transform 0.5s var(--ease-out-expo), color var(--transition-fast);
+}
+
+.reveal-on-scroll.is-visible .comp-item {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.comp-list li:nth-child(1) { transition-delay: 0.1s, 0.1s, 0s; }
+.comp-list li:nth-child(2) { transition-delay: 0.2s, 0.2s, 0s; }
+.comp-list li:nth-child(3) { transition-delay: 0.3s, 0.3s, 0s; }
+.comp-list li:nth-child(4) { transition-delay: 0.4s, 0.4s, 0s; }
+
+.comp-item:hover {
+  transform: translateX(4px) !important;
+  color: var(--color-text-primary);
+}
+
+/* Sibling List Stagger: Engine Section */
+.engine-col {
+  opacity: 0;
+  transform: translateY(15px);
+  transition: opacity 0.7s var(--ease-out-expo), transform 0.7s var(--ease-out-expo), box-shadow var(--transition-normal);
+}
+
+.reveal-on-scroll.is-visible .engine-col {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.engine-grid .engine-col:nth-child(1) { transition-delay: 0.1s, 0.1s, 0s; }
+.engine-grid .engine-col:nth-child(2) { transition-delay: 0.25s, 0.25s, 0s; }
+
+.engine-col:hover {
+  transform: translateY(-2px) !important;
+}
+
+/* Sibling List Stagger: FAQ Section */
+.faq-item {
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.5s var(--ease-out-expo), transform 0.5s var(--ease-out-expo), border-color var(--transition-fast);
+}
+
+.reveal-on-scroll.is-visible .faq-item {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.faq-list .faq-item:nth-child(1) { transition-delay: 0.05s, 0.05s, 0s; }
+.faq-list .faq-item:nth-child(2) { transition-delay: 0.1s, 0.1s, 0s; }
+.faq-list .faq-item:nth-child(3) { transition-delay: 0.15s, 0.15s, 0s; }
+.faq-list .faq-item:nth-child(4) { transition-delay: 0.2s, 0.2s, 0s; }
+.faq-list .faq-item:nth-child(5) { transition-delay: 0.25s, 0.25s, 0s; }
+.faq-list .faq-item:nth-child(6) { transition-delay: 0.3s, 0.3s, 0s; }
+
+/* Interactive Micro-feedback: Buttons */
+.btn {
+  transition: transform 0.15s var(--ease-out), opacity 0.15s var(--ease-out), background-color 0.15s var(--ease-out), color 0.15s var(--ease-out), border-color 0.15s var(--ease-out);
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+.btn:active {
+  transform: translateY(1px) scale(0.98);
+}
+
+/* Reduced Motion Support (Accessibility) */
+@media (prefers-reduced-motion: reduce) {
+  .hero-badge,
+  .hero-title,
+  .hero-desc,
+  .hero-cta-btn,
+  .hero-mockup-reveal,
+  .reveal-on-scroll,
+  .comp-item,
+  .engine-col,
+  .faq-item {
+    animation: none !important;
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  
+  .hero-glow {
+    animation: none !important;
+  }
+}

@@ -114,7 +114,7 @@ function FaqItem({ question, answer }: FaqItemProps) {
 
 export default function FaqSection() {
   return (
-    <section className="faq-section section-padding" id="faq">
+    <section className="faq-section section-padding reveal-on-scroll" id="faq">
       <div className="container">
         <div className="section-header">
           <h2>Frequently Asked Questions</h2>
