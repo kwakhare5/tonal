@@ -144,6 +144,8 @@ function isAllowedOrigin(origin, environment) {
   if (origin.startsWith("http://127.0.0.1")) return true;
   // Cloudflare Pages domains
   if (origin.endsWith(".pages.dev")) return true;
+  // Vercel domains
+  if (origin.endsWith(".vercel.app")) return true;
   // Configurable production domain via env var
   if (environment?.ALLOWED_ORIGIN && origin === environment.ALLOWED_ORIGIN) return true;
   return false;

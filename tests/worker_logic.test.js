@@ -15,6 +15,19 @@ test('Worker — CORS Allowed Origin', async () => {
   assert.strictEqual(res.headers.get('Access-Control-Allow-Origin'), 'chrome-extension://abc');
 });
 
+test('Worker — CORS Allowed Origin Vercel', async () => {
+  const req = new Request('http://tonal-proxy.kwakhare5.workers.dev', {
+    method: 'OPTIONS',
+    headers: {
+      'Origin': 'https://tonal-app.vercel.app'
+    }
+  });
+
+  const res = await worker.fetch(req, {});
+  assert.strictEqual(res.status, 204);
+  assert.strictEqual(res.headers.get('Access-Control-Allow-Origin'), 'https://tonal-app.vercel.app');
+});
+
 test('Worker — CORS Forbidden Origin', async () => {
   const req = new Request('http://tonal-proxy.kwakhare5.workers.dev', {
     method: 'POST',

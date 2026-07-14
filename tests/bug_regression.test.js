@@ -144,6 +144,18 @@ test('[BUG-4] Worker — CORS allows Cloudflare Pages domain', async () => {
   );
 });
 
+test('[BUG-4] Worker — CORS allows production Vercel domain', async () => {
+  const req = new Request('http://tonal-proxy.kwakhare5.workers.dev', {
+    method: 'OPTIONS',
+    headers: { 'Origin': 'https://tonaltone.vercel.app' }
+  });
+
+  const res = await worker.fetch(req, {});
+  assert.strictEqual(res.status, 204);
+  const allowedOrigin = res.headers.get('Access-Control-Allow-Origin');
+  assert.strictEqual(allowedOrigin, 'https://tonaltone.vercel.app');
+});
+
 test('[BUG-4] Worker — CORS allows localhost:3000 for dev', async () => {
   const req = new Request('http://tonal-proxy.kwakhare5.workers.dev', {
     method: 'OPTIONS',
