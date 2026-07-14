@@ -81,17 +81,18 @@ Tonal/
 │       ├── slack.js
 │       └── default.js
 ├── backend/                         ← Cloudflare Worker API proxy
-│   ├── worker.js                    ← Backend worker script
+│   ├── src/index.js                 ← Backend worker router & LLM orchestrator
 │   └── wrangler.toml
-└── website/                         ← Next.js App Router website
-    ├── next.config.ts
-    ├── tsconfig.json                ← Path aliases for shared @tonal-core modules
-    └── src/
-        ├── app/
-        │   ├── globals.css          ← Imports shared extension tonal.css
-        │   └── page.tsx
-        └── components/
-            └── TonalMockup.tsx      ← Interactive tone selector demo
+├── website/                         ← Next.js App Router website
+│   ├── next.config.ts
+│   ├── tsconfig.json                ← Path aliases for shared @tonal-core modules
+│   └── src/
+│       ├── app/
+│       │   ├── globals.css          ← Imports shared extension tonal.css
+│       │   └── page.tsx
+│       └── components/
+│           └── TonalMockup.tsx      ← Interactive tone selector demo
+└── extension_demo.html              ← Standalone Light-Mode UI States Playground
 ```
 
 **AI model:** Groq Llama 3.3 70B via `https://api.groq.com/openai/v1/chat/completions`
@@ -116,7 +117,7 @@ User triggers tone change
 | Thing | Convention | Example |
 |-------|-----------|---------|
 | Adapter files | `[platform].js` | `twitter.js`, `gmail.js` |
-| CSS variables | `--tonal-*` prefix, inside `:host {}` | `--tonal-primary`, `--tonal-radius` |
+| CSS variables | Standard names inside `:host {}` to prevent bleeding | `--black`, `--white`, `--green`, `--gray-1` |
 | Storage keys | `tonal_*` prefix | `tonal_preferences`, `tonal_history` |
 | Message types | SCREAMING_SNAKE | `TONE_REQUEST`, `TONE_RESPONSE` |
 
@@ -147,6 +148,9 @@ User triggers tone change
 | 2026-07-14 | Strict Spacing Consolidation | Refactored all layout margins/paddings/gaps to CSS design tokens to lock the layout into a precise 4pt/8pt spacing scale. |
 | 2026-07-14 | FAQ Accessibility (A11y) | Added keydown interaction hooks (Space/Enter) and ARIA traits to support screen reader and keyboard-only layouts. |
 | 2026-07-14 | Mockup Tab Target Expansion | Configured ::before pseudo-element targets to expand Gmail/Slack tab hit bounds to 44px on mobile viewports. |
+| 2026-07-14 | Unified Branding Assets | Replaced SVGs with the official rounded square `icon128.png` branding across all files (mockups, navbar, popup, floating pill). |
+| 2026-07-14 | Purposeful Motion & Animation | Implemented CSS fades, ambient glows, Intersection Observer scroll reveals, and responsive active button feedback. |
+| 2026-07-14 | Standalone Light-Mode Visual Spec | Created a clean visual states catalog in `extension_demo.html` with no codes or technical bloat, styled in light mode. |
 
 ---
 

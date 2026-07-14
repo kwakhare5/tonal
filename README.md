@@ -42,6 +42,10 @@
 
 <br/>
 
+> 🎨 **Interactive Visual spec**: You can preview and test all floating pill states, popover menus, and toasts in the standalone, light-mode **[extension_demo.html](extension_demo.html)** page directly in your browser.
+
+<br/>
+
 ---
 
 ## 📌 About the Project
@@ -120,19 +124,26 @@ flowchart LR
 
 ```
 Tonal/
+├── backend/                     # Cloudflare Worker proxy backend
+│   ├── src/index.js             # Worker router & LLM orchestrator
+│   └── wrangler.toml            # Cloudflare Wrangler config
 │
-├── manifest.json                # Extension configuration (MV3)
-├── src/
+├── extension/                   # Manifest V3 Chrome Extension
+│   ├── manifest.json            # Extension manifest config
+│   ├── background.js            # Background service worker
+│   ├── content.js               # Target input orchestrator & watchdog
+│   ├── popup.html / popup.js    # Browser action settings popup
 │   ├── core/
-│   │   ├── config.cjs           # Shared configuration for tone definitions
-│   │   ├── tonal.css            # Shared core design system styles
-│   │   └── tonal.js             # Core UI rendering components
-│   └── extension/
-│       ├── adapters/            # Platform-specific (Gmail/Slack/LinkedIn)
-│       ├── background.js        # Service worker (Proxy handler)
-│       └── content.js           # Injection & Watchdog engine
+│   │   ├── tonal.js             # Shared DOM builder & state controller
+│   │   └── tonal.css            # Isolated Shadow DOM styles & custom animations
+│   ├── adapters/                # Custom platform sync handlers
+│   └── icons/                   # Brand logo assets (icon128.png, etc.)
 │
-├── icons/                       # Branding & UI assets
+├── website/                     # Next.js homepage & interactive mockup
+│   ├── src/app/page.tsx         # Landing page with scroll animations
+│   └── public/icons/            # Unified brand icons
+│
+├── extension_demo.html          # Standalone Light-Mode UI States Playground
 └── README.md
 ```
 

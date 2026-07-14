@@ -13,7 +13,7 @@ The extension injects into these specific domains:
 ]
 ```
 
-Each platform has different DOM structures. The extension uses the **Adapter Pattern** (`src/extension/adapters/`) to handle specific environments robustly against React/Draft.js/Lexical reconcilers:
+Each platform has different DOM structures. The extension uses the **Adapter Pattern** (`extension/adapters/`) to handle specific environments robustly against React/Draft.js/Lexical reconcilers:
 
 | Platform | Adapter | Insertion Strategy | Sync Mechanism |
 | :--- | :--- | :--- | :--- |
@@ -70,7 +70,7 @@ INPUT_DATA: {TEXT}
 - **Perfect Roundness**: Hard-coded 100px radius enforced via Shadow DOM `:host` scoping.
 - **Transitions**: `0.15s` timing with `cubic-bezier(0.2, 0, 0, 1)` and `cubic-bezier(0.34, 1.56, 0.64, 1)` (Spring).
 - **Magnetic Pull**: Pills and Decode buttons gravitate toward the cursor (Threshold: 50-60px).
-- **Logo**: Unified 4-layer depth SVG standard.
+- **Logo**: Unified rounded square `icon128.png` brand logo.
 - **Glassmorphism**: Popovers feature `backdrop-filter: blur(10px)` with 14px radius.
 
 ### Component Logic
@@ -80,6 +80,7 @@ INPUT_DATA: {TEXT}
 - **Adaptive Flipping**: Tone menu opens downward if the input is near the top of the screen.
 - **Toast System**: Semantic color dots (Green/Red/Orange) for status feedback.
 - **Accessibility**: Full `role="button"`, `aria-label`, and `tabindex` support for keyboard navigation.
+- **Visual spec playground**: A standalone light-mode playground is available in `extension_demo.html` to preview all states simultaneously without any code snippets.
 - **Onboarding**: "Shift the tone here â†“" Coach Mark tooltips for first-time use.
 
 ---
@@ -295,6 +296,9 @@ _Auto-maintained by AI. Updated whenever a new token or class is discovered._
  - **2026-07-14 - Borderless Active Mockup ambient glows**: Replaced hard-coded outer mockup border lines with dynamic transitions of box-shadow glows (blue for Gmail, purple for Slack) to indicate active editor context.
  - **2026-07-14 - Grid Dot matrix background textures**: Overlaid subtle radial-gradient dot textures on the Hero and bottom CTA sections, combined with blur-filter glows, to create organic visual depth.
  - **2026-07-14 - Headline marker highlight effect**: Selected a sweeping soft blue marker-like background highlight (`.text-highlight`) on the hero heading to emphasize "without breaking focus."
+ - **2026-07-14 - Unified Branding Assets**: Replaced vector SVGs with the official rounded square `icon128.png` branding across all files (mockups, navbar, popup, floating pill).
+ - **2026-07-14 - Purposeful Motion & Animation**: Implemented CSS fades, ambient glows, Intersection Observer scroll reveals, and responsive active button feedback.
+ - **2026-07-14 - Standalone Light-Mode Visual Spec**: Created a clean visual states catalog in `extension_demo.html` with no codes or technical bloat, styled in light mode.
  
  ---
  
@@ -325,3 +329,9 @@ _Auto-maintained by AI. Updated whenever a new token or class is discovered._
  - **Why:** Complete the LinkedIn Platform adapter (Draft.js modal targetings), enlarge the website preview visualizer, redesign the floating navbar to include middle links and scroll states, fix root package.json dev scripts, and introduce TypeScript checkJs validation.
  - **Patterns introduced:** Recursive DOM child node scanning to identify the last text node for cursor snapping, React hook-based header scroll shrink transition, component extraction in [TonalMockup.tsx](file:///d:/Tonal/website/src/components/TonalMockup.tsx) for `<MockTonalPill />` reuse, and JSDoc-based TS analysis configuration.
  - **Mistakes caught:** Broken test imports pointing to obsolete `src/backend/` folders, duplicate `.hero` class rule override in globals.css, and multiple unused/stale templated default SVGs in public assets (all cleaned).
+
+ ### 2026-07-14 — Brand Logo Unification, Purposeful Motion & Standalone Spec playground
+ - **Changed:** `extension_demo.html` (created), `extension/core/tonal.js`, `extension/core/tonal.css`, `website/src/app/page.tsx`, `website/src/app/layout.tsx`, `website/src/components/TonalMockup.tsx`, `extension/popup.html`, `README.md`, `CONTEXT.md`, `ARCHITECTURE.md`, `CLAUDE.md`.
+ - **Why:** Unified the brand logo to the original rounded square `icon128.png` everywhere, built clean light-mode visual speculation playground showcasing all pill/popover/toast states, and integrated scroll fade & active animations.
+ - **Patterns introduced:** Light-mode layout catalogs, visual speculative layouts without codes, dynamic checkbox/subtext toggling in popover DOM mocks, and scroll reveal handlers.
+ - **Mistakes caught:** Custom popover menu mocks in sandbox originally had header wrappers that differed from extension content script DOM renders; successfully aligned them to match `tonal.js` item builder outputs.
