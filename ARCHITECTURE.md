@@ -348,6 +348,6 @@ _Auto-maintained by AI. Updated whenever a new token or class is discovered._
 
  ### 2026-07-14 — Website Contrast & Highlight Redesign
  - **Changed:** `website/src/app/globals.css`
- - **Why:** Replaced the blue accent highlight with a yellow highlighter tone, increased dot grid matrix background opacity, and cast vibrant neon color gradients behind the visualizer container to reduce monochrome style feedback.
- - **Patterns introduced:** Yellow highlighter highlighter marker elements, high-contrast matrix patterns, and multi-color gradient blur backdrops.
+ - **Why:** Replaced the blue accent highlight with a yellow highlighter tone, increased dot grid matrix background opacity, cast vibrant neon color gradients behind the visualizer, and added an infinite gradient shimmer swipe to the highlighter line.
+ - **Patterns introduced:** Yellow highlighter marker elements, high-contrast matrix patterns, multi-color gradient blur backdrops, and looping CSS gradient animations.
  - **Mistakes caught:** None.
