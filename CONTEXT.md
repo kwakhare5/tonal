@@ -153,6 +153,7 @@ User triggers tone change
 | 2026-07-14 | Standalone Light-Mode Visual Spec | Created a clean visual states catalog in `extension_demo.html` with no codes or technical bloat, styled in light mode. |
 | 2026-07-14 | Authentic Dynamic Mockup Headers | Styled interactive mockup headers to dynamically adapt their backgrounds and borders matching Gmail (#F2F6FC) and Slack (#3F0E40) branding when selected. |
 | 2026-07-14 | Global Dot Grid Background | Exposed the dot-grid drafting background pattern across the entire site by setting all main section backgrounds to transparent. |
+| 2026-07-14 | Mockup Card Border | Set a solid border of rgba(0, 0, 0, 0.15) to composer-mockup to stand out clearly on the global dot-grid background. |
 
 ---
 

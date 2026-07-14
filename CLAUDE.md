@@ -136,7 +136,8 @@ _AI fills this at the END of every session. Read this at the START of the next s
 - Global Dot Grid Background: Set all main landing page section backgrounds to transparent, allowing the body's subtle dot-grid pattern to show through consistently as you scroll.
 - Spacing System Restored: Reverted vertical section padding back to its original values (`var(--space-12)` mobile, `var(--space-16)` desktop) for standard layout hierarchy.
 - Loosened Comparison Spacing: Increased vertical spacing (`gap`) between list items in the comparison columns to `var(--space-5)` (20px) to make the text columns less compact.
-- Reverted Mockup Skeuomorphism: Reverted stacked paper shadows and paperclip decorations to keep the card minimal and clean, while retaining the high-visibility message guidelines.
+- Reverted Mockup Skeuomorphism: Reverted stacked paper shadows and paperclip decorations to keep the card minimal and clean.
+- Mockup Border Contrast: Added a distinct border (`1px solid rgba(0, 0, 0, 0.15)`) to the composer mockup to ensure visibility against the light background grid.
 
 **Immediate next task:**
 - None. Website design is polished, fully responsive, and branding is cohesive.
