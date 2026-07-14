@@ -281,7 +281,7 @@
       position: relative;
     }
 
-    /* Popover styles */
+    /* ── POPOVER ────────────────────────────────────────────────── */
     .popover {
       background: var(--white);
       border-radius: var(--r-lg);
@@ -290,55 +290,18 @@
       overflow: hidden;
       display: flex;
       flex-direction: column;
-      z-index: 10;
+      z-index: 1000;
       color: var(--black);
     }
-
-    .pop-item {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      justify-content: center;
-      padding: 11px 15px;
-      width: 100%;
-      text-align: left;
-    }
-    
+    .popover--active { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
+    .pop-item { display: flex; align-items: center; justify-content: space-between; padding: 11px 15px; cursor: pointer; transition: background .08s; width: 100%; }
     .pop-item:not(.pop-item--active):hover { background: var(--gray-9); }
     .pop-item--active { background: var(--black); cursor: default; }
-    
-    .pop-header-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      width: 100%;
-    }
-
-    .pop-label {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--black);
-    }
-    .pop-item--active .pop-label { color: var(--white); }
-    
-    .pop-sub {
-      font-size: 10px;
-      color: var(--gray-5);
-      margin-top: 2px;
-    }
-    .pop-item--active .pop-sub { color: var(--gray-6); }
-    
-    .pop-check {
-      font-size: 11px;
-      color: var(--black);
-      font-weight: 700;
-    }
-    .pop-item--active .pop-check { color: var(--white); }
-    
-    .pop-divider {
-      height: 1px;
-      background: var(--gray-8);
-    }
+    .pop-label { font-size: 13px; font-weight: 500; color: var(--black); }
+    .pop-item--active .pop-label, .pop-item--active .pop-sub, .pop-item--active .pop-check { color: var(--white); }
+    .pop-sub   { font-size: 10px; color: var(--gray-5); }
+    .pop-check { font-size: 11px; color: var(--black); font-weight: 600; }
+    .pop-divider { height: 1px; background: var(--gray-8); }
 
     /* Static Toasts */
     .toast-static {
@@ -684,40 +647,36 @@
       
       <div style="display: grid; grid-template-columns: 1fr; gap: 32px; max-width: 600px;">
         <div class="popover">
-          <div class="pop-item pop-item--active">
-            <div class="pop-header-row">
-              <span class="pop-label">Work</span>
-              <span class="pop-check">✓</span>
-            </div>
-            <div class="pop-sub">Clear, concise, professional</div>
+          <div class="pop-item pop-item--active" role="option" aria-selected="true" tabindex="-1">
+            <span class="pop-label">Work</span>
+            <span class="pop-check">✓</span>
           </div>
           <div class="pop-divider"></div>
-          <div class="pop-item">
-            <div class="pop-header-row">
-              <span class="pop-label">Casual</span>
-              <span class="pop-check"></span>
-            </div>
-            <div class="pop-sub">Warm, friendly, open</div>
+          <div class="pop-item" role="option" aria-selected="false" tabindex="0">
+            <span class="pop-label">Casual</span>
+            <span class="pop-sub">Warm, friendly, open</span>
           </div>
           <div class="pop-divider"></div>
-          <div class="pop-item">
-            <div class="pop-header-row">
-              <span class="pop-label">Formal</span>
-              <span class="pop-check"></span>
-            </div>
-            <div class="pop-sub">Polite, executive, formal</div>
+          <div class="pop-item" role="option" aria-selected="false" tabindex="0">
+            <span class="pop-label">Formal</span>
+            <span class="pop-sub">Polite, executive, formal</span>
           </div>
         </div>
         
         <pre><code>&lt;div class="popover popover--active" role="listbox"&gt;
-  &lt;div class="pop-item pop-item--active" role="option" aria-selected="true"&gt;
-    &lt;div class="pop-header-row"&gt;
-      &lt;span class="pop-label"&gt;Work&lt;/span&gt;
-      &lt;span class="pop-check"&gt;✓&lt;/span&gt;
-    &lt;/div&gt;
-    &lt;div class="pop-sub"&gt;Clear, concise, professional&lt;/div&gt;
+  &lt;!-- Active Item --&gt;
+  &lt;div class="pop-item pop-item--active" role="option" aria-selected="true" tabindex="-1"&gt;
+    &lt;span class="pop-label"&gt;Work&lt;/span&gt;
+    &lt;span class="pop-check"&gt;✓&lt;/span&gt;
   &lt;/div&gt;
-  ...
+  
+  &lt;div class="pop-divider"&gt;&lt;/div&gt;
+
+  &lt;!-- Inactive Item --&gt;
+  &lt;div class="pop-item" role="option" aria-selected="false" tabindex="0"&gt;
+    &lt;span class="pop-label"&gt;Casual&lt;/span&gt;
+    &lt;span class="pop-sub"&gt;Warm, friendly, open&lt;/span&gt;
+  &lt;/div&gt;
 &lt;/div&gt;</code></pre>
       </div>
     </section>
@@ -778,27 +737,18 @@
                 <!-- Sandbox Popover -->
                 <div class="popover sandbox-popover" id="sandboxPopover">
                   <div class="pop-item pop-item--active" onclick="triggerSandboxTone('Work')">
-                    <div class="pop-header-row">
-                      <span class="pop-label">Work</span>
-                      <span class="pop-check">✓</span>
-                    </div>
-                    <div class="pop-sub">Clear, concise, professional</div>
+                    <span class="pop-label">Work</span>
+                    <span class="pop-check">✓</span>
                   </div>
                   <div class="pop-divider"></div>
                   <div class="pop-item" onclick="triggerSandboxTone('Casual')">
-                    <div class="pop-header-row">
-                      <span class="pop-label">Casual</span>
-                      <span class="pop-check"></span>
-                    </div>
-                    <div class="pop-sub">Warm, friendly, open</div>
+                    <span class="pop-label">Casual</span>
+                    <span class="pop-sub">Warm, friendly, open</span>
                   </div>
                   <div class="pop-divider"></div>
                   <div class="pop-item" onclick="triggerSandboxTone('Formal')">
-                    <div class="pop-header-row">
-                      <span class="pop-label">Formal</span>
-                      <span class="pop-check"></span>
-                    </div>
-                    <div class="pop-sub">Polite, executive, formal</div>
+                    <span class="pop-label">Formal</span>
+                    <span class="pop-sub">Polite, executive, formal</span>
                   </div>
                 </div>
 
@@ -892,21 +842,39 @@
       }
     }
 
-    function triggerSandboxTone(tone) {
-      selectedSandboxTone = tone;
+    function triggerSandboxTone(toneId) {
+      const toneMap = {
+        Work: { label: 'Work', sub: 'Clear, concise, professional' },
+        Casual: { label: 'Casual', sub: 'Warm, friendly, open' },
+        Formal: { label: 'Formal', sub: 'Polite, executive, formal' }
+      };
+
+      selectedSandboxTone = toneId;
       toggleSandboxPopover();
       setSandboxState('expanded');
 
-      // Update checks in popover
+      // Update popover items
       document.querySelectorAll('.sandbox-popover .pop-item').forEach(item => {
-        const itemLabel = item.querySelector('.pop-label').innerText;
-        const check = item.querySelector('.pop-check');
-        if (itemLabel === tone) {
+        const labelText = item.querySelector('.pop-label').innerText;
+        const matchingToneKey = Object.keys(toneMap).find(k => toneMap[k].label === labelText);
+        const toneData = toneMap[matchingToneKey];
+        
+        // Remove existing second child span (check or sub)
+        const secondChild = item.children[1];
+        if (secondChild) item.removeChild(secondChild);
+        
+        if (matchingToneKey === toneId) {
           item.classList.add('pop-item--active');
-          check.innerText = '✓';
+          const checkSpan = document.createElement('span');
+          checkSpan.className = 'pop-check';
+          checkSpan.innerText = '✓';
+          item.appendChild(checkSpan);
         } else {
           item.classList.remove('pop-item--active');
-          check.innerText = '';
+          const subSpan = document.createElement('span');
+          subSpan.className = 'pop-sub';
+          subSpan.innerText = toneData.sub;
+          item.appendChild(subSpan);
         }
       });
 
