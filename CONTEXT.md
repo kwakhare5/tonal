@@ -151,6 +151,8 @@ User triggers tone change
 | 2026-07-14 | Unified Branding Assets | Replaced SVGs with the official rounded square `icon128.png` branding across all files (mockups, navbar, popup, floating pill). |
 | 2026-07-14 | Purposeful Motion & Animation | Implemented CSS fades, ambient glows, Intersection Observer scroll reveals, and responsive active button feedback. |
 | 2026-07-14 | Standalone Light-Mode Visual Spec | Created a clean visual states catalog in `extension_demo.html` with no codes or technical bloat, styled in light mode. |
+| 2026-07-14 | Authentic Dynamic Mockup Headers | Styled interactive mockup headers to dynamically adapt their backgrounds and borders matching Gmail (#F2F6FC) and Slack (#3F0E40) branding when selected. |
+| 2026-07-14 | Global Dot Grid Background | Exposed the dot-grid drafting background pattern across the entire site by setting all main section backgrounds to transparent. |
 
 ---
 
@@ -174,3 +176,5 @@ _Append-only. Never repeat these._
 | 2026-07-14 | Broken Backend Test Imports | Updated test files to reference the Cloudflare Worker under the new `/backend` path, restoring test correctness. |
 | 2026-07-14 | Draft.js Selection/Cursor Offset Snapping | Implemented recursive text node child scanning down to leaf nodeType 3 to restore correct focus anchor selection inside LinkedIn modals. |
 | 2026-07-14 | Missing Text Field Validation | Added TDD checks and separated input validation to distinguish missing/invalid text variables from short inputs. |
+| 2026-07-14 | Mockup Tab Contrast Issue | Standardized active/inactive tab text colors dynamically based on header background brightness to prevent illegible gray text on eggplant purple. |
+| 2026-07-14 | Ruled Line Visibility | Increased contrast opacity of ruled writing lines inside the mockup body to prevent them from looking unnoticeably faint. |
