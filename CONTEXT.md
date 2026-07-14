@@ -140,6 +140,13 @@ User triggers tone change
 | 2026-07-14 | Swiss Neo-Minimalist Redesign | Transitioned the landing page to a pure white grid layout using Lora (headings) and DM Sans (body) to present a premium bespoke design. |
 | 2026-07-14 | Visualizer Resizing & Floating Navbar Redesign | Redesigned floating pill navbar, added scroll states, section links, and scaled visualizer to 860px max-width / 340px height. |
 | 2026-07-14 | Static JSDoc Type-Checking for Vanilla JS Extension | Created `jsconfig.json` and `globals.d.ts` to enable static type analysis without typescript build overhead. |
+| 2026-07-14 | Next.js Font Optimization & Inheritance Reset | Converted static font link tags to optimized Next.js `next/font/google` variables and applied inheritance reset rules so form inputs and buttons strictly render Lora and DM Sans. |
+| 2026-07-14 | Borderless Active Mockup ambient glows | Replaced hard-coded outer mockup border lines with dynamic transitions of box-shadow glows (blue for Gmail, purple for Slack) to indicate active editor context. |
+| 2026-07-14 | Grid Dot matrix background textures | Overlaid subtle radial-gradient dot textures on the Hero and bottom CTA sections, combined with blur-filter glows, to create organic visual depth. |
+| 2026-07-14 | Headline marker highlight effect | Selected a sweeping soft blue marker-like background highlight (`.text-highlight`) on the hero heading to emphasize "without breaking focus." |
+| 2026-07-14 | Strict Spacing Consolidation | Refactored all layout margins/paddings/gaps to CSS design tokens to lock the layout into a precise 4pt/8pt spacing scale. |
+| 2026-07-14 | FAQ Accessibility (A11y) | Added keydown interaction hooks (Space/Enter) and ARIA traits to support screen reader and keyboard-only layouts. |
+| 2026-07-14 | Mockup Tab Target Expansion | Configured ::before pseudo-element targets to expand Gmail/Slack tab hit bounds to 44px on mobile viewports. |
 
 ---
 
@@ -162,3 +169,4 @@ _Append-only. Never repeat these._
 | 2026-07-14 | Stale/Broken Root package.json Scripts | Pointed dev/deploy/zip scripts to correct backend and extension directories, and added Node test suite command. |
 | 2026-07-14 | Broken Backend Test Imports | Updated test files to reference the Cloudflare Worker under the new `/backend` path, restoring test correctness. |
 | 2026-07-14 | Draft.js Selection/Cursor Offset Snapping | Implemented recursive text node child scanning down to leaf nodeType 3 to restore correct focus anchor selection inside LinkedIn modals. |
+| 2026-07-14 | Missing Text Field Validation | Added TDD checks and separated input validation to distinguish missing/invalid text variables from short inputs. |

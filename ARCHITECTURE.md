@@ -289,8 +289,12 @@ _Auto-maintained by AI. Updated whenever a new token or class is discovered._
  - **2026-07-11 - Next.js Landing Page Website**: Restructured the landing page into a dedicated Next.js + TypeScript + Tailwind CSS v4 application inside a `website/` subdirectory, keeping extension code isolated at the root while offering a robust web presence.
  - **2026-07-13 - Next.js Landing Page Redesign**: Upgraded the Next.js website to a "Modern SaaS" aesthetic with a floating navbar, removing the static `index.html` file.
  - **2026-07-13 - Security & Performance Architecture Patches**: Patched prompt injection vulnerabilities in `worker.js` by encoding HTML entities (`<`, `>`). Removed layout thrashing `setInterval` polling in `content.js`, relying strictly on `MutationObserver` and `ResizeObserver`. Maintained vanilla JS monolith for content scripts to prevent injection order flakiness.
- - **2026-07-14 - Visualizer Resizing & Floating Navbar Redesign**: Redesigned the floating navbar to include scroll states and section links (integrating `FaqSection`), and scaled the interactive mockup to `860px` max-width with a `340px` body height.
+ - **2026-07-14 - Visualizer Resizing & Floating Navbar Redesign**: Redesigned floating pill navbar, added scroll states, section links, and scaled visualizer to 860px max-width / 340px height.
  - **2026-07-14 - Static JSDoc Type-Checking for Vanilla JS Extension**: Introduced `jsconfig.json` and `globals.d.ts` inside the `/extension` directory to enable TypeScript-based code analysis on Vanilla JS files without compilation overhead.
+ - **2026-07-14 - Next.js Font Optimization & Inheritance Reset**: Converted static font link tags to optimized Next.js `next/font/google` variables and applied inheritance reset rules so form inputs and buttons strictly render Lora and DM Sans.
+ - **2026-07-14 - Borderless Active Mockup ambient glows**: Replaced hard-coded outer mockup border lines with dynamic transitions of box-shadow glows (blue for Gmail, purple for Slack) to indicate active editor context.
+ - **2026-07-14 - Grid Dot matrix background textures**: Overlaid subtle radial-gradient dot textures on the Hero and bottom CTA sections, combined with blur-filter glows, to create organic visual depth.
+ - **2026-07-14 - Headline marker highlight effect**: Selected a sweeping soft blue marker-like background highlight (`.text-highlight`) on the hero heading to emphasize "without breaking focus."
  
  ---
  

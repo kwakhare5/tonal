@@ -135,13 +135,18 @@ _AI fills this at the END of every session. Read this at the START of the next s
 **What we built / changed:**
 - Swiss Neo-Minimalist Redesign: Removed card blocks and borders. Sections are now separated by thin `1px` structural borders and plenty of whitespace.
 - Exclusively Lora and DM Sans: Configured the website typography stack to load and apply only Lora and DM Sans, completely removing Cormorant Garamond and DM Mono.
-- Direct CDN Fonts & Hydration Fix: Loaded Lora and DM Sans using separate, direct link tags in layout.tsx body with `precedence="default"`, resolving React hydration and Turbopack dev caching errors.
-- Vector SVG Icons & Original Logo: Swapped emoji icons for inline custom SVG vector elements, and integrated the official high-resolution `icon128.png` logo in the navbar and footer.
-- Direct Zip Download: Packaged and compressed the `extension/` folder into `website/public/tonal-extension.zip` and linked all CTAs directly to it for instant download.
-- Completed LinkedIn Adapter: Implemented robust selectors, modal support, and recursive cursor anchor restoration for Draft.js stability. Zipped the updated extension to `website/public/tonal-extension.zip`.
-- Resized Mockup Graphic: Increased max-width of `.hero-visual` in [globals.css](file:///d:/Tonal/website/src/app/globals.css) to `860px` and inline height of `.composer-body` in [TonalMockup.tsx](file:///d:/Tonal/website/src/components/TonalMockup.tsx) to `340px` for a spacious layout.
-- Redesigned Floating Navbar: Built a floating glassmorphism pill navbar with centermost section links (Features, Security, FAQ), scroll shrink transitions, and imported the [FaqSection.tsx](file:///d:/Tonal/website/src/components/FaqSection.tsx) component with matching clean CSS.
-- Modernized Codebase Architecture (@ARCHITECTURE-REVIEW): Corrected root [package.json](file:///d:/Tonal/package.json) scripts (`dev`, `deploy`, `zip`, added `test` script running Jest scenarios), and configured TypeScript checks for Vanilla JS via [jsconfig.json](file:///d:/Tonal/extension/jsconfig.json) and [globals.d.ts](file:///d:/Tonal/extension/globals.d.ts) inside `/extension`.
+- Font Inheritance & Reset: Fixed website font consistency by using Next.js `next/font/google` in layout.tsx and adding a CSS reset rule in globals.css so all input elements, buttons, and textareas inherit the correct fonts.
+- Spacing System Consolidation: Scanned all sections and components and replaced remaining hardcoded pixel values (margins, paddings, gaps) with design tokens (`var(--space-*)`), ensuring 100% spacing consistency across all sections.
+- Responsive Column Dividers (Mobile): Added neat horizontal divider borders and vertical padding scales to Comparison and Engine columns on mobile, matching the desktop columns' layout.
+- FAQ & Mockup Accessibility Fixed: Implemented full key down listeners, tabIndex focus boundaries, and ARIA expansion attributes to the FAQ Section.
+- Mockup Touch Target Expansion: Added hit area expansion overlays to the Gmail and Slack platform tab selectors to comply with WCAG 44x44px target guidelines.
+- Restored Supported Platforms Badge: Added back the "Gmail, Slack, and LinkedIn" pill at the top of the hero section and fixed its text color class.
+- Professional Value-Prop Copy: Removed Llama 3.3 and Groq LPU "flex" jargon from the hero section, replacing it with a refined, value-focused copy ("Adjust your tone without breaking focus."). Also polished the workflow comparison text.
+- Dynamic Mockup Glows (Borderless): Swapped the mockup outer border with an active-platform reacting box-shadow (soft blue for Gmail, soft aubergine for Slack) with ambient glows.
+- Dot-Grid Background Textures: Added subtle dot-grid background textures and soft blurred color blobs behind the Hero and bottom CTA sections.
+- Prototypes: Evaluated text effect options (gradients, underlines, highlights) and selected the clean Option 3 "Highlight Background Blob" marker stroke on the header.
+- Added Author Credits: Added "Karan Wakhare" name in footer branding and copyright notes, and hyperlinked credits to Groq, Llama, and Cloudflare.
+- SVG GitHub Logo: Replaced the text-only GitHub navigation link with a clean inline SVG GitHub logo.
 
 **Immediate next task:**
 - Perform end-to-end testing of the zipped extension inside Google Chrome on live Gmail, Slack, and LinkedIn inputs.
@@ -152,8 +157,7 @@ _AI fills this at the END of every session. Read this at the START of the next s
 **Files most recently changed:**
 - `website/src/app/page.tsx`
 - `website/src/app/globals.css`
+- `website/src/app/layout.tsx`
 - `website/src/components/TonalMockup.tsx`
-- `package.json`
-- `extension/jsconfig.json`
-- `extension/globals.d.ts`
+- `website/src/components/FaqSection.tsx`
 - `CLAUDE.md`

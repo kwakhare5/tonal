@@ -75,3 +75,21 @@ test('Worker — Prompt Injection Protection Payload', async () => {
     globalThis.fetch = originalFetch;
   }
 });
+
+test('Worker — Missing or Invalid Text Field (TDD Test)', async () => {
+  const req = new Request('http://tonal-proxy.kwakhare5.workers.dev', {
+    method: 'POST',
+    headers: {
+      'Origin': 'http://localhost:3000',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ toneLevel: 'workChat' }) // Missing 'text'
+  });
+
+  const res = await worker.fetch(req, {});
+  assert.strictEqual(res.status, 400);
+  const data = await res.json();
+  assert.strictEqual(data.success, false);
+  assert.strictEqual(data.error, 'Invalid or missing text field');
+});
+

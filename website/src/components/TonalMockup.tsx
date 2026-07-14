@@ -255,7 +255,7 @@ export default function TonalMockup() {
   const currentToneObj = TONES.find(t => t.id === activeTone) || TONES[0];
 
   return (
-    <div className="composer-mockup">
+    <div className={`composer-mockup composer-mockup--${platform}`}>
       {/* Window Header */}
       <div className="composer-header" style={{ padding: '10px 16px', background: 'var(--gray-9)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid var(--color-border-light)' }}>
         {/* macOS colored dots */}
@@ -269,6 +269,7 @@ export default function TonalMockup() {
         <div style={{ display: 'flex', background: 'rgba(0,0,0,0.05)', padding: '2px', borderRadius: 'var(--radius-full)', gap: '2px' }}>
           <button
             type="button"
+            className="mockup-tab-btn"
             onClick={() => setPlatform('gmail')}
             style={{
               background: platform === 'gmail' ? 'var(--white)' : 'transparent',
@@ -287,6 +288,7 @@ export default function TonalMockup() {
           </button>
           <button
             type="button"
+            className="mockup-tab-btn"
             onClick={() => setPlatform('slack')}
             style={{
               background: platform === 'slack' ? 'var(--white)' : 'transparent',
@@ -312,7 +314,7 @@ export default function TonalMockup() {
       {/* Platform content adapters */}
       {platform === 'gmail' && (
         <>
-          <div className="composer-body" style={{ flex: 1, display: 'flex', flexDirection: 'column', height: '340px', padding: '16px' }}>
+          <div className="composer-body" style={{ flex: 1, display: 'flex', flexDirection: 'column', height: '380px', padding: '16px' }}>
             <div className="composer-fields" style={{ display: 'flex', flexDirection: 'column', gap: '8px', borderBottom: '1px solid var(--color-border-light)', paddingBottom: '12px' }}>
               <div className="composer-field" style={{ display: 'flex', fontSize: '13px', alignItems: 'center', gap: '8px' }}>
                 <span className="composer-field-label" style={{ color: 'var(--color-text-muted)', width: '48px', flexShrink: 0 }}>To</span>
@@ -363,7 +365,7 @@ export default function TonalMockup() {
 
       {platform === 'slack' && (
         <>
-          <div className="composer-body" style={{ flex: 1, display: 'flex', flexDirection: 'column', height: '340px', padding: '16px', background: 'var(--white)' }}>
+          <div className="composer-body" style={{ flex: 1, display: 'flex', flexDirection: 'column', height: '380px', padding: '16px', background: 'var(--white)' }}>
             {/* Channel header info */}
             <div className="composer-fields" style={{ display: 'flex', borderBottom: '1px solid var(--color-border-light)', paddingBottom: '12px', alignItems: 'center', gap: '8px' }}>
               <span className="composer-field-value" style={{ color: 'var(--color-text-primary)', fontWeight: 700, fontSize: '14px' }}># marketing-team</span>

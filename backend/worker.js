@@ -177,7 +177,9 @@ export default {
     }
 
     const { text, toneLevel, mode, platform } = body;
-    if (!text || typeof text !== "string" || text.trim().length < 2)
+    if (text === undefined || text === null || typeof text !== "string")
+      return json({ success: false, error: "Invalid or missing text field" }, 400, corsHeaders);
+    if (text.trim().length < 2)
       return json({ success: false, error: "Text too short" }, 400, corsHeaders);
 
     const promptKey = mode === "decode" ? "decode" : toneLevel || "workChat";

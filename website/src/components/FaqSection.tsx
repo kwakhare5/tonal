@@ -73,13 +73,31 @@ function FaqItem({ question, answer }: FaqItemProps) {
     }
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      toggleOpen();
+    }
+  };
+
+  const elementId = `faq-answer-${question.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-]/g, '').toLowerCase()}`;
+
   return (
     <div className={`faq-item ${isOpen ? 'active' : ''}`}>
-      <div className="faq-question" onClick={toggleOpen}>
+      <div 
+        className="faq-question" 
+        onClick={toggleOpen}
+        onKeyDown={handleKeyDown}
+        tabIndex={0}
+        role="button"
+        aria-expanded={isOpen}
+        aria-controls={elementId}
+      >
         <span>{question}</span>
         <span className="faq-icon" style={{ transform: isOpen ? 'rotate(180deg)' : 'none' }}>▼</span>
       </div>
       <div
+        id={elementId}
         className="faq-answer"
         ref={contentRef}
         style={{
