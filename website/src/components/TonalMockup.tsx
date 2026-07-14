@@ -32,7 +32,7 @@ const INITIAL_TEXT = 'hey need that report asap thx';
 // Real SVGs from extension
 const SVGS = {
   LOGO: (
-    <img src="/icons/icon128.png" alt="Tonal" style={{ width: '12px', height: '12px', borderRadius: '2px', display: 'block' }} />
+    <div className="pill-logo" />
   ),
   CHEV: (
     <svg width="7" height="5" viewBox="0 0 8 5" fill="none" xmlns="http://www.w3.org/2000/svg">

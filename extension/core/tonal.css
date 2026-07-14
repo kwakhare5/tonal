@@ -62,12 +62,15 @@
 .t-pill {
   display: inline-flex; align-items: center; justify-content: center;
   background: var(--black); border-radius: var(--r-pill); cursor: pointer;
+  color: var(--white);
   box-shadow: 0 1px 3px rgba(0,0,0,.16);
   transition: transform 0.15s var(--ease-out), background 0.15s, box-shadow 0.15s, width 0.2s var(--spring), height 0.2s var(--spring);
   pointer-events: none; overflow: hidden;
 }
-.t-pill--rest     { width: 30px; height: 16px; }
-.t-hitbox:hover .t-pill--rest { transform: scale(1.08); box-shadow: 0 2px 8px rgba(0,0,0,.2); }
+.t-pill--rest,
+.t-pill--hover     { width: 30px; height: 16px; }
+.t-hitbox:hover .t-pill--rest,
+.t-hitbox:hover .t-pill--hover { transform: scale(1.08); box-shadow: 0 2px 8px rgba(0,0,0,.2); }
 
 .t-pill--expanded { height: 24px; padding: 0 9px; gap: 5px; }
 .t-pill--loading  { height: 24px; padding: 0 9px; opacity: .55; }
@@ -76,6 +79,20 @@
 
 .pill-icon { display: flex; align-items: center; justify-content: center; }
 .pill-icon svg { display: block; }
+.pill-logo {
+  width: 14px;
+  height: 14px;
+  background-image: url('data:image/png;base64,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');
+  background-size: 160%;
+  background-repeat: no-repeat;
+  background-position: center;
+  border-radius: 2px;
+  display: block;
+}
+.t-pill--expanded .pill-logo {
+  width: 16px;
+  height: 16px;
+}
 .pill-text { font-size: 10px; font-weight: 700; color: var(--white); letter-spacing: 0.01em; white-space: nowrap; font-family: var(--font); line-height: 1; }
 
 .pill-dots::after { content: ''; display: inline-block; animation: dots 1.2s steps(4) infinite; }

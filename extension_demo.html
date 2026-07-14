@@ -6,7 +6,8 @@
   <title>Tonal Extension UI States Catalog</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Lora:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="extension/core/tonal.css?v=2" />
   <style>
     /* Clean Light Mode Documentation Theme */
     :root {
@@ -19,30 +20,9 @@
       --green: #34C759;
       --red: #FF3B30;
       --orange: #FF9F0A;
-      
-      /* Tonal CSS Tokens */
-      --black:    #0F0F0F;
-      --gray-1:   #1C1C1E;
-      --gray-2:   #2C2C2E;
-      --gray-3:   #3A3A3C;
-      --gray-4:   #636366;
-      --gray-5:   #AEAEB2;
-      --gray-6:   #D1D1D6;
-      --gray-7:   #E5E5EA;
-      --gray-8:   #F2F2F7;
-      --gray-9:   #F5F5F7;
-      --white:    #FFFFFF;
-      
+
       --font: 'DM Sans', sans-serif;
       --mono: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
-      
-      --r-sm:  6px;
-      --r-md:  10px;
-      --r-lg:  14px;
-      --r-pill: 100px;
-      --sh-lg: 0 4px 20px rgba(0, 0, 0, 0.08), 0 10px 38px rgba(0, 0, 0, 0.04);
-      --ease-out: cubic-bezier(0.2, 0, 0, 1);
-      --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
     * {
@@ -79,7 +59,6 @@
     }
 
     header h1 {
-      font-family: 'Lora', serif;
       font-size: 34px;
       font-weight: 600;
       color: var(--text);
@@ -94,7 +73,6 @@
 
     /* Section Styling */
     .section-title {
-      font-family: 'Lora', serif;
       font-size: 20px;
       font-weight: 600;
       color: var(--text);
@@ -186,143 +164,179 @@
       margin-bottom: 8px;
     }
 
-    /* ── SHADOW DOM REPLICA FOR TONAL PILL ────────────────────── */
-    .t-hitbox {
-      padding: 8px;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
+    /* Override absolutely positioned/hidden elements inside static docs side-panel */
+    .side-panel .popover,
+    .side-panel .toast,
+    .side-panel .decode-float,
+    .side-panel .decode-card {
+      position: static !important;
+      opacity: 1 !important;
+      pointer-events: auto !important;
+      transform: none !important;
     }
 
-    .t-pill {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      background: var(--black);
-      border-radius: var(--r-pill);
-      box-shadow: 0 1px 3px rgba(0,0,0,.16);
-      transition: transform 0.15s var(--ease-out), background 0.15s, box-shadow 0.15s, width 0.2s var(--spring), height 0.2s var(--spring);
-      overflow: hidden;
-      color: var(--white);
-    }
-    
-    .t-pill--rest     { width: 30px; height: 16px; }
-    .t-pill--expanded { height: 24px; padding: 0 9px; gap: 5px; }
-    .t-pill--loading  { height: 24px; padding: 0 9px; opacity: .55; }
-    .t-pill--done     { height: 24px; padding: 0 10px; background: var(--green); box-shadow: 0 1px 4px rgba(52,199,89,.35); }
-    .t-pill--error    { height: 24px; padding: 0 9px; background: var(--red); }
-    
-    .pill-icon { display: flex; align-items: center; justify-content: center; }
-    .pill-icon img, .pill-icon svg { display: block; }
-    
-    .pill-text {
-      font-size: 10px;
-      font-weight: 700;
-      color: var(--white);
-      letter-spacing: 0.01em;
-      white-space: nowrap;
-      font-family: var(--font);
-      line-height: 1;
-    }
-    
-    .pill-dots::after {
-      content: '';
-      display: inline-block;
-      animation: dots 1.2s steps(4) infinite;
-    }
-    @keyframes dots { 0% { content: ''; } 25% { content: '.'; } 50% { content: '..'; } 75% { content: '...'; } }
-    
-    .pill-chev-wrap {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 14px;
-      height: 24px;
-      cursor: pointer;
-      position: relative;
+    .side-panel .toast {
+      width: fit-content !important;
     }
 
-    /* Popover styles */
-    .popover {
+    /* Popup styling overrides for documentation preview */
+    .popup-container {
+      width: 280px;
+      border: 1px solid var(--gray-8);
       background: var(--white);
       border-radius: var(--r-lg);
-      border: 1px solid var(--gray-7);
-      box-shadow: var(--sh-lg);
+      box-shadow: var(--sh-md);
       overflow: hidden;
       display: flex;
       flex-direction: column;
-      z-index: 1000;
-      color: var(--black);
-      width: 100%;
-      max-width: 220px;
+      text-align: left;
     }
 
-    .pop-item {
+    .popup-head {
+      padding: 18px 18px 14px;
+      border-bottom: 1px solid var(--gray-8);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .popup-logo {
+      width: 36px;
+      height: 36px;
+      background: var(--black);
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .popup-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--black);
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+
+    .popup-sub {
+      font-size: 11px;
+      color: var(--gray-4);
+      margin-top: 1px;
+    }
+
+    .popup-body {
+      padding: 16px 18px;
+    }
+
+    .popup-badge {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      background: #f0fdf4;
+      border: 1px solid #d1fae5;
+      border-radius: var(--r-md);
+      padding: 8px 12px;
+      margin-bottom: 16px;
+      font-size: 12px;
+      font-weight: 500;
+      color: #059669;
+    }
+
+    .popup-badge-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+      flex-shrink: 0;
+    }
+
+    .popup-field-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--gray-5);
+      margin-bottom: 7px;
+    }
+
+    .segmented {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      background: var(--gray-8);
+      border-radius: var(--r-md);
+      padding: 3px;
+      gap: 2px;
+      margin-bottom: 14px;
+    }
+
+    .seg-item {
+      padding: 7px 4px;
+      text-align: center;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--gray-4);
+      border-radius: var(--r-sm);
+      cursor: pointer;
+      font-family: var(--font);
+      transition: all 0.2s;
+    }
+
+    .seg-item--active {
+      background: var(--white);
+      color: var(--black);
+      font-weight: 600;
+      box-shadow: var(--sh-xs);
+    }
+
+    .popup-save {
+      width: 100%;
+      background: var(--black);
+      color: var(--white);
+      border: none;
+      border-radius: var(--r-md);
+      padding: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: var(--font);
+      letter-spacing: -0.01em;
+      transition: all 0.2s;
+    }
+    .popup-save:active {
+      transform: scale(0.98);
+    }
+
+    .popup-footer {
+      padding: 12px 18px;
+      border-top: 1px solid var(--gray-8);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 11px 15px;
-      cursor: pointer;
-      transition: background .08s;
-      width: 100%;
-    }
-    
-    .pop-item:not(.pop-item--active):hover { background: var(--gray-9); }
-    .pop-item--active { background: var(--black); cursor: default; }
-    
-    .pop-label {
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--black);
-    }
-    .pop-item--active .pop-label { color: var(--white); }
-    
-    .pop-sub {
-      font-size: 10px;
-      color: var(--gray-5);
-    }
-    .pop-item--active .pop-sub { color: var(--white); }
-    
-    .pop-check {
-      font-size: 11px;
-      color: var(--black);
-      font-weight: 600;
-    }
-    .pop-item--active .pop-check { color: var(--white); }
-    
-    .pop-divider {
-      height: 1px;
-      background: var(--gray-8);
     }
 
-    /* Static Toasts */
-    .toast-static {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 9px 16px;
-      border-radius: var(--r-pill);
-      font-size: 12px;
-      font-weight: 600;
-      background: var(--black);
-      color: var(--white);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
-      white-space: nowrap;
-      width: fit-content;
+    .popup-platforms {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
     }
-    .toast-static--success { color: var(--green); }
-    .toast-static--error { color: var(--red); }
-    .toast-static--info { color: #FFF; }
-    
-    .toast-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
+
+    .platform-tag {
+      background: var(--gray-8);
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--gray-4);
     }
-    .toast-dot--success { background: var(--green); }
-    .toast-dot--error { background: var(--red); }
-    .toast-dot--info { background: #FFF; }
+
+    .popup-status {
+      font-family: var(--font);
+      font-size: 10px;
+      color: var(--gray-5);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
 
     /* Sandbox Interactive area */
     .sandbox-container {
@@ -399,23 +413,6 @@
       z-index: 200;
     }
 
-    .sandbox-popover {
-      position: absolute;
-      bottom: calc(100% + 4px);
-      right: 8px;
-      width: 192px;
-      opacity: 0;
-      transform: translateY(12px) scale(0.95);
-      transition: all 0.2s var(--spring);
-      pointer-events: none;
-    }
-    
-    .sandbox-popover.active {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-      pointer-events: auto;
-    }
-
     .sandbox-controls {
       display: flex;
       flex-wrap: wrap;
@@ -447,22 +444,6 @@
       border-color: var(--black);
       color: white;
     }
-
-    .toast-live {
-      position: absolute;
-      bottom: 24px;
-      left: 50%;
-      transform: translateX(-50%) translateY(20px);
-      opacity: 0;
-      pointer-events: none;
-      transition: all 0.2s var(--spring);
-      z-index: 1000;
-    }
-
-    .toast-live.active {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
   </style>
 </head>
 <body>
@@ -477,16 +458,14 @@
     <!-- Section 1: Pill States -->
     <section>
       <div class="section-title">1. Floating Pill Component States</div>
-      
+
       <div class="spec-grid">
         <!-- 1. Rest State -->
         <div class="spec-card">
           <div class="spec-card-title">Rest State</div>
           <div class="spec-preview-box">
             <div class="t-pill t-pill--rest">
-              <div class="pill-icon">
-                <img src="https://raw.githubusercontent.com/kwakhare5/Tonal/main/icons/icon128.png" style="width: 12px; height: 12px; border-radius: 2px;" />
-              </div>
+              <div class="pill-icon"><div class="pill-logo"></div></div>
             </div>
           </div>
         </div>
@@ -496,9 +475,7 @@
           <div class="spec-card-title">Expanded State</div>
           <div class="spec-preview-box">
             <div class="t-pill t-pill--expanded">
-              <div class="pill-icon">
-                <img src="https://raw.githubusercontent.com/kwakhare5/Tonal/main/icons/icon128.png" style="width: 12px; height: 12px; border-radius: 2px;" />
-              </div>
+              <div class="pill-icon"><div class="pill-logo"></div></div>
               <span class="pill-text">Work</span>
               <div class="pill-chev-wrap">
                 <svg width="7" height="5" viewBox="0 0 8 5" fill="none"><path d="M1 1l3 3 3-3" stroke="#FFFFFF" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -533,7 +510,7 @@
           <div class="spec-preview-box">
             <div class="t-pill t-pill--error">
               <div class="pill-icon">
-                <svg width="10" height="10" viewBox="0 0 14 14" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 1l12 12M13 1L1 13"/></svg>
+                <svg width="8" height="8" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1l12 12M13 1L1 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
               </div>
               <span class="pill-text" style="margin-left: 4px;">Retry</span>
             </div>
@@ -571,15 +548,15 @@
       <div class="side-panel">
         <div class="side-panel-title">3. Toast Notification Alerts</div>
         <div style="display: flex; flex-direction: column; gap: 16px; align-items: center; justify-content: center; height: 100%; min-height: 180px;">
-          <div class="toast-static toast-static--success">
+          <div class="toast toast--success">
             <div class="toast-dot toast-dot--success"></div>
             <span>Text rewritten successfully</span>
           </div>
-          <div class="toast-static toast-static--error">
+          <div class="toast toast--error">
             <div class="toast-dot toast-dot--error"></div>
             <span>Rewriting failed. Please retry</span>
           </div>
-          <div class="toast-static toast-static--info">
+          <div class="toast toast--info">
             <div class="toast-dot toast-dot--info"></div>
             <span>Rewriting undone</span>
           </div>
@@ -587,10 +564,105 @@
       </div>
     </div>
 
-    <!-- Section 5: Interactive Sandbox -->
+    <!-- Side-by-side grid for Decode Float and Decode Card -->
+    <div class="side-grid">
+      <!-- Decode Float Section -->
+      <div class="side-panel">
+        <div class="side-panel-title">4. Decode Floating Button</div>
+        <div style="display: flex; justify-content: center; padding: 20px 0; align-items: center; min-height: 180px;">
+          <div class="decode-float decode-float--active" style="cursor: default;">
+            Decode
+          </div>
+        </div>
+      </div>
+
+      <!-- Decode Card Section -->
+      <div class="side-panel">
+        <div class="side-panel-title">5. Decode Result Card</div>
+        <div style="display: flex; justify-content: center; padding: 20px 0;">
+          <div class="decode-card decode-card--active">
+            <div class="decode-card-header">
+              <span class="decode-card-tag">Tone Translation</span>
+              <div class="decode-card-close">
+                <svg width="8" height="8" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1l12 12M13 1L1 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+            </div>
+            <div class="decode-card-body">
+              <div class="decode-card-text">Hey team, please share the latest report as soon as possible. Thanks!</div>
+              <button class="decode-card-copy">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                <span>Copy text</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 6: Extension Popup UI -->
     <section>
-      <div class="section-title">4. Live Interactive Sandbox</div>
-      
+      <div class="section-title">6. Chrome Extension Popup Window</div>
+
+      <div class="side-grid">
+        <!-- Popup Default state -->
+        <div class="side-panel" style="align-items: center; justify-content: center;">
+          <div class="side-panel-title" style="width: 100%;">Default Popup View</div>
+          <div class="popup-container">
+            <div class="popup-head">
+              <div class="popup-logo">
+                <img src="extension/icons/icon128.png" alt="Tonal Logo" style="width: 100%; height: 100%; border-radius: inherit; display: block;" />
+              </div>
+              <div>
+                <div class="popup-title">Tonal</div>
+                <div class="popup-sub">Two-way tone translator</div>
+              </div>
+            </div>
+
+            <div class="popup-body">
+              <div class="popup-badge">
+                <div class="popup-badge-dot"></div>
+                Ready to use — no setup needed
+              </div>
+              <div class="popup-field-label">Default tone</div>
+              <div class="segmented">
+                <div class="seg-item seg-item--active">Casual</div>
+                <div class="seg-item">Work</div>
+                <div class="seg-item">Formal</div>
+              </div>
+              <button class="popup-save" style="cursor: default;">Save preference</button>
+            </div>
+
+            <div class="popup-footer">
+              <div class="popup-platforms">
+                <span class="platform-tag">Gmail</span>
+                <span class="platform-tag">Slack</span>
+                <span class="platform-tag">LinkedIn</span>
+              </div>
+              <span class="popup-status">Active</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Popup info -->
+        <div class="side-panel" style="justify-content: center;">
+          <div class="side-panel-title">Popup UI Specs</div>
+          <div style="font-size: 14px; color: var(--text-muted); display: flex; flex-direction: column; gap: 12px;">
+            <p>The Chrome Extension popup provides a clean, native interface for the user to configure global preferences.</p>
+            <p><strong>Design System Alignment:</strong></p>
+            <ul style="padding-left: 20px; display: flex; flex-direction: column; gap: 6px; list-style-type: disc;">
+              <li><strong>280px Width:</strong> Sized perfectly for Chrome's native extensions window.</li>
+              <li><strong>Segmented Control:</strong> Seamlessly switches default tone using shared rounded corner metrics (<code style="font-family: var(--mono); font-size: 12px;">--r-md</code>).</li>
+              <li><strong>Dynamic Status Badge:</strong> Confirms helper state and system availability.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 7: Interactive Sandbox -->
+    <section>
+      <div class="section-title">7. Live Interactive Sandbox</div>
+
       <div class="sandbox-container">
         <!-- Sandbox State Controls -->
         <div class="sandbox-controls">
@@ -610,7 +682,7 @@
           <div class="composer-body">
             <div class="composer-textarea-container">
               <textarea class="composer-textarea" id="sandbox-textarea" readonly>hey guys need that report asap thx</textarea>
-              
+
               <!-- Floating Pill wrapper -->
               <div class="sandbox-pill-wrapper">
                 <!-- Sandbox Popover -->
@@ -634,9 +706,7 @@
                 <!-- Sandbox Pill Hitbox -->
                 <div class="t-hitbox" onclick="handleSandboxPillClick()">
                   <div class="t-pill t-pill--rest" id="sandboxPill">
-                    <div class="pill-icon">
-                      <img src="https://raw.githubusercontent.com/kwakhare5/Tonal/main/icons/icon128.png" style="width: 12px; height: 12px; border-radius: 2px;" />
-                    </div>
+                    <div class="pill-icon"><div class="pill-logo"></div></div>
                   </div>
                 </div>
               </div>
@@ -646,7 +716,7 @@
         </div>
 
         <!-- Toast Layer -->
-        <div class="toast-static toast-live" id="sandboxToast">
+        <div class="toast" id="sandboxToast">
           <div class="toast-dot" id="sandboxToastDot"></div>
           <span id="sandboxToastText">Success</span>
         </div>
@@ -669,7 +739,7 @@
     function setSandboxState(state) {
       sandboxState = state;
       sandboxPopoverActive = false;
-      document.getElementById('sandboxPopover').classList.remove('active');
+      document.getElementById('sandboxPopover').classList.remove('popover--active');
 
       // Update control buttons
       document.querySelectorAll('.sandbox-btn').forEach(btn => btn.classList.remove('active'));
@@ -683,14 +753,10 @@
       // Update Pill markup
       if (state === 'rest') {
         pill.innerHTML = `
-          <div class="pill-icon">
-            <img src="https://raw.githubusercontent.com/kwakhare5/Tonal/main/icons/icon128.png" style="width: 12px; height: 12px; border-radius: 2px;" />
-          </div>`;
+          <div class="pill-icon"><div class="pill-logo"></div></div>`;
       } else if (state === 'expanded') {
         pill.innerHTML = `
-          <div class="pill-icon">
-            <img src="https://raw.githubusercontent.com/kwakhare5/Tonal/main/icons/icon128.png" style="width: 12px; height: 12px; border-radius: 2px;" />
-          </div>
+          <div class="pill-icon"><div class="pill-logo"></div></div>
           <span class="pill-text">${selectedSandboxTone}</span>
           <div class="pill-chev-wrap" onclick="event.stopPropagation(); toggleSandboxPopover()">
             <svg width="7" height="5" viewBox="0 0 8 5" fill="none"><path d="M1 1l3 3 3-3" stroke="#FFFFFF" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -702,7 +768,7 @@
       } else if (state === 'error') {
         pill.innerHTML = `
           <div class="pill-icon">
-            <svg width="10" height="10" viewBox="0 0 14 14" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 1l12 12M13 1L1 13"/></svg>
+            <svg width="8" height="8" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1l12 12M13 1L1 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </div>
           <span class="pill-text" style="margin-left: 4px;">Retry</span>`;
       }
@@ -715,9 +781,9 @@
       sandboxPopoverActive = !sandboxPopoverActive;
       const popover = document.getElementById('sandboxPopover');
       if (sandboxPopoverActive) {
-        popover.classList.add('active');
+        popover.classList.add('popover--active');
       } else {
-        popover.classList.remove('active');
+        popover.classList.remove('popover--active');
       }
     }
 
@@ -737,11 +803,11 @@
         const labelText = item.querySelector('.pop-label').innerText;
         const matchingToneKey = Object.keys(toneMap).find(k => toneMap[k].label === labelText);
         const toneData = toneMap[matchingToneKey];
-        
+
         // Remove existing second child span (check or sub)
         const secondChild = item.children[1];
         if (secondChild) item.removeChild(secondChild);
-        
+
         if (matchingToneKey === toneId) {
           item.classList.add('pop-item--active');
           const checkSpan = document.createElement('span');
@@ -790,12 +856,12 @@
       const dot = document.getElementById('sandboxToastDot');
       const text = document.getElementById('sandboxToastText');
 
-      toast.className = `toast-static toast-live active toast-static--${type}`;
+      toast.className = `toast toast--active toast--${type}`;
       dot.className = `toast-dot toast-dot--${type}`;
       text.innerText = msg;
 
       setTimeout(() => {
-        toast.classList.remove('active');
+        toast.classList.remove('toast--active');
       }, 3000);
     }
   </script>

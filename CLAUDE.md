@@ -150,6 +150,8 @@ _AI fills this at the END of every session. Read this at the START of the next s
 - SVG GitHub Logo: Replaced the text-only GitHub navigation link with a clean inline SVG.
 - Purposeful Animations: Implemented CSS page-load fades, ambient glows, and Intersection Observer scroll reveals for sections (with staggered item loading for list/FAQ items) and active-feedback transitions for buttons with full reduced-motion support.
 - Interactive Extension UI States Design System: Created a complete design system template in `extension_demo.html` showing all Tonal floating pill states (Rest, Expanded, Loading, Success, Error), popover selectors, and toasts side-by-side with source code snippets, color palettes, and an interactive sandbox composer.
+- Standalone Light-Mode Visual Spec: Created a clean visual states catalog in `extension_demo.html` with no codes or technical bloat, styled in light mode.
+- Centralized UI Spec Playground Styling: Refactored `extension_demo.html` to load `extension/core/tonal.css` directly and aligned HTML class names with extension CSS selectors, removing all duplicate styling declarations.
 
 **Immediate next task:**
 - Perform end-to-end testing of the zipped extension inside Google Chrome on live Gmail, Slack, and LinkedIn inputs.
@@ -158,12 +160,8 @@ _AI fills this at the END of every session. Read this at the START of the next s
 - None.
 
 **Files most recently changed:**
-- `website/src/app/page.tsx`
-- `website/src/app/globals.css`
-- `website/src/app/layout.tsx`
-- `website/src/components/TonalMockup.tsx`
-- `website/src/components/FaqSection.tsx`
+- `extension/core/tonal.css`
 - `extension/core/tonal.js`
-- `extension/popup.html`
+- `website/src/components/TonalMockup.tsx`
 - `extension_demo.html`
 - `CLAUDE.md`
