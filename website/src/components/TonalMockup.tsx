@@ -32,14 +32,7 @@ const INITIAL_TEXT = 'hey need that report asap thx';
 // Real SVGs from extension
 const SVGS = {
   LOGO: (
-    <svg width="13" height="8" viewBox="0 0 72 44" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="0" y="18" width="72" height="8" rx="4" fill="#2C2C2E" />
-      <rect x="0" y="18" width="39" height="8" rx="4" fill="white" />
-      <circle cx="39" cy="22" r="16" fill="#F2F2F2" />
-      <circle cx="39" cy="22" r="14.5" fill="white" />
-      <circle cx="39" cy="22" r="9" fill="#1C1C1E" />
-      <circle cx="39" cy="22" r="4" fill="#3A3A3C" />
-    </svg>
+    <img src="/icons/icon128.png" alt="Tonal" style={{ width: '12px', height: '12px', borderRadius: '2px', display: 'block' }} />
   ),
   CHEV: (
     <svg width="7" height="5" viewBox="0 0 8 5" fill="none" xmlns="http://www.w3.org/2000/svg">

@@ -146,7 +146,7 @@ _AI fills this at the END of every session. Read this at the START of the next s
 - Dot-Grid Background Textures: Added subtle dot-grid background textures and soft blurred color blobs behind the Hero and bottom CTA sections.
 - Prototypes: Evaluated text effect options (gradients, underlines, highlights) and selected the clean Option 3 "Highlight Background Blob" marker stroke on the header.
 - Added Author Credits: Added "Karan Wakhare" name in footer branding and copyright notes, and hyperlinked credits to Groq, Llama, and Cloudflare.
-- SVG GitHub Logo & Brand Logo: Replaced the text-only GitHub navigation link and PNG logo images in the navbar and footer with crisp, responsive inline SVGs.
+- SVG GitHub Logo & Brand Logo: Replaced the text-only GitHub navigation link with a clean inline SVG, and restored the original PNG Tonal logo image files in the header and footer.
 
 **Immediate next task:**
 - Perform end-to-end testing of the zipped extension inside Google Chrome on live Gmail, Slack, and LinkedIn inputs.
