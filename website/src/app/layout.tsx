@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { Analytics } from "@vercel/analytics/react";
 
 import { DM_Sans, Lora } from 'next/font/google';
 
@@ -54,6 +55,7 @@ export default function RootLayout({
     <html lang="en" className={`${dmSans.variable} ${lora.variable}`}>
       <body>
         {children}
+        <Analytics />
       </body>
     </html>
   );
