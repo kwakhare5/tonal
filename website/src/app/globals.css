@@ -1,4 +1,4 @@
-@import "../../../extension/tonal.css";
+@import "../extension_shared/tonal.css";
 
 /* ==========================================================================
    TONAL DESIGN SYSTEM & LANDING PAGE STYLING
@@ -1306,4 +1306,353 @@ svg {
   .hero-glow {
     animation: none !important;
   }
+}
+
+/* ==========================================================================
+   INSTALL GUIDE MODAL & STEPS STYLES (SWISS NEO-MINIMALIST REDESIGN)
+   ========================================================================== */
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(15, 15, 15, 0.3);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+  overflow-y: auto;
+  animation: fadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.modal-container {
+  background-color: var(--color-bg-card);
+  background-image: radial-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+  background-size: 20px 20px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-2xl);
+  width: 100%;
+  max-width: 720px; /* Increased to 720px for 2-column layout */
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--sh-lg);
+  animation: slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  overflow: hidden;
+}
+
+.modal-header {
+  padding: var(--space-6) var(--space-8);
+  border-bottom: 1px solid var(--color-border-light);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.modal-title-group {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.modal-logo {
+  border-radius: var(--radius-xs);
+}
+
+.modal-title {
+  font-family: var(--font-serif);
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.modal-close-btn {
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.modal-close-btn:hover {
+  background-color: var(--color-bg-alt);
+  color: var(--color-text-primary);
+}
+
+.modal-body {
+  padding: var(--space-6) var(--space-8);
+  overflow-y: auto;
+}
+
+.modal-subtitle {
+  color: var(--color-text-secondary);
+  font-size: 14.5px;
+  margin-bottom: var(--space-6);
+  line-height: 1.5;
+}
+
+/* Redesigned Grid Steps UI */
+.install-steps-container {
+  position: relative;
+  width: 100%;
+}
+
+.install-steps-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: var(--space-6);
+}
+
+.install-step-card {
+  grid-column: span 2;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-6);
+  background-color: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.02), inset 0 1px 1px rgba(255, 255, 255, 0.6);
+  transition: all var(--transition-normal);
+  overflow: hidden;
+  border: none;
+}
+
+/* Aligns step 4 and 5 in the center of the second row on desktop */
+.install-step-card:nth-child(4) {
+  grid-column: 2 / span 2;
+}
+
+.install-step-card:nth-child(5) {
+  grid-column: 4 / span 2;
+}
+
+.install-step-card:hover {
+  background-color: rgba(255, 255, 255, 0.7);
+  box-shadow: 0 12px 40px rgba(0, 152, 242, 0.05);
+  transform: translateY(-2px);
+}
+
+.install-step-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-4);
+}
+
+.install-step-number {
+  font-family: var(--font-serif);
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--color-blue);
+  opacity: 0.15;
+  line-height: 1;
+}
+
+.install-step-title {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-2);
+}
+
+.install-step-desc {
+  font-size: 13.5px;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
+
+.install-code {
+  background-color: rgba(0, 0, 0, 0.04);
+  border-radius: var(--radius-xs);
+  padding: 2px 6px;
+  font-family: monospace;
+  font-size: 12px;
+  color: var(--black);
+}
+
+/* Modal Footer */
+.modal-footer {
+  padding: var(--space-4) var(--space-8) var(--space-6) var(--space-8);
+  display: flex;
+  justify-content: flex-end;
+  border-top: none;
+  background-color: transparent;
+}
+
+.modal-action-btn {
+  width: auto;
+  padding: var(--space-2) var(--space-5);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* Responsive Overrides */
+@media (max-width: 900px) {
+  .install-steps-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+  
+  .install-step-card {
+    grid-column: auto !important;
+  }
+}
+
+/* Unify modal steps layout with the exact same 3-2 grid UI as the website page */
+.modal-body .install-steps-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: var(--space-4);
+}
+
+.modal-body .install-step-card {
+  grid-column: span 2 !important;
+  display: flex;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  gap: var(--space-2);
+  padding: var(--space-4) !important;
+  background-color: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.02), inset 0 1px 1px rgba(255, 255, 255, 0.6);
+  border: none !important;
+  transition: all var(--transition-normal);
+}
+
+.modal-body .install-step-card:hover {
+  background-color: rgba(255, 255, 255, 0.7);
+  box-shadow: 0 12px 40px rgba(0, 152, 242, 0.05);
+  transform: translateY(-2px);
+}
+
+/* Aligns step 4 and 5 centered on the second row inside the modal */
+.modal-body .install-step-card:nth-child(4) {
+  grid-column: 2 / span 2 !important;
+}
+
+.modal-body .install-step-card:nth-child(5) {
+  grid-column: 4 / span 2 !important;
+}
+
+.modal-body .install-step-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-2);
+}
+
+.modal-body .install-step-number {
+  font-family: var(--font-serif);
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--color-blue);
+  opacity: 0.15;
+  line-height: 1;
+}
+
+.modal-body .install-step-title {
+  font-family: var(--font-sans);
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: 2px;
+}
+
+.modal-body .install-step-desc {
+  font-size: 12.5px;
+  color: var(--color-text-secondary);
+  line-height: 1.45;
+}
+
+@media (max-width: 768px) {
+  .modal-container {
+    max-width: 95vw;
+  }
+  .modal-body .install-steps-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+  }
+  .modal-body .install-step-card {
+    grid-column: auto !important;
+    flex-direction: row !important;
+    align-items: flex-start !important;
+    gap: var(--space-4);
+  }
+  .modal-body .install-step-card:nth-child(4) {
+    grid-column: auto !important;
+  }
+  .modal-body .install-step-card:nth-child(5) {
+    grid-column: auto !important;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(16px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* Drenched Bottom CTA (Bolder Pass) */
+.bottom-cta--drenched {
+  background-color: var(--black) !important;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1.5px, transparent 1.5px) !important;
+  background-size: 24px 24px !important;
+  color: var(--white) !important;
+  border-top: 1px solid var(--gray-2);
+  border-bottom: 1px solid var(--gray-2);
+}
+
+.bottom-cta-title {
+  font-family: var(--font-serif);
+  font-size: clamp(36px, 5vw, 52px);
+  margin-bottom: var(--space-4);
+  font-weight: 600;
+  color: var(--white) !important;
+}
+
+.bottom-cta-desc {
+  color: var(--gray-5) !important;
+  font-size: 16px;
+  max-width: 500px;
+  margin: 0 auto var(--space-8) auto;
+  line-height: 1.6;
+}
+
+.bottom-cta-btn {
+  background-color: var(--white) !important;
+  color: var(--black) !important;
+  border: 1px solid var(--white) !important;
+  padding: var(--space-3) var(--space-6) !important;
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  display: inline-block;
+  text-decoration: none;
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast) !important;
+}
+
+.bottom-cta-btn:hover {
+  background-color: transparent !important;
+  color: var(--white) !important;
+  border-color: var(--white) !important;
+  transform: translateY(-2px);
 }

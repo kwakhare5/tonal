@@ -9,6 +9,7 @@ config.local.js
 secrets.js
 secrets.json
 *.zip
+!website/public/tonal-extension.zip
 *.pem
 
 # Cloudflare / Wrangler

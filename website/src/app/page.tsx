@@ -4,9 +4,12 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import TonalMockup from '../components/TonalMockup';
 import FaqSection from '../components/FaqSection';
+import InstallGuideModal from '../components/InstallGuideModal';
+import InstallSteps from '../components/InstallSteps';
 
 export default function Home() {
   const [scrolled, setScrolled] = useState(false);
+  const [isInstallModalOpen, setIsInstallModalOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -49,6 +52,7 @@ export default function Home() {
           <ul className="nav-links">
             <li><a href="#features">Features</a></li>
             <li><a href="#security">Security</a></li>
+            <li><a href="#install">Install</a></li>
             <li><a href="#faq">FAQ</a></li>
           </ul>
 
@@ -77,7 +81,13 @@ export default function Home() {
               Rewrite text directly inside any input field. Eliminate context switching and craft professional communication instantly.
             </p>
             <div className="hero-cta">
-              <a href="/tonal-extension.zip" download className="btn btn-primary hero-cta-btn" style={{ padding: 'var(--space-2) var(--space-4)', fontSize: '14px', fontWeight: 500 }}>
+              <a 
+                href="/tonal-extension.zip" 
+                download 
+                onClick={() => setIsInstallModalOpen(true)}
+                className="btn btn-primary hero-cta-btn" 
+                style={{ padding: 'var(--space-2) var(--space-4)', fontSize: '14px', fontWeight: 500 }}
+              >
                 Download for Chrome
               </a>
             </div>
@@ -203,16 +213,38 @@ export default function Home() {
       {/* FAQ Section */}
       <FaqSection />
 
+      {/* Manual Installation Section */}
+      <section className="installation-section section-padding reveal-on-scroll" id="install" style={{ borderBottom: '1px solid var(--color-border-light)' }}>
+        <div className="container">
+          <div className="section-header" style={{ textAlign: 'center', marginBottom: 'var(--space-10)' }}>
+            <span className="badge badge-blue" style={{ fontWeight: 600 }}>Easy Setup</span>
+            <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(32px, 4vw, 46px)', fontWeight: 600 }}>
+              Manual Installation Guide
+            </h2>
+            <p style={{ color: 'var(--color-text-secondary)', fontSize: '15px', marginTop: 'var(--space-3)' }}>
+              Follow these simple steps to load the Chrome Extension locally in less than 60 seconds.
+            </p>
+          </div>
+          
+          <InstallSteps />
+        </div>
+      </section>
+
       {/* Bottom CTA Section */}
-      <section className="bottom-cta section-padding reveal-on-scroll" style={{ borderBottom: '1px solid var(--color-border-light)' }}>
+      <section className="bottom-cta bottom-cta--drenched section-padding reveal-on-scroll">
         <div className="container" style={{ textAlign: 'center' }}>
-          <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(36px, 5vw, 52px)', marginBottom: 'var(--space-4)', fontWeight: 600 }}>
+          <h2 className="bottom-cta-title">
             Compose with perfect tone, in one tap
           </h2>
-          <p style={{ color: 'var(--color-text-secondary)', fontSize: '16px', maxWidth: '500px', margin: '0 auto var(--space-8) auto', lineHeight: 1.6 }}>
+          <p className="bottom-cta-desc">
             Download the extension bundle now and start adjusting your writing tone inline on Gmail, Slack, and LinkedIn.
           </p>
-          <a href="/tonal-extension.zip" download className="btn btn-primary" style={{ padding: 'var(--space-3) var(--space-6)', fontSize: '15px', fontWeight: 600 }}>
+          <a 
+            href="/tonal-extension.zip" 
+            download 
+            onClick={() => setIsInstallModalOpen(true)}
+            className="btn btn-primary bottom-cta-btn"
+          >
             Download Chrome Extension Zip
           </a>
         </div>
@@ -270,6 +302,11 @@ export default function Home() {
           </div>
         </div>
       </footer>
+
+      <InstallGuideModal 
+        isOpen={isInstallModalOpen} 
+        onClose={() => setIsInstallModalOpen(false)} 
+      />
     </>
   );
 }

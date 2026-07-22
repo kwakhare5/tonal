@@ -132,30 +132,31 @@ content.js (user interaction)
 
 _AI fills this at the END of every session. Read this at the START of the next session._
 
-**Last session date:** 2026-07-14
+**Last session date:** 2026-07-22
 
 **What we built / changed:**
-- BUG-1 Fixed: `document.execCommand("selectAll")` in `tonal.js` → replaced with `range.selectNodeContents(el)` scoped to element. Root cause of Gmail subject/To field corruption.
-- BUG-2 Fixed: `background.js` now detects platform from `sender.tab.url` and passes it to worker → platform-specific prompts now fire for Gmail/Slack/LinkedIn.
-- BUG-3 Fixed: `adapters/gmail.js` `getValue()` now returns `innerText` not `innerHTML` → AI receives plain text, not HTML tags.
-- BUG-4 Fixed: `worker.js` CORS now allows `*.pages.dev` + `ALLOWED_ORIGIN` env var for production website.
-- BUG-4b Fixed: Groq 429 rate limit now returns proper 429 with user-friendly message instead of swallowing into 502.
-- BUG-6 Fixed: `TonalMockup.tsx` LinkedIn tab added; refs cleaned up (only one branch renders at a time via &&).
-- TDD: 8 new regression tests added to `tests/bug_regression.test.js`. Full suite 16/16 green.
-- Website Redesign: Replaced hero blue underline with a warm yellow highlighter tone, boosted dot-grid opacity to 0.065, added active sliding gradient shimmer motion to the highlighter, and cast blue, purple, and magenta gradients behind mockup visualizers.
+- **Modal Redesign**: Refactored the step-by-step installation modal to use the exact same glassmorphism design as the landing page (Lora serif numbers, reflective inset shadows, borderless cards).
+- **Centering & Viewport Fit**: Fixed modal height and centering coordinate offset issues caused by the global `zoom: 1.1` factor. Modal now fits 100% inside small viewports.
+- **Dynamic OG Image**: Implemented `opengraph-image.tsx` inside Next.js App Router using the Edge runtime. It dynamically captures a real-time browser screenshot of the live site (`https://tonall.vercel.app`) using Microlink API and caches it, ensuring the social share preview is always up to date.
+- **Zip Whitelisting**: Whitelisted `website/public/tonal-extension.zip` in `.gitignore`, rebuilt the latest package, and pushed to GitHub (preventing 404 download errors).
+- **Cloudflare Worker Deploy**: Deployed `tonal-proxy` to Cloudflare with `ALLOWED_ORIGIN = "https://tonall.vercel.app"` and verified CORS success headers.
+- **Vercel Rename & Domain**: Renamed the Vercel project from `website` to `tonal` and successfully bound the domain `tonall.vercel.app` to the live deployment.
 
 **Immediate next task:**
-- Deploy backend to Cloudflare: `npm run deploy` from root (requires Wrangler auth)
-- Add `ALLOWED_ORIGIN` secret in Cloudflare dashboard if using a custom domain
-- Reload extension in Chrome after `tonal.js` + `background.js` changes
+- Conduct final manual download and installation verification from `https://tonall.vercel.app`.
 
 **Open blockers:**
-- None. All bugs and visual adjustments fixed.
+- None. All deployment configurations and layouts are active and verified.
 
 **Files most recently changed:**
+- `website/package.json`
+- `website/scripts/copy-assets.cjs`
 - `website/src/app/globals.css`
 - `website/src/app/page.tsx`
-- `website/src/components/TonalMockup.tsx`
-- `CONTEXT.md`
-- `ARCHITECTURE.md`
+- `website/src/app/layout.tsx`
+- `website/src/app/opengraph-image.tsx`
+- `website/src/components/InstallSteps.tsx`
+- `website/src/components/InstallGuideModal.tsx`
+- `backend/wrangler.toml`
+- `.gitignore`
 - `CLAUDE.md`

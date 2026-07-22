@@ -304,6 +304,13 @@ _Auto-maintained by AI. Updated whenever a new token or class is discovered._
  - **2026-07-14 - Cloudflare Pages CORS and Rate-Limit Response Patches**: Allowed Cloudflare Pages origins dynamically in worker.js and structured Groq API 429 rate limit exceptions into human-readable JSON payloads.
  - **2026-07-14 - Website Contrast & Highlight Redesign**: Replaced hero blue underline with a warm yellow highlighter tone, boosted dot-grid opacity to 0.065, and cast blue, purple, and magenta gradients behind mockup visualizers to eliminate monochrome feedback.
  - **2026-07-14 - Global CSS Zoom Factor**: Added a global `zoom: 1.1` factor to the `html` element in `globals.css` to scale the layout up by 10% automatically at default 100% zoom.
+ - **2026-07-22 - Redesigned Installation Guide & Download Modal**: Built responsive 3-2 grid installation guide (`InstallSteps.tsx` and `InstallGuideModal.tsx`) with glassmorphism cards and Lora serif typography.
+ - **2026-07-22 - Modal Overlay Boundary Pinning Fix**: Solved fixed-position modal coordinate offset under global `zoom: 1.1` by using absolute viewport boundary pins (`top: 0; bottom: 0; left: 0; right: 0;`).
+ - **2026-07-22 - Dynamic Screenshot-Based Open Graph Preview**: Created dynamic `opengraph-image.tsx` Edge route capturing real-time browser screenshots of `https://tonall.vercel.app` via Microlink API.
+ - **2026-07-22 - Extension Asset Build Sync**: Added `website/scripts/copy-assets.cjs` prebuild step to sync extension assets locally and allow Vercel build compilation under the `website` root.
+ - **2026-07-22 - Whitelisted Extension Zip Package**: Removed `.zip` exclusion for `website/public/tonal-extension.zip` in `.gitignore` to prevent 404 download errors on Vercel.
+ - **2026-07-22 - Cloudflare Worker CORS Whitelisting**: Deployed Cloudflare Worker proxy with `ALLOWED_ORIGIN = "https://tonall.vercel.app"` and verified CORS preflight response headers.
+ - **2026-07-22 - Favicon Fallback Cleanup**: Deleted default Next.js/Vercel `favicon.ico` in `app/` folder to enable seamless fallback to official Tonal brand icons in metadata.
  
  ---
  
