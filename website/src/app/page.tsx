@@ -1,73 +1,20 @@
-'use client';
-
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Image from 'next/image';
 import TonalMockup from '../components/TonalMockup';
 import FaqSection from '../components/FaqSection';
-import InstallGuideModal from '../components/InstallGuideModal';
 import InstallSteps from '../components/InstallSteps';
+import Navbar from '../components/Navbar';
+import DownloadButton from '../components/DownloadButton';
+import ScrollObserver from '../components/ScrollObserver';
 
 export default function Home() {
-  const [scrolled, setScrolled] = useState(false);
-  const [isInstallModalOpen, setIsInstallModalOpen] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 40);
-    };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('is-visible');
-          }
-        });
-      },
-      { threshold: 0.05 }
-    );
-
-    const elements = document.querySelectorAll('.reveal-on-scroll');
-    elements.forEach((el) => observer.observe(el));
-
-    return () => {
-      elements.forEach((el) => observer.unobserve(el));
-    };
-  }, []);
-
   return (
     <>
       {/* Navigation */}
-      <nav className={`navbar ${scrolled ? 'navbar--scrolled' : ''}`}>
-        <div className="container navbar-container" style={{ paddingLeft: 0, paddingRight: 0 }}>
-          <a href="#" className="logo">
-            <Image src="/icons/icon128.png" alt="Tonal Logo" width={20} height={20} style={{ borderRadius: 'var(--radius-xs)', marginRight: 'var(--space-1)' }} />
-            <span>Tonal</span>
-          </a>
+      <Navbar />
 
-          <ul className="nav-links">
-            <li><a href="#features">Features</a></li>
-            <li><a href="#security">Security</a></li>
-            <li><a href="#install">Install</a></li>
-            <li><a href="#faq">FAQ</a></li>
-          </ul>
-
-          <div className="nav-actions">
-            <a href="https://github.com/kwakhare5/Tonal" target="_blank" rel="noopener noreferrer" className="login-btn" style={{ fontSize: '13px', fontWeight: 500, display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
-              <svg height="16" width="16" viewBox="0 0 16 16" fill="currentColor" style={{ verticalAlign: 'middle' }}>
-                <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" />
-              </svg>
-              <span>GitHub</span>
-            </a>
-          </div>
-        </div>
-      </nav>
-
-      <section className="hero">
+      <main>
+        <section className="hero">
         <div className="container hero-content">
           <div className="hero-text">
             <span className="badge badge-blue hero-badge" style={{ fontWeight: 600, marginBottom: 'var(--space-6)', display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
@@ -81,15 +28,12 @@ export default function Home() {
               Rewrite text directly inside any input field. Eliminate context switching and craft professional communication instantly.
             </p>
             <div className="hero-cta">
-              <a 
-                href="/tonal-extension.zip" 
-                download 
-                onClick={() => setIsInstallModalOpen(true)}
+              <DownloadButton 
                 className="btn btn-primary hero-cta-btn" 
                 style={{ padding: 'var(--space-2) var(--space-4)', fontSize: '14px', fontWeight: 500 }}
               >
                 Download for Chrome
-              </a>
+              </DownloadButton>
             </div>
           </div>
 
@@ -239,16 +183,13 @@ export default function Home() {
           <p className="bottom-cta-desc">
             Download the extension bundle now and start adjusting your writing tone inline on Gmail, Slack, and LinkedIn.
           </p>
-          <a 
-            href="/tonal-extension.zip" 
-            download 
-            onClick={() => setIsInstallModalOpen(true)}
-            className="btn btn-primary bottom-cta-btn"
-          >
+          <DownloadButton className="btn btn-primary bottom-cta-btn">
             Download Chrome Extension Zip
-          </a>
+          </DownloadButton>
         </div>
       </section>
+
+      </main>
 
       {/* Footer */}
       <footer className="footer">
@@ -303,10 +244,7 @@ export default function Home() {
         </div>
       </footer>
 
-      <InstallGuideModal 
-        isOpen={isInstallModalOpen} 
-        onClose={() => setIsInstallModalOpen(false)} 
-      />
+      <ScrollObserver />
     </>
   );
 }

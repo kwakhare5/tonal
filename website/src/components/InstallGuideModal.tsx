@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import Image from 'next/image';
 import InstallSteps from './InstallSteps';
 
@@ -10,6 +11,12 @@ interface InstallGuideModalProps {
 }
 
 export default function InstallGuideModal({ isOpen, onClose }: InstallGuideModalProps) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   // Close on Escape key press
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -27,7 +34,7 @@ export default function InstallGuideModal({ isOpen, onClose }: InstallGuideModal
     };
   }, [isOpen, onClose]);
 
-  if (!isOpen) return null;
+  if (!isOpen || !mounted) return null;
 
   // Handle click on backdrop
   const handleBackdropClick = (e: React.MouseEvent) => {
@@ -36,7 +43,7 @@ export default function InstallGuideModal({ isOpen, onClose }: InstallGuideModal
     }
   };
 
-  return (
+  return createPortal(
     <div className="modal-overlay" onClick={handleBackdropClick} aria-modal="true" role="dialog">
       <div className="modal-container">
         {/* Header */}
@@ -78,6 +85,7 @@ export default function InstallGuideModal({ isOpen, onClose }: InstallGuideModal
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
