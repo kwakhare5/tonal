@@ -20,9 +20,15 @@ export const metadata: Metadata = {
   title: "Tonal — Inline Tone Adjustment Chrome Extension",
   description: "Adjust your writing tone inline on Gmail, Slack, and LinkedIn in one tap.",
   icons: {
-    icon: "/icons/icon48.png",
-    shortcut: "/icons/icon16.png",
-    apple: "/icons/icon128.png",
+    icon: [
+      { url: "/icons/icon128.png", sizes: "128x128", type: "image/png" },
+      { url: "/icons/icon48.png", sizes: "48x48", type: "image/png" },
+      { url: "/icons/icon16.png", sizes: "16x16", type: "image/png" },
+    ],
+    shortcut: "/icons/icon128.png",
+    apple: [
+      { url: "/icons/icon128.png", sizes: "128x128", type: "image/png" },
+    ],
   },
   openGraph: {
     title: "Tonal — Inline Tone Adjustment Chrome Extension",
