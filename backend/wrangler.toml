@@ -5,12 +5,14 @@ compatibility_date = "2024-05-08"
 [vars]
 ALLOWED_ORIGIN = "https://tonall.vercel.app"
 
-# AUTH_TOKEN must be set as a secret (not in vars):
-#   wrangler secret put AUTH_TOKEN
-# Then paste your token value (e.g. tonal_sk_<random>).
+# Security: CORS origin-only protection (no AUTH_TOKEN).
+# Worker accepts requests ONLY from:
+#   - chrome-extension:// origins
+#   - http://localhost (dev)
+#   - https://tonall.pages.dev
 #
 # Rate Limiting: Configure via Cloudflare Dashboard:
-#   Settings → Security → WAF → Rate Limiting Rules
+#   Security → WAF → Rate Limiting Rules
 #   Path: /  |  Method: POST  |  Threshold: 30 req/min per IP  |  Action: Block 60s
 
 [ai]

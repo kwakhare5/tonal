@@ -55,7 +55,6 @@
    - `chrome.storage.sync` for user preferences (syncs across devices, max 100KB total)
 
 3. **Design tokens:**
-   - Source of truth: `design/tonal-design-system-v2.html`
    - All tokens declared inside `:host { }` inside the shadow root
    - Never reference CSS variables from the host page — they don't cross the Shadow DOM boundary
 
@@ -135,33 +134,31 @@ _AI fills this at the END of every session. Read this at the START of the next s
 **Last session date:** 2026-07-23
 
 **What we built / changed:**
-- **Security**: Auth token, CORS hardening, `.pages.dev` pinned — all shipped and deployed
-- **Worker deployed**: `tonal-proxy` live at `https://tonal-proxy.kwakhare5.workers.dev` with `AUTH_TOKEN` secret
 - **Keyboard shortcut**: `Ctrl+Shift+T` / `Cmd+Shift+T` → opens tone popover via Chrome `commands` API
 - **Per-site tone memory**: Last tone per hostname saved to `toneMemory` in `chrome.storage.local`
 - **Undo history persistence**: Last 10 rewrites in `undoHistory[]`, survives navigation
 - **Offline fallback**: `OfflineToneEngine` — 30+ word-swap rules, triggers on `offline:true` or dead service worker
-- **Website updated**: New 4-card "What's New" features section; FAQ updated (8 items total); footer tagline updated; shortcut comparison bullet added
-- **ui-spec.html**: Section 8 rebuilt using real `tonal.renderPill` / `createPopover` / `showToast` components (matching Sections 1-7)
-- **Manifest**: Bumped to `1.1.0`
-- **Tests**: 28/28 pass throughout
+- **Website updated**: New 4-card "What's New" features section; FAQ updated (8 items); footer tagline; shortcut bullet
+- **Security incident resolved**: `AUTH_TOKEN` hardcoded value removed from `background.js`; Cloudflare secret deleted via `wrangler secret delete`; worker switched to CORS-only origin protection
+- **Extension zip rebuilt**: `website/public/tonal-extension.zip` regenerated at v1.1.0 (37 KB)
+- **Manifest**: v1.1.0
+- **Tests**: 25/25 pass (3 auth token tests removed — feature decommissioned)
 
 **Immediate next task:**
-- Reload extension in Chrome (chrome://extensions → reload) after manifest bump to 1.1.0
+- Reload extension in Chrome (`chrome://extensions` → reload) to pick up v1.1.0
 - Test `Ctrl+Shift+T` on Gmail/Slack/LinkedIn
-- Set Cloudflare WAF rate limiting rule: dashboard → WAF → 30 POST req/min per IP
-- Vercel deploy of website picks up automatically (git push)
+- Set Cloudflare WAF rate limiting: Dashboard → WAF → Rate Limiting → 30 POST req/min per IP, Block 60s
+- Vercel deploys automatically on git push (website + zip updated)
 
 **Open blockers:**
-- None
+- Cloudflare WAF rate limit rule not yet set (manual dashboard step)
 
 **Files most recently changed:**
 - `extension/manifest.json` — version 1.1.0
-- `extension/ui-spec.html` — Section 8 real components + title fix
-- `extension/content.js` — OfflineToneEngine, per-site memory, undo history, shortcut handler
-- `extension/background.js` — command listener + offline detection
-- `website/src/app/page.tsx` — new features section + comparison bullet + footer tagline
-- `website/src/app/globals.css` — feature-card CSS (`.features-4-grid`, `.feature-card`)
-- `website/src/components/FaqSection.tsx` — updated Undo FAQ + 2 new FAQ items
-- `CONTEXT.md` — OfflineToneEngine, toneMemory, undoHistory terms + rule #8 + feature status table
-- `ARCHITECTURE.md` — 9 new ADRs + 2026-07-23 session log
+- `extension/background.js` — AUTH_TOKEN removed; CORS-only auth
+- `extension/ui-spec.html` — toast fix + dead var removed
+- `backend/src/index.js` — auth block removed; Authorization removed from CORS headers
+- `backend/tests/worker_logic.test.js` — 3 auth tests removed; JSDoc type fix
+- `website/public/tonal-extension.zip` — rebuilt v1.1.0
+- `website/src/app/globals.css` — feature-card stagger; FAQ stagger extended to 8; hover fix
+- `CONTEXT.md`, `ARCHITECTURE.md`, `README.md` — all fully updated
