@@ -15,6 +15,9 @@
 | Decode Card | The popup that appears showing the analysis/transformation result | Popup, modal, result card |
 | Cloudflare Worker | The serverless proxy that holds the API key and forwards requests to Groq | Backend, server, API layer |
 | Host Page | The website where tonal is injected — its styles must not affect tonal | Page, site, tab |
+| OfflineToneEngine | Static word-swap fallback in `content.js` — no network required | AI fallback, local model |
+| toneMemory | `chrome.storage.local` object mapping hostname → last selected tone | Site preferences, site settings |
+| undoHistory | `chrome.storage.local` array of last 10 `{originalText, rewrittenText, tone, ts}` entries | History, undo stack |
 
 ---
 
@@ -26,6 +29,8 @@
 4. Never inject into `<iframe>` elements
 5. `chrome.storage.local` for data persistence — NOT `localStorage` (doesn't work across pages in MV3)
 6. All CSS is inlined in content script — no external stylesheets loaded
+7. Worker requires `Authorization: Bearer <AUTH_TOKEN>` on all POST requests — token hardcoded in `background.js`, validated against `AUTH_TOKEN` secret in Cloudflare
+8. Keyboard shortcut (`Ctrl+Shift+T`) forwards `TONAL_ACTIVATE` via `chrome.commands` → `chrome.tabs.sendMessage` → content script
 
 ---
 
@@ -35,9 +40,7 @@
 |----------|------|--------|
 | Gmail | `adapters/gmail.js` | 🟢 Live |
 | Slack | `adapters/slack.js` | 🟢 Live |
-| Default (generic) | `adapters/default.js` | 🟢 Live |
 | LinkedIn | `adapters/linkedin.js` | 🟢 Live |
-| Twitter/X | — | ⏸️ Paused |
 
 _Always register new adapters in `adapters/index.js` and add `host_permissions` in `manifest.json`._
 
@@ -48,15 +51,20 @@ _Always register new adapters in `adapters/index.js` and add `host_permissions` 
 | Feature | Status | Notes |
 |---------|--------|-------|
 | Shadow DOM injection | 🟢 Live | All UI isolated in shadow roots |
-| Cloudflare Worker proxy | 🟢 Live | `src/backend/src/index.js` + `wrangler.toml` |
+| Cloudflare Worker proxy | 🟢 Live | `backend/src/index.js` + `wrangler.toml` |
 | Tone picker (3 levels) | 🟢 Live | Casual / Work Chat / Formal |
 | Undo button | 🟢 Live | Restores original text exactly |
 | Floating Decode button | 🟢 Live | Appears on text selection |
 | Decode result card | 🟢 Live | Viewport-aware, auto-dismiss, Copy button |
 | Real-time pref sync | 🟢 Live | Popup changes → all tabs instantly |
 | LinkedIn adapter | 🟢 Live | `adapters/linkedin.js` fully integrated and validated |
-| Twitter/X adapter | ⏸️ Paused | Not yet implemented |
-| Tone history drawer | ⏸️ Paused | Last 5 rewrites via chrome.storage |
+| Auth Bearer token | 🟢 Live | Worker validates `AUTH_TOKEN` secret; background.js sends header |
+| Popup toggles | 🟢 Live | `pillEnabled`/`decodeEnabled` gate scanning and decode in real-time |
+| Real usage stats | 🟢 Live | `statRewrites`/`statDecoded` tracked in `chrome.storage.local` |
+| Keyboard shortcut | 🟢 Live | `Ctrl+Shift+T` / `Cmd+Shift+T` → opens popover on focused input |
+| Per-site tone memory | 🟢 Live | Last tone per hostname saved/loaded from `toneMemory` in local storage |
+| Undo history persistence | 🟢 Live | Last 10 rewrites in `undoHistory[]`; survives navigation |
+| Offline fallback | 🟢 Live | `OfflineToneEngine` — 30+ word-swap rules, triggers on worker failure |
 
 ---
 
@@ -71,15 +79,13 @@ tonal/
 │   ├── popup.html
 │   ├── popup.js
 │   ├── core/
-│   │   ├── config.cjs               ← Shared configuration for tone definitions
 │   │   ├── tonal.css                ← Shared core design system styles
 │   │   └── tonal.js                 ← Core UI rendering components
 │   └── adapters/
-│       ├── manager.js               ← Adapter orchestration (register here)
+│       ├── index.js                 ← Adapter orchestration (register here)
 │       ├── gmail.js
 │       ├── linkedin.js
-│       ├── slack.js
-│       └── default.js
+│       └── slack.js
 ├── backend/                         ← Cloudflare Worker API proxy
 │   ├── src/index.js                 ← Backend worker router & LLM orchestrator
 │   └── wrangler.toml
@@ -106,8 +112,8 @@ tonal/
 User triggers tone change
 → content.js captures text + tone selection
 → chrome.runtime.sendMessage() to background.js
-→ background.js fetches Cloudflare Worker URL
-→ Cloudflare Worker (holds API key) calls Groq
+→ background.js fetches Cloudflare Worker URL with Authorization: Bearer header
+→ Cloudflare Worker validates auth token, then calls Groq (holds API key)
 → result flows back: Worker → background.js → content.js → Decode Card displayed
 ```
 
@@ -168,6 +174,9 @@ User triggers tone change
 | 2026-07-22 | Whitelisted Extension Zip Package | Removed `.zip` exclusion for `website/public/tonal-extension.zip` in `.gitignore` to prevent 404 download errors on Vercel. |
 | 2026-07-22 | Cloudflare Worker CORS Whitelisting | Deployed Cloudflare Worker proxy with `ALLOWED_ORIGIN = "https://tonall.vercel.app"` and verified CORS preflight response headers. |
 | 2026-07-22 | Favicon Fallback Cleanup | Deleted default Next.js/Vercel `favicon.ico` in `app/` folder to enable seamless fallback to official tonal brand icons in metadata. |
+| 2026-07-23 | Auth Token on Worker | Added `Authorization: Bearer` validation to Cloudflare Worker. Token hardcoded in `background.js`, validated against `AUTH_TOKEN` env secret. Blocks unauthorized API usage. |
+| 2026-07-23 | CORS Origin Pinning | Removed `!origin` bypass (rejected no-origin requests). Pinned `.pages.dev` to `tonall.pages.dev` only (was wildcard `*.pages.dev`). |
+| 2026-07-23 | Popup Toggles Wired | `pillEnabled` and `decodeEnabled` prefs from `chrome.storage.sync` now gate scanning, decode, and MutationObserver. Real-time via `onChanged`. |
 
 ---
 
@@ -202,3 +211,6 @@ _Append-only. Never repeat these._
 | 2026-07-22 | Vercel Subdirectory Import Missing Modules | Created `website/scripts/copy-assets.cjs` prebuild asset copy step so Vercel builds can resolve extension assets without path resolution errors. |
 | 2026-07-22 | Zip Download 404 on Vercel | Whitelisted `website/public/tonal-extension.zip` in root `.gitignore` to allow git tracking and production downloads. |
 | 2026-07-22 | Vercel Favicon Override | Deleted `website/src/app/favicon.ico` default Vercel triangle icon to fallback to tonal branding PNG icons in metadata. |
+| 2026-07-23 | CORS `!origin` bypass let curl/Postman bypass CORS | Changed `isAllowedOrigin` to return `false` when no Origin header present |
+| 2026-07-23 | `.pages.dev` wildcard let any CF Pages site proxy through worker | Pinned to `tonall.pages.dev` specifically |
+| 2026-07-23 | Popup toggles (`pillEnabled`, `decodeEnabled`) stored but never read | Wired into `TonalBootstrap`: gates scan, decode, MutationObserver; cleans up pills on toggle-off |

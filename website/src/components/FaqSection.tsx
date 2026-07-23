@@ -44,7 +44,7 @@ const FAQ_ITEMS: FaqItemProps[] = [
     question: 'How does the Undo feature work?',
     answer: (
       <p>
-        tonal saves a local, temporary copy of your draft in memory immediately before it requests a tone rewrite. If you aren&apos;t happy with the result, or if you clicked the wrong option, a floating <strong>Undo</strong> pill will appear next to your text box. One click restores your draft exactly as it was.
+        tonal saves every rewrite to a persistent local history (up to 10 entries) that survives page navigation and tab closes. If you aren&apos;t happy with a result, tap the floating <strong>Undo</strong> pill to restore your original draft instantly. You can also restore any of your previous 10 rewrites from history.
       </p>
     )
   },
@@ -53,6 +53,22 @@ const FAQ_ITEMS: FaqItemProps[] = [
     answer: (
       <p>
         Under the hood, tonal communicates with the Groq API running <strong>Llama 3.3 70B</strong>. Because Groq&apos;s LPUs process tokens at incredible speeds, tone adjustments are practically instantaneous—usually completing in under 0.5 seconds.
+      </p>
+    )
+  },
+  {
+    question: 'Can I use tonal without a mouse?',
+    answer: (
+      <p>
+        Yes. Press <strong>Ctrl+Shift+T</strong> (or <strong>Cmd+Shift+T</strong> on Mac) to activate tonal on your focused input field without touching your mouse. The tone picker opens immediately. You can remap this shortcut at <code>chrome://extensions/shortcuts</code>.
+      </p>
+    )
+  },
+  {
+    question: 'Does tonal remember my tone preference per site?',
+    answer: (
+      <p>
+        Yes. When you select a tone on a given site, tonal silently saves that preference for that hostname. The next time you visit Gmail, Slack, or LinkedIn, your pill initialises with the tone you last used there — no setup needed.
       </p>
     )
   }

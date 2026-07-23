@@ -169,7 +169,7 @@ cd tonal
 
 ### Step 2 — Load Unpacked
 
-Open chrome://extensions/, toggle Developer mode, and click Load unpacked selecting the tonal folder.
+Open chrome://extensions/, toggle Developer mode, and click **Load unpacked** — select the `extension/` folder (not the repo root).
 
 ```bash
 chrome://extensions/

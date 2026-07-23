@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>tonal</title>
+  <title>tonal — UI Component Spec</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -496,6 +496,138 @@
 
       </div>
     </section>
+
+    <!-- Section 8: New Feature UI States -->
+    <section>
+      <div class="section-title">8. New Feature States</div>
+
+      <!-- 8a: Keyboard Shortcut — pill jumps to Expanded+Popover -->
+      <div class="side-panel" style="margin-bottom:32px;">
+        <div class="side-panel-title">8a. Keyboard Shortcut — Ctrl+Shift+T Result</div>
+        <div style="font-size:13px;color:var(--text-muted);margin-bottom:16px;line-height:1.6;">
+          Pressing <kbd style="background:#F3F4F6;border:1px solid var(--border);border-radius:4px;padding:2px 7px;font-size:12px;font-family:var(--mono);box-shadow:0 1px 0 rgba(0,0,0,0.1)">Ctrl</kbd>
+          <kbd style="background:#F3F4F6;border:1px solid var(--border);border-radius:4px;padding:2px 7px;font-size:12px;font-family:var(--mono);box-shadow:0 1px 0 rgba(0,0,0,0.1)">Shift</kbd>
+          <kbd style="background:#F3F4F6;border:1px solid var(--border);border-radius:4px;padding:2px 7px;font-size:12px;font-family:var(--mono);box-shadow:0 1px 0 rgba(0,0,0,0.1)">T</kbd>
+          immediately opens tone picker on the focused input. The sequence below shows the 3-step state transition.
+        </div>
+        <div class="spec-grid">
+          <div class="spec-card">
+            <div class="spec-card-title">① Before (Rest)</div>
+            <div class="spec-preview-box" id="shortcut-before-target"></div>
+            <div style="font-size:11px;color:var(--text-muted)">Normal pill on input</div>
+          </div>
+          <div class="spec-card">
+            <div class="spec-card-title">② Shortcut fires → Expanded</div>
+            <div class="spec-preview-box" id="shortcut-expanded-target"></div>
+            <div style="font-size:11px;color:var(--text-muted)">Pill snaps to expanded</div>
+          </div>
+          <div class="spec-card">
+            <div class="spec-card-title">③ Popover opens</div>
+            <div class="spec-preview-box" id="shortcut-popover-target" style="min-height:200px;flex-direction:column;align-items:flex-end;justify-content:flex-end;"></div>
+            <div style="font-size:11px;color:var(--text-muted)">Tone picker visible</div>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:center;margin-top:20px;">
+          <button class="sandbox-btn" id="btn-shortcut-demo" onclick="demoShortcut()">▶ Simulate Ctrl+Shift+T</button>
+        </div>
+      </div>
+
+      <!-- 8b: Per-Site Tone Memory — pills pre-loaded per site -->
+      <div class="side-panel" style="margin-bottom:32px;">
+        <div class="side-panel-title">8b. Per-Site Tone Memory</div>
+        <div style="font-size:13px;color:var(--text-muted);margin-bottom:16px;line-height:1.6;">
+          On next visit, the pill initialises with the remembered tone for that hostname — no user action required.
+          Stored in <code style="font-size:12px;font-family:var(--mono)">chrome.storage.local → toneMemory[hostname]</code>.
+        </div>
+        <div class="spec-grid">
+          <div class="spec-card">
+            <div class="spec-card-title">📧 Gmail — Formal</div>
+            <div class="spec-preview-box" id="memory-gmail-target"></div>
+            <div style="font-size:11px;color:var(--text-muted)">mail.google.com</div>
+          </div>
+          <div class="spec-card">
+            <div class="spec-card-title">💬 Slack — Work Chat</div>
+            <div class="spec-preview-box" id="memory-slack-target"></div>
+            <div style="font-size:11px;color:var(--text-muted)">slack.com</div>
+          </div>
+          <div class="spec-card">
+            <div class="spec-card-title">💼 LinkedIn — Formal</div>
+            <div class="spec-preview-box" id="memory-linkedin-target"></div>
+            <div style="font-size:11px;color:var(--text-muted)">linkedin.com</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 8c + 8d: Offline Fallback and Undo History side by side -->
+      <div class="side-grid">
+        <!-- 8c: Offline Fallback -->
+        <div class="side-panel">
+          <div class="side-panel-title">8c. Offline Fallback — Local Engine</div>
+          <div style="font-size:13px;color:var(--text-muted);margin-bottom:16px;line-height:1.6;">
+            When worker is unreachable, <code style="font-size:12px;font-family:var(--mono)">OfflineToneEngine</code> applies
+            word-swap rules locally. The pill reaches <strong>Done</strong> state with an offline toast.
+          </div>
+          <div style="display:flex;flex-direction:column;gap:20px;">
+            <div style="display:flex;gap:16px;align-items:center;justify-content:center;">
+              <div>
+                <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-muted);margin-bottom:8px;text-align:center;">Pill (Done — offline)</div>
+                <div class="spec-preview-box" style="min-width:120px;" id="offline-pill-target"></div>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <div style="font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.04em;">Toast</div>
+              <div style="display:inline-flex;align-items:center;gap:8px;background:#1C1C1E;color:#fff;padding:10px 16px;border-radius:8px;font-size:13px;font-family:var(--font);width:fit-content;box-shadow:0 4px 12px rgba(0,0,0,0.15);">
+                <div style="width:6px;height:6px;border-radius:50%;background:#0098f2;flex-shrink:0;"></div>
+                <span>Converted (offline mode)</span>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:6px;">
+              <div style="font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.04em;">Sample — Formal</div>
+              <div style="background:#FEF9C3;border:1px solid #FDE047;border-radius:8px;padding:10px 14px;font-size:13px;color:#713F12;">
+                <em>"hey guys wanna get this done asap yeah?"</em>
+              </div>
+              <div style="background:#F0FDF4;border:1px solid #BBF7D0;border-radius:8px;padding:10px 14px;font-size:13px;color:#166534;">
+                <em>"you want to get this done as soon as possible yes?"</em>
+              </div>
+              <div style="font-size:11px;color:var(--text-muted);font-style:italic;">~30 word-swap rules per tone · no network</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 8d: Undo History Persistence -->
+        <div class="side-panel">
+          <div class="side-panel-title">8d. Undo History — Persistent (10 entries)</div>
+          <div style="font-size:13px;color:var(--text-muted);margin-bottom:16px;line-height:1.6;">
+            Each rewrite saves <code style="font-size:12px;font-family:var(--mono)">{originalText, rewrittenText, tone, ts}</code>
+            to <code style="font-size:12px;font-family:var(--mono)">undoHistory[]</code>. Pill undo reads memory first,
+            then falls back to storage.
+          </div>
+          <div style="display:flex;gap:16px;align-items:center;justify-content:center;margin-bottom:20px;">
+            <div>
+              <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-muted);margin-bottom:8px;text-align:center;">Pill (Done — tap to undo)</div>
+              <div class="spec-preview-box" style="min-width:120px;" id="undo-pill-target"></div>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <div style="font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.04em;">Persisted history entries</div>
+            <div style="background:#F9FAFB;border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:12px;display:flex;align-items:center;justify-content:space-between;">
+              <span style="color:var(--text-muted);">#1 — Formal &middot; 2m ago</span>
+              <span style="background:#000;color:#fff;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;">UNDO</span>
+            </div>
+            <div style="background:#F9FAFB;border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:12px;display:flex;align-items:center;justify-content:space-between;">
+              <span style="color:var(--text-muted);">#2 — Work Chat &middot; 15m ago</span>
+              <span style="background:#000;color:#fff;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;">UNDO</span>
+            </div>
+            <div style="background:#F9FAFB;border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:12px;display:flex;align-items:center;justify-content:space-between;">
+              <span style="color:var(--text-muted);">#3 — Casual &middot; 1h ago</span>
+              <span style="background:#000;color:#fff;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;">UNDO</span>
+            </div>
+            <div style="font-size:11px;color:var(--text-muted);text-align:center;padding-top:4px;">... up to 10 entries · survives navigation</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
   </div>
 
   <script>
@@ -533,6 +665,28 @@
       const cardSpec = tonal.createDecodeCard('Hey team, please share the latest report as soon as possible. Thanks!', () => {});
       cardSpec.classList.add('decode-card--active');
       document.getElementById('decode-card-target').appendChild(cardSpec);
+
+      // 8a. Keyboard shortcut state sequence
+      renderPillInBox('shortcut-before-target', 'rest', 'workChat');
+      renderPillInBox('shortcut-expanded-target', 'expanded', 'workChat');
+      // Popover shown inside the card
+      const shortcutPop = tonal.createPopover('workChat', () => {}, () => {}, () => {}, () => {});
+      const shortcutPopBox = document.getElementById('shortcut-popover-target');
+      shortcutPopBox.appendChild(shortcutPop);
+      const shortcutPillWrap = document.createElement('div');
+      shortcutPopBox.appendChild(shortcutPillWrap);
+      tonal.renderPill(shortcutPillWrap, 'expanded', 'workChat', true, { onClick: () => {}, onHover: () => {}, onTogglePopover: () => {} });
+
+      // 8b. Per-site tone memory — pills initialised with remembered tone
+      renderPillInBox('memory-gmail-target', 'expanded', 'formal');
+      renderPillInBox('memory-slack-target', 'expanded', 'workChat');
+      renderPillInBox('memory-linkedin-target', 'expanded', 'formal');
+
+      // 8c. Offline fallback — done pill
+      renderPillInBox('offline-pill-target', 'done', 'formal');
+
+      // 8d. Undo history — done pill (tap to undo)
+      renderPillInBox('undo-pill-target', 'done', 'workChat');
 
       // Initialize Sandbox
       updateSandboxPill();
@@ -644,6 +798,25 @@
           setSandboxState('done');
         }, 1200);
       }
+    }
+
+    // 8a: Shortcut demo — animate rest → expanded → popover
+    function demoShortcut() {
+      const btn = document.getElementById('btn-shortcut-demo');
+      btn.disabled = true;
+      btn.textContent = 'Running...';
+      shortcutDemoStep = 0;
+
+      // Step 1: expanded
+      const expandedBox = document.getElementById('shortcut-expanded-target');
+      expandedBox.style.outline = '2px solid var(--blue)';
+      expandedBox.style.borderRadius = '8px';
+      setTimeout(() => {
+        expandedBox.style.outline = '';
+        btn.disabled = false;
+        btn.textContent = '▶ Simulate Ctrl+Shift+T';
+        tonal.showToast(document.body, 'Ctrl+Shift+T → tone picker opened', 'success');
+      }, 1000);
     }
   </script>
 </body>

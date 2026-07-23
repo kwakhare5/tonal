@@ -128,7 +128,7 @@ test('[BUG-2] Worker — Platform context injected for LinkedIn', async () => {
 test('[BUG-4] Worker — CORS allows Cloudflare Pages domain', async () => {
   const req = new Request('http://tonal-proxy.kwakhare5.workers.dev', {
     method: 'OPTIONS',
-    headers: { 'Origin': 'https://tonal.pages.dev' }
+    headers: { 'Origin': 'https://tonall.pages.dev' }
   });
 
   const res = await worker.fetch(req, {});
@@ -139,7 +139,7 @@ test('[BUG-4] Worker — CORS allows Cloudflare Pages domain', async () => {
     `Expected pages.dev to be allowed, got CORS header: ${allowedOrigin}`
   );
   assert.ok(
-    allowedOrigin === 'https://tonal.pages.dev' || allowedOrigin === '*',
+    allowedOrigin === 'https://tonall.pages.dev' || allowedOrigin === '*',
     `Expected exact origin or *, got: ${allowedOrigin}`
   );
 });

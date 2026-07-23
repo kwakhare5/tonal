@@ -90,26 +90,13 @@ window.tonal = (function () {
       link.href = chrome.runtime.getURL("core/tonal.css");
       root.appendChild(link);
     },
-    injectFonts: () => {
-      if (document.getElementById("tonal-fonts")) return;
-      const link = h("link", {
-        id: "tonal-fonts",
-        rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap",
-      });
-      const geist = h("link", {
-        id: "tonal-geist",
-        rel: "stylesheet",
-        href: "https://cdn.jsdelivr.net/npm/geist@latest/dist/fonts/geist-sans/style.css",
-      });
-      const geistMono = h("link", {
-        id: "tonal-geist-mono",
-        rel: "stylesheet",
-        href: "https://cdn.jsdelivr.net/npm/geist@latest/dist/fonts/geist-mono/style.css",
-      });
-      document.head.appendChild(link);
-      document.head.appendChild(geist);
-      document.head.appendChild(geistMono);
+    injectFonts: (shadowRoot) => {
+      // Inject DM Sans into the shadow root only — never the host page
+      if (shadowRoot && !shadowRoot.querySelector('#tonal-fonts')) {
+        const style = h('style', { id: 'tonal-fonts' });
+        style.textContent = "@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap');";
+        shadowRoot.appendChild(style);
+      }
     },
     renderPill: (container, state, toneId, isPopoverOpen, callbacks) => {
       const tone = TONES.find((t) => t.id === toneId) || TONES[1];
@@ -233,13 +220,24 @@ window.tonal = (function () {
         innerHTML: `${SVGS.COPY} Copy`,
       });
       copyBtn.onclick = () => {
-        navigator.clipboard.writeText(text);
-        copyBtn.className = "decode-card-copy decode-card-copy--copied";
-        copyBtn.innerHTML = `${SVGS.CHECK} Copied!`;
-        setTimeout(() => {
-          copyBtn.className = "decode-card-copy";
-          copyBtn.innerHTML = `${SVGS.COPY} Copy`;
-        }, 2000);
+        navigator.clipboard.writeText(text).then(() => {
+          copyBtn.className = "decode-card-copy decode-card-copy--copied";
+          copyBtn.innerHTML = `${SVGS.CHECK} Copied!`;
+          setTimeout(() => {
+            copyBtn.className = "decode-card-copy";
+            copyBtn.innerHTML = `${SVGS.COPY} Copy`;
+          }, 2000);
+        }).catch(() => {
+          // Clipboard API unavailable — show error state briefly
+          copyBtn.className = "decode-card-copy decode-card-copy--copied";
+          copyBtn.style.background = "var(--red)";
+          copyBtn.innerHTML = `${SVGS.COPY} Failed`;
+          setTimeout(() => {
+            copyBtn.className = "decode-card-copy";
+            copyBtn.style.background = "";
+            copyBtn.innerHTML = `${SVGS.COPY} Copy`;
+          }, 2000);
+        });
       };
       copyBtn.onkeydown = (e) => {
         if (e.key === "Enter" || e.key === " ") {

@@ -138,12 +138,12 @@ Now decode this message. Wrap your final plain English explanation inside <tonal
 };
 
 function isAllowedOrigin(origin, environment) {
-  if (!origin) return true; // No origin = direct request (CLI, curl, etc.)
+  if (!origin) return false; // Reject requests without Origin header
   if (origin.startsWith("chrome-extension://")) return true;
   if (origin.startsWith("http://localhost")) return true;
   if (origin.startsWith("http://127.0.0.1")) return true;
-  // Cloudflare Pages domains
-  if (origin.endsWith(".pages.dev")) return true;
+  // Pinned Cloudflare Pages domain
+  if (origin.endsWith("tonall.pages.dev")) return true;
   // Configurable production domain via env var
   if (environment?.ALLOWED_ORIGIN && origin === environment.ALLOWED_ORIGIN) return true;
   return false;
@@ -154,7 +154,7 @@ function getCorsHeaders(origin, environment) {
   return {
     "Access-Control-Allow-Origin": allowed ? (origin || "*") : "null",
     "Access-Control-Allow-Methods": "POST, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization",
   };
 }
 
@@ -172,6 +172,15 @@ export default {
 
     if (request.method !== "POST")
       return json({ success: false, error: "Method not allowed" }, 405, corsHeaders);
+
+    // Auth token validation — requires Authorization: Bearer <token>
+    if (environment.AUTH_TOKEN) {
+      const authHeader = request.headers.get("Authorization") || "";
+      const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : "";
+      if (token !== environment.AUTH_TOKEN) {
+        return json({ success: false, error: "Unauthorized" }, 401, corsHeaders);
+      }
+    }
 
     let body;
     try {

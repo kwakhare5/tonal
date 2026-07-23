@@ -69,14 +69,15 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   );
 
-  // ── Load / Render Mock Statistics ───────────────────────────
-  const rewritesCount = parseInt(localStorage.getItem("statRewrites") || "142", 10);
-  const decodedCount = parseInt(localStorage.getItem("statDecoded") || "1085", 10);
-  const timeSavedCount = Math.round(rewritesCount * 0.17); // ~10s saved per rewrite
-
-  statRewrites.textContent = rewritesCount.toLocaleString();
-  statDecoded.textContent = decodedCount.toLocaleString();
-  statTime.textContent = `${timeSavedCount} mins`;
+  // ── Load Real Statistics ─────────────────────────────────────
+  chrome.storage.local.get({ statRewrites: 0, statDecoded: 0 }, (stats) => {
+    const rewrites = stats.statRewrites;
+    const decoded = stats.statDecoded;
+    const timeSaved = Math.round(rewrites * 0.17);
+    statRewrites.textContent = rewrites.toLocaleString();
+    statDecoded.textContent = decoded.toLocaleString();
+    statTime.textContent = `${timeSaved} mins`;
+  });
 
   // ── Tone Switching ──────────────────────────────────────────
   toneItems.forEach((item) => {
@@ -97,21 +98,9 @@ document.addEventListener("DOMContentLoaded", () => {
       () => {
         const originalText = saveBtn.textContent;
         const originalBg = saveBtn.style.background;
-
         saveBtn.textContent = "Saved!";
         saveBtn.style.background = "#34C759";
         saveBtn.style.pointerEvents = "none";
-
-        // Increment stats on save for interactive feel in mockup
-        const newRewrites = rewritesCount + 1;
-        const newDecoded = decodedCount + 12;
-        localStorage.setItem("statRewrites", newRewrites.toString());
-        localStorage.setItem("statDecoded", newDecoded.toString());
-        
-        statRewrites.textContent = newRewrites.toLocaleString();
-        statDecoded.textContent = newDecoded.toLocaleString();
-        statTime.textContent = `${Math.round(newRewrites * 0.17)} mins`;
-
         setTimeout(() => {
           saveBtn.textContent = originalText;
           saveBtn.style.background = originalBg;

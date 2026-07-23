@@ -140,7 +140,6 @@ INPUT_DATA: {TEXT}
         "adapters/slack.js",
         "adapters/gmail.js",
         "adapters/index.js",
-        "core/config.cjs",
         "core/tonal.js",
         "content.js"
       ],
@@ -249,43 +248,11 @@ _Auto-updated by AI when it hits project-specific errors._
 
 ---
 
-## DOMAIN GLOSSARY
-_Migrated from CONTEXT.md on 2026-07-04. Domain vocabulary — terms the AI must use consistently._
-
-# Project Domain Context (Glossary)
-
-_Last updated: [DATE] by AI. Update this file at the END of every session where files were edited._
-
-This file defines the specific business language, component mapping, and session history for this project. **Agents MUST update this file** inline whenever a new term is introduced, a major decision is made, or a session ends.
-
----
-
-## Domain Glossary
-
-_Map business words to exact code locations. This stops the AI from guessing._
-
-- **[Business Term]**: [What it means in code, e.g., "The user dashboard located in `src/app/dashboard/page.tsx`"]
-- **[Business Term]**: [Definition]
-
----
-
-## Design System Index
-
-_Auto-maintained by AI. Updated whenever a new token or class is discovered._
-
-| Item | Type | Location | Usage |
-|------|------|----------|-------|
-| `var(--background)` | CSS token | `globals.css` | Page background |
-| `var(--foreground)` | CSS token | `globals.css` | Primary text |
-| `.paper-texture` | CSS class | `globals.css` | Dot-grid background pattern |
-| `<Button>` | Component | `components/ui/button.tsx` | All clickable actions |
-
----
-
 ## Architectural Decisions (ADRs)
- 
+
  _Auto-maintained by AI. Added whenever a major technical choice is made._
  
+
  - **2026-07-11 - Static Root Landing Page**: Built a zero-dependency HTML/CSS/JS landing page at root `index.html` featuring interactive editor simulations of the extension's actual flows rather than using a heavy framework.
  - **2026-07-11 - Next.js Landing Page Website**: Restructured the landing page into a dedicated Next.js + TypeScript + Tailwind CSS v4 application inside a `website/` subdirectory, keeping extension code isolated at the root while offering a robust web presence.
  - **2026-07-13 - Next.js Landing Page Redesign**: Upgraded the Next.js website to a "Modern SaaS" aesthetic with a floating navbar, removing the static `index.html` file.
@@ -311,6 +278,14 @@ _Auto-maintained by AI. Updated whenever a new token or class is discovered._
  - **2026-07-22 - Whitelisted Extension Zip Package**: Removed `.zip` exclusion for `website/public/tonal-extension.zip` in `.gitignore` to prevent 404 download errors on Vercel.
  - **2026-07-22 - Cloudflare Worker CORS Whitelisting**: Deployed Cloudflare Worker proxy with `ALLOWED_ORIGIN = "https://tonall.vercel.app"` and verified CORS preflight response headers.
  - **2026-07-22 - Favicon Fallback Cleanup**: Deleted default Next.js/Vercel `favicon.ico` in `app/` folder to enable seamless fallback to official tonal brand icons in metadata.
+ - **2026-07-23 - Security Hardening**: Added `Authorization: Bearer` token validation on the Cloudflare Worker. Removed `!origin` bypass (no-origin requests now rejected). Pinned allowed origin from `.pages.dev` wildcard to `tonall.pages.dev`. Token stored in `background.js` constant, validated against `AUTH_TOKEN` Cloudflare secret.
+ - **2026-07-23 - Popup Toggles Wired**: `pillEnabled` and `decodeEnabled` settings now gate scanning, decode, and MutationObserver in `content.js` in real-time via `chrome.storage.onChanged`.
+ - **2026-07-23 - Real Usage Stats**: Replaced fake localStorage counters in `popup.js` with real `chrome.storage.local` reads. Stats tracked in `AIClient.call()` on every successful rewrite/decode.
+ - **2026-07-23 - Font Isolation**: Removed Geist CDN font loads (unused). Moved DM Sans injection from `document.head` into the Shadow Root via `@import` style tag — prevents host page contamination.
+ - **2026-07-23 - Keyboard Shortcut**: Added `Ctrl+Shift+T` / `Cmd+Shift+T` via Chrome `commands` API. Background.js forwards `TONAL_ACTIVATE` to active tab; content.js opens popover on focused/first registered input. Remappable at `chrome://extensions/shortcuts`.
+ - **2026-07-23 - Per-Site Tone Memory**: Last selected tone per `window.location.hostname` saved to `chrome.storage.local → toneMemory`. Silently applied on pill registration without UI indicator. Falls back to global default if no memory exists.
+ - **2026-07-23 - Undo History Persistence**: Last 10 rewrites saved to `chrome.storage.local → undoHistory[]` with `originalText`, `rewrittenText`, `tone`, and `ts`. Survives page navigation. Undo action reads in-memory first, falls back to storage.
+ - **2026-07-23 - Offline Fallback (OfflineToneEngine)**: Static word-swap rule set (30+ patterns across formal/casual/workChat tones) in `content.js`. Triggers when background.js returns `offline:true` (network/401/503) OR when service worker is dead on the 3rd retry attempt (`!res && attempt >= 3`).
  
  ---
  
@@ -359,3 +334,9 @@ _Auto-maintained by AI. Updated whenever a new token or class is discovered._
  - **Why:** Replaced the blue accent highlight with a yellow highlighter tone, increased dot grid matrix background opacity, cast vibrant neon color gradients behind the visualizer, and added an infinite gradient shimmer swipe to the highlighter line.
  - **Patterns introduced:** Yellow highlighter marker elements, high-contrast matrix patterns, multi-color gradient blur backdrops, and looping CSS gradient animations.
  - **Mistakes caught:** None.
+
+ ### 2026-07-23 — Full Security Audit + Feature Batch
+ - **Changed:** `backend/src/index.js`, `backend/wrangler.toml`, `backend/tests/*`, `extension/background.js`, `extension/content.js`, `extension/core/tonal.js`, `extension/popup.js`, `extension/manifest.json`, `extension/ui-spec.html`, `website/src/app/page.tsx`, `LICENSE`, `package.json`, `README.md`, `ARCHITECTURE.md`, `CONTEXT.md`, `CLAUDE.md`
+ - **Why:** Full project audit (security + performance + UX). Fixed 4 Critical/High items (CORS bypass, auth, popup toggles, MutationObserver). Then implemented 4 new features from a batch-grill session (keyboard shortcut, per-site tone memory, undo history persistence, offline fallback).
+ - **Patterns introduced:** `OfflineToneEngine` static rule-based fallback; `toneMemory` hostname→tone map; `undoHistory[]` persistent ring buffer; Chrome `commands` API + `tabs.sendMessage` forwarding for shortcut delegation; `offline:true` flag in background.js error response.
+ - **Mistakes caught (DIAGNOSE):** Offline fallback only triggered on `res.offline` — missed the dead-service-worker case where `res === null`. Fixed with `!res && attempt >= 3` guard. @REVIEW confirmed spec coverage was complete.

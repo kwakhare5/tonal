@@ -93,3 +93,122 @@ test('Worker — Missing or Invalid Text Field (TDD Test)', async () => {
   assert.strictEqual(data.error, 'Invalid or missing text field');
 });
 
+// ─────────────────────────────────────────────────────────────
+// AUTH TOKEN TESTS — Bearer token validation
+// ─────────────────────────────────────────────────────────────
+test('Worker — Rejects POST without auth token when AUTH_TOKEN is set', async () => {
+  const req = new Request('http://tonal-proxy.kwakhare5.workers.dev', {
+    method: 'POST',
+    headers: {
+      'Origin': 'chrome-extension://abc',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ text: 'test message', toneLevel: 'workChat' })
+  });
+
+  const res = await worker.fetch(req, { AUTH_TOKEN: 'secret-token-123' });
+  assert.strictEqual(res.status, 401);
+  const data = await res.json();
+  assert.strictEqual(data.success, false);
+  assert.strictEqual(data.error, 'Unauthorized');
+});
+
+test('Worker — Rejects POST with wrong auth token', async () => {
+  const req = new Request('http://tonal-proxy.kwakhare5.workers.dev', {
+    method: 'POST',
+    headers: {
+      'Origin': 'chrome-extension://abc',
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer wrong-token'
+    },
+    body: JSON.stringify({ text: 'test message', toneLevel: 'workChat' })
+  });
+
+  const res = await worker.fetch(req, { AUTH_TOKEN: 'secret-token-123' });
+  assert.strictEqual(res.status, 401);
+  const data = await res.json();
+  assert.strictEqual(data.success, false);
+  assert.strictEqual(data.error, 'Unauthorized');
+});
+
+test('Worker — Accepts POST with valid auth token', async () => {
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async (url) => {
+    if (url.includes('api.groq.com')) {
+      return new Response(JSON.stringify({
+        choices: [{ message: { content: '<tonal_output>Authenticated output</tonal_output>' } }]
+      }), { status: 200 });
+    }
+    return new Response('', { status: 200 });
+  };
+
+  try {
+    const req = new Request('http://tonal-proxy.kwakhare5.workers.dev', {
+      method: 'POST',
+      headers: {
+        'Origin': 'chrome-extension://abc',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer secret-token-123'
+      },
+      body: JSON.stringify({ text: 'test message', toneLevel: 'workChat' })
+    });
+
+    const res = await worker.fetch(req, { AUTH_TOKEN: 'secret-token-123', GROQ_API_KEY: 'test-key' });
+    assert.strictEqual(res.status, 200);
+    const data = await res.json();
+    assert.strictEqual(data.success, true);
+    assert.strictEqual(data.text, 'Authenticated output');
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
+// ─────────────────────────────────────────────────────────────
+// CORS ORIGIN TESTS — No-origin and wildcard pages.dev rejection
+// ─────────────────────────────────────────────────────────────
+test('Worker — Rejects POST with no Origin header', async () => {
+  const req = new Request('http://tonal-proxy.kwakhare5.workers.dev', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ text: 'test message', toneLevel: 'workChat' })
+  });
+
+  const res = await worker.fetch(req, {});
+  assert.strictEqual(res.status, 403);
+  const data = await res.json();
+  assert.strictEqual(data.success, false);
+  assert.strictEqual(data.error, 'Forbidden origin');
+});
+
+test('Worker — Rejects non-tonal pages.dev origin', async () => {
+  const req = new Request('http://tonal-proxy.kwakhare5.workers.dev', {
+    method: 'POST',
+    headers: {
+      'Origin': 'https://malicious.pages.dev',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ text: 'test message', toneLevel: 'workChat' })
+  });
+
+  const res = await worker.fetch(req, {});
+  assert.strictEqual(res.status, 403);
+  const data = await res.json();
+  assert.strictEqual(data.success, false);
+  assert.strictEqual(data.error, 'Forbidden origin');
+});
+
+test('Worker — Allows tonall.pages.dev origin', async () => {
+  const req = new Request('http://tonal-proxy.kwakhare5.workers.dev', {
+    method: 'OPTIONS',
+    headers: {
+      'Origin': 'https://tonall.pages.dev'
+    }
+  });
+
+  const res = await worker.fetch(req, {});
+  assert.strictEqual(res.status, 204);
+  assert.strictEqual(res.headers.get('Access-Control-Allow-Origin'), 'https://tonall.pages.dev');
+  assert.ok(res.headers.get('Access-Control-Allow-Headers').includes('Authorization'));
+});

@@ -13,6 +13,6 @@
     "save": "git add -A && git commit -m \"checkpoint: [timestamp]\" && git push"
   },
   "devDependencies": {
-    "wrangler": "^3.0.0"
+    "wrangler": "3.114.10"
   }
 }

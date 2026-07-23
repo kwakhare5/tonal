@@ -4,6 +4,7 @@
 
 const CONFIG = {
   WORKER_URL: "https://tonal-proxy.kwakhare5.workers.dev",
+  AUTH_TOKEN: "tonal_sk_7f3a9b2e4d1c8f5a6b0e3d7c9a2f4b8e",
 };
 
 /**
@@ -34,6 +35,18 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 });
 
 /**
+ * Keyboard shortcut: forward TONAL_ACTIVATE to the active tab.
+ */
+chrome.commands.onCommand.addListener((command) => {
+  if (command !== "activate-tonal") return;
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    if (tabs[0]?.id) {
+      chrome.tabs.sendMessage(tabs[0].id, { type: "TONAL_ACTIVATE" });
+    }
+  });
+});
+
+/**
  * Processes the AI task by calling the Cloudflare Proxy.
  * @param {object} request
  * @param {function} sendResponse
@@ -52,7 +65,10 @@ async function handleRequest(request, sendResponse, platform) {
   try {
     const response = await fetch(CONFIG.WORKER_URL, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${CONFIG.AUTH_TOKEN}`,
+      },
       body: JSON.stringify(payload),
     });
 
@@ -67,7 +83,12 @@ async function handleRequest(request, sendResponse, platform) {
     }
   } catch (err) {
     console.error("Tonal Gateway Error:", err.message);
-    sendResponse({ success: false, error: err.message });
+    // Detect network/offline errors vs server errors
+    const isOffline = err.message.includes("Failed to fetch") ||
+      err.message.includes("NetworkError") ||
+      err.message.includes("401") ||
+      err.message.includes("503");
+    sendResponse({ success: false, error: err.message, offline: isOffline });
   }
 }
 

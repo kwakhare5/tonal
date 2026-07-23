@@ -98,7 +98,75 @@ export default function Home() {
                   <span className="comp-icon comp-icon--check">✓</span>
                   Preserves original formatting with native inline rewrites
                 </li>
+                <li className="comp-item comp-item--strong">
+                  <span className="comp-icon comp-icon--check">✓</span>
+                  One keystroke to activate, no mouse required
+                </li>
               </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* New Features Section */}
+      <section className="features-grid-section section-padding reveal-on-scroll" id="new-features">
+        <div className="container">
+          <div className="section-header" style={{ textAlign: 'center', marginBottom: 'var(--space-10)' }}>
+            <span className="badge badge-blue" style={{ fontWeight: 600 }}>What&apos;s New</span>
+            <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(32px, 4vw, 46px)', fontWeight: 600 }}>
+              Built for how you actually write
+            </h2>
+          </div>
+
+          <div className="features-4-grid">
+            {/* Keyboard Shortcut */}
+            <div className="feature-card">
+              <div className="feature-card-icon" style={{ background: 'var(--color-blue-bg)', color: 'var(--color-blue)' }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h4M6 14h12"/></svg>
+              </div>
+              <h3>Keyboard Shortcut</h3>
+              <p>Press <strong>Ctrl+Shift+T</strong> to instantly open the tone picker on your active input — without touching your mouse or leaving the page.</p>
+              <span className="feature-badge" style={{ background: 'var(--color-blue-bg)', color: 'var(--color-blue)' }}>
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                Ctrl+Shift+T
+              </span>
+            </div>
+
+            {/* Per-Site Memory */}
+            <div className="feature-card">
+              <div className="feature-card-icon" style={{ background: 'var(--color-purple-bg)', color: 'var(--color-purple)' }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2z"/><path d="M12 8v4l3 3"/></svg>
+              </div>
+              <h3>Remembers Your Tone</h3>
+              <p>tonal automatically saves your last selected tone for each site. Gmail, Slack, LinkedIn — each gets its own preference, silently applied on every visit.</p>
+              <span className="feature-badge" style={{ background: 'var(--color-purple-bg)', color: 'var(--color-purple)' }}>
+                Per-site memory
+              </span>
+            </div>
+
+            {/* Works Offline */}
+            <div className="feature-card">
+              <div className="feature-card-icon" style={{ background: 'var(--color-green-bg)', color: 'var(--color-green)' }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
+              </div>
+              <h3>Works Offline</h3>
+              <p>When the network is unavailable, tonal&apos;s built-in local engine applies 30+ word-swap rules per tone — no internet required, no interruption to your writing.</p>
+              <span className="feature-badge" style={{ background: 'var(--color-green-bg)', color: 'var(--color-green)' }}>
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+                No network needed
+              </span>
+            </div>
+
+            {/* Undo History */}
+            <div className="feature-card">
+              <div className="feature-card-icon" style={{ background: 'var(--color-magenta-bg)', color: 'var(--color-magenta)' }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/></svg>
+              </div>
+              <h3>Persistent Undo History</h3>
+              <p>Every rewrite is saved locally. Restore any of your last 10 drafts with one tap — even after navigating away or closing the tab.</p>
+              <span className="feature-badge" style={{ background: 'var(--color-magenta-bg)', color: 'var(--color-magenta)' }}>
+                10-entry history
+              </span>
             </div>
           </div>
         </div>
@@ -200,7 +268,7 @@ export default function Home() {
                 <Image src="/icons/icon128.png" alt="tonal Logo" width={24} height={24} style={{ borderRadius: 'var(--radius-xs)', marginRight: 'var(--space-1)' }} />
                 <span>tonal</span>
               </a>
-              <p className="footer-tagline">Open Source Inline Assistant</p>
+              <p className="footer-tagline">Tone-aware writing, everywhere you type.</p>
               <p className="footer-author" style={{ fontSize: '12px', color: 'var(--gray-4)', marginTop: 'var(--space-2)' }}>
                 Created by <a href="https://github.com/kwakhare5" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-blue)', textDecoration: 'none' }}>Karan Wakhare</a>
               </p>
@@ -236,10 +304,6 @@ export default function Home() {
           
           <div className="footer-bottom">
             <span>© 2026 tonal Chrome Extension. Built by Karan Wakhare. Released under the MIT License.</span>
-            <div className="footer-bottom-links">
-              <a href="#">Privacy Policy</a>
-              <a href="#">Terms of Service</a>
-            </div>
           </div>
         </div>
       </footer>

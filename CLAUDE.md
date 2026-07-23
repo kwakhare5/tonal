@@ -60,10 +60,10 @@
    - Never reference CSS variables from the host page — they don't cross the Shadow DOM boundary
 
 4. **Adding a new platform adapter:**
-   1. Create `src/extension/adapters/[platform].js`
+   1. Create `extension/adapters/[platform].js`
    2. Find the platform's text input injection point
    3. Create host element → attach Shadow DOM → render tonal pill inside shadow root
-   4. Register adapter in `src/extension/adapters/index.js`
+   4. Register adapter in `extension/adapters/index.js`
    5. Add `host_permissions` for the platform's domain in `manifest.json`
 
 5. **Before marking any task done:**
@@ -87,10 +87,10 @@
   tonal.js          — core UI rendering components
   package.json      — local package overrides (e.g. type: commonjs)
   /adapters         — per-platform injection adapters
-    manager.js      — registers all adapters
+    index.js        — registers all adapters
     [platform].js   — platform adapter (gmail, slack, linkedin)
 /backend            — Cloudflare Worker API proxy
-  worker.js         — backend worker script (holds API key securely)
+  src/index.js      — backend worker script (holds API key securely)
   wrangler.toml     — wrangler deployment config
 /website            — Next.js App Router website for tonal
   tsconfig.json     — TypeScript config with custom aliases (@tonal-core)
@@ -100,7 +100,7 @@
     page.tsx        — landing page composition
     globals.css     — imports shared tonal.css and defines global rules
   /src/components
-    TonalMockup.tsx — interactive tone selector demo (imports shared config)
+    TonalMockup.tsx — interactive tone selector demo
 ```
 
 ### API call chain (security critical)
@@ -135,32 +135,33 @@ _AI fills this at the END of every session. Read this at the START of the next s
 **Last session date:** 2026-07-23
 
 **What we built / changed:**
-- **Codebase Reorganization**: Moved `tonal.js` and `tonal.css` into `extension/core/`. Relocated backend tests from root `tests/` to `backend/tests/`. Placed backend worker in `backend/src/index.js`. Moved `extension_demo.html` to `extension/ui-spec.html`.
-- **Branding Renaming**: Systematically updated all occurrences of the brand name "Tonal" to lowercase "tonal" in HTML text, configurations, documentation, and global variables (`window.tonal` / `window.tonalAdapters`). Fixed editor type-checking warnings in `extension/globals.d.ts`.
-- **Entry Point Standardizations**: Renamed `adapters/manager.js` to `adapters/index.js` and repointed all references in `manifest.json`.
-- **Cleanups**: Removed residual local file `diff_output.txt` from the workspace root and deleted the unused `website/public/assets` directory.
-- **Build & Test Verification**: Confirmed that the relocated test suite (22/22 tests) passes successfully and the Next.js production app compiles successfully.
+- **Security**: Auth token, CORS hardening, `.pages.dev` pinned — all shipped and deployed
+- **Worker deployed**: `tonal-proxy` live at `https://tonal-proxy.kwakhare5.workers.dev` with `AUTH_TOKEN` secret
+- **Keyboard shortcut**: `Ctrl+Shift+T` / `Cmd+Shift+T` → opens tone popover via Chrome `commands` API
+- **Per-site tone memory**: Last tone per hostname saved to `toneMemory` in `chrome.storage.local`
+- **Undo history persistence**: Last 10 rewrites in `undoHistory[]`, survives navigation
+- **Offline fallback**: `OfflineToneEngine` — 30+ word-swap rules, triggers on `offline:true` or dead service worker
+- **Website updated**: New 4-card "What's New" features section; FAQ updated (8 items total); footer tagline updated; shortcut comparison bullet added
+- **ui-spec.html**: Section 8 rebuilt using real `tonal.renderPill` / `createPopover` / `showToast` components (matching Sections 1-7)
+- **Manifest**: Bumped to `1.1.0`
+- **Tests**: 28/28 pass throughout
 
 **Immediate next task:**
-- Verify extension manual loading and injection behavior with the renamed core/ folder in Chrome.
+- Reload extension in Chrome (chrome://extensions → reload) after manifest bump to 1.1.0
+- Test `Ctrl+Shift+T` on Gmail/Slack/LinkedIn
+- Set Cloudflare WAF rate limiting rule: dashboard → WAF → 30 POST req/min per IP
+- Vercel deploy of website picks up automatically (git push)
 
 **Open blockers:**
-- None.
+- None
 
 **Files most recently changed:**
-- `extension/manifest.json`
-- `extension/content.js`
-- `extension/core/tonal.js`
-- `extension/core/tonal.css`
-- `extension/adapters/index.js`
-- `extension/globals.d.ts`
-- `extension/adapters/gmail.js`
-- `extension/adapters/linkedin.js`
-- `extension/adapters/slack.js`
-- `backend/src/index.js`
-- `backend/wrangler.toml`
-- `website/scripts/copy-assets.cjs`
-- `website/src/components/TonalMockup.tsx`
-- `CLAUDE.md`
-- `CONTEXT.md`
-- `ARCHITECTURE.md`
+- `extension/manifest.json` — version 1.1.0
+- `extension/ui-spec.html` — Section 8 real components + title fix
+- `extension/content.js` — OfflineToneEngine, per-site memory, undo history, shortcut handler
+- `extension/background.js` — command listener + offline detection
+- `website/src/app/page.tsx` — new features section + comparison bullet + footer tagline
+- `website/src/app/globals.css` — feature-card CSS (`.features-4-grid`, `.feature-card`)
+- `website/src/components/FaqSection.tsx` — updated Undo FAQ + 2 new FAQ items
+- `CONTEXT.md` — OfflineToneEngine, toneMemory, undoHistory terms + rule #8 + feature status table
+- `ARCHITECTURE.md` — 9 new ADRs + 2026-07-23 session log

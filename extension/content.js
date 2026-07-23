@@ -23,6 +23,16 @@
           },
           (res) => {
             if (chrome.runtime.lastError || !res || !res.success) {
+              // Offline fallback: use local engine if worker is unreachable or service worker is dead
+              const canFallback = mode === "convert" && (res?.offline || (!res && attempt >= 3));
+              if (canFallback) {
+                try {
+                  resolve(OfflineToneEngine.apply(text, toneLevel));
+                } catch (e) {
+                  reject(new Error(res?.error || "AI Offline"));
+                }
+                return;
+              }
               if (attempt < MAX_RETRIES) {
                 setTimeout(
                   () =>
@@ -35,6 +45,17 @@
                 reject(new Error(res?.error || "AI Offline"));
               }
             } else {
+              // Track real usage stats
+              if (mode === "decode") {
+                const wordCount = text.trim().split(/\s+/).length;
+                chrome.storage.local.get({ statDecoded: 0 }, (s) => {
+                  chrome.storage.local.set({ statDecoded: s.statDecoded + wordCount });
+                });
+              } else {
+                chrome.storage.local.get({ statRewrites: 0 }, (s) => {
+                  chrome.storage.local.set({ statRewrites: s.statRewrites + 1 });
+                });
+              }
               resolve(res.text);
             }
           },
@@ -42,6 +63,58 @@
       });
     }
   }
+
+  // ── 1b. OFFLINE TONE ENGINE ──────────────────────────────────────
+  const OfflineToneEngine = {
+    _rules: {
+      formal: [
+        [/\bwanna\b/gi, "want to"], [/\bgonna\b/gi, "going to"],
+        [/\bgotta\b/gi, "have to"], [/\bkinda\b/gi, "somewhat"],
+        [/\bsorta\b/gi, "somewhat"], [/\bya\b/gi, "you"],
+        [/\byeah\b/gi, "yes"], [/\bnope\b/gi, "no"],
+        [/\bcool\b/gi, "excellent"], [/\bawesome\b/gi, "excellent"],
+        [/\bstuff\b/gi, "items"], [/\bthing\b/gi, "matter"],
+        [/\bget\b/gi, "obtain"], [/\bfix\b/gi, "resolve"],
+        [/\bcheck out\b/gi, "review"], [/\bkick off\b/gi, "commence"],
+        [/\bdig into\b/gi, "investigate"], [/\bwrap up\b/gi, "conclude"],
+        [/\btouch base\b/gi, "follow up"], [/\bloop in\b/gi, "include"],
+        [/\bgrab\b/gi, "obtain"], [/\bshow\b/gi, "demonstrate"],
+        [/\btalk\b/gi, "discuss"], [/\bsend\b/gi, "transmit"],
+        [/\bask\b/gi, "inquire"], [/\btell\b/gi, "inform"],
+        [/\bjust\b/gi, ""], [/\bbasically\b/gi, ""],
+        [/\bliterally\b/gi, ""], [/\bactually\b/gi, ""],
+      ],
+      casual: [
+        [/\bI would like to\b/gi, "I'd love to"],
+        [/\bI am writing to\b/gi, "reaching out about"],
+        [/\bplease find attached\b/gi, "here's"],
+        [/\bfurthermore\b/gi, "also"], [/\bmoreover\b/gi, "plus"],
+        [/\bnevertheless\b/gi, "still"], [/\bconsequently\b/gi, "so"],
+        [/\bsubsequently\b/gi, "then"], [/\butilize\b/gi, "use"],
+        [/\bfacilitate\b/gi, "help"], [/\bascertain\b/gi, "find out"],
+        [/\btransmit\b/gi, "send"], [/\binquire\b/gi, "ask"],
+        [/\binform\b/gi, "tell"], [/\bobtain\b/gi, "get"],
+        [/\bcommence\b/gi, "start"], [/\bconclude\b/gi, "wrap up"],
+        [/\bdemonstrate\b/gi, "show"],
+      ],
+      workChat: [
+        [/\bI would like to\b/gi, "I want to"],
+        [/\bplease find attached\b/gi, "here's"],
+        [/\butilize\b/gi, "use"], [/\bfacilitate\b/gi, "help"],
+        [/\bwanna\b/gi, "want to"], [/\bgonna\b/gi, "going to"],
+        [/\byeah\b/gi, "yes"], [/\bnope\b/gi, "no"],
+      ],
+    },
+    apply(text, toneLevel) {
+      const rules = this._rules[toneLevel] || this._rules.workChat;
+      let result = text;
+      for (const [pattern, replacement] of rules) {
+        result = result.replace(pattern, replacement);
+      }
+      // Collapse multiple spaces left by empty replacements
+      return result.replace(/  +/g, " ").trim();
+    },
+  };
 
   // ── 2. MAGNET PHYSICS MODULE (Performance Optimized) ──────────
   class MagnetPhysics {
@@ -429,10 +502,18 @@
       this.registry.set(input, entry);
       this.resizeObserver.observe(input);
 
+      const hostname = window.location.hostname;
       chrome.storage.sync.get("defaultTone", (res) => {
-        if (res.defaultTone) entry.tone = res.defaultTone;
-        this.render(input);
-        this.requestPositionUpdate();
+        // Apply per-site memory if available, fall back to global default
+        chrome.storage.local.get({ toneMemory: {} }, (local) => {
+          if (local.toneMemory[hostname]) {
+            entry.tone = local.toneMemory[hostname];
+          } else if (res.defaultTone) {
+            entry.tone = res.defaultTone;
+          }
+          this.render(input);
+          this.requestPositionUpdate();
+        });
       });
 
       input.addEventListener(
@@ -525,7 +606,13 @@
               entry.tone = t;
               entry.popover = false;
               entry.state = entry.isMouseOver ? "expanded" : "rest";
+              // Save as global default AND per-site memory
               chrome.storage.sync.set({ defaultTone: t });
+              const hostname = window.location.hostname;
+              chrome.storage.local.get({ toneMemory: {} }, (local) => {
+                const updated = { ...local.toneMemory, [hostname]: t };
+                chrome.storage.local.set({ toneMemory: updated });
+              });
               this.render(entry.input);
               this.convert(entry.input);
             },
@@ -606,12 +693,20 @@
           this.render(input);
           return;
         }
-        entry.adapter.insertText(
-          input,
-          (res || "").trim(),
-          input.isContentEditable,
-        );
+        const trimmed = (res || "").trim();
+        entry.adapter.insertText(input, trimmed, input.isContentEditable);
         entry.state = "done";
+        // Persist undo history (cap at 10)
+        const histEntry = {
+          originalText: entry.originalText,
+          rewrittenText: trimmed,
+          tone: entry.tone,
+          ts: Date.now(),
+        };
+        chrome.storage.local.get({ undoHistory: [] }, (s) => {
+          const history = [histEntry, ...s.undoHistory].slice(0, 10);
+          chrome.storage.local.set({ undoHistory: history });
+        });
         window.tonal.showToast(this.shadowRoot, "Converted");
       } catch (err) {
         entry.state = "error";
@@ -625,15 +720,24 @@
 
     undo(input) {
       const entry = this.registry.get(input);
-      if (!entry || !entry.originalText) return;
-      entry.adapter.insertText(
-        input,
-        entry.originalText,
-        input.isContentEditable,
-      );
-      entry.state = "rest";
-      this.render(input);
-      window.tonal.showToast(this.shadowRoot, "Restored");
+      if (!entry) return;
+      if (entry.originalText) {
+        entry.adapter.insertText(input, entry.originalText, input.isContentEditable);
+        entry.state = "rest";
+        this.render(input);
+        window.tonal.showToast(this.shadowRoot, "Restored");
+        return;
+      }
+      // Fallback: restore from persisted history if in-memory original is gone
+      chrome.storage.local.get({ undoHistory: [] }, (s) => {
+        const last = s.undoHistory[0];
+        if (last) {
+          entry.adapter.insertText(input, last.originalText, input.isContentEditable);
+          entry.state = "rest";
+          this.render(input);
+          window.tonal.showToast(this.shadowRoot, "Restored from history");
+        }
+      });
     }
 
     requestPositionUpdate() {
@@ -710,6 +814,8 @@
   // ── 5. TONAL BOOTSTRAP MODULE ──────────────────────────────────
   class TonalBootstrap {
     constructor() {
+      this.pillEnabled = true;
+      this.decodeEnabled = true;
       this.shadowRoot = this.getShadowRoot();
       this.magnetPhysics = new MagnetPhysics();
       this.decodeController = new DecodeController(
@@ -718,9 +824,14 @@
       );
       this.registry = new TonalRegistry(this.shadowRoot, this.magnetPhysics);
 
-      this.initGlobalListeners();
-      this.initObservers();
-      window.tonal.injectFonts();
+      // Read feature toggles before wiring listeners
+      chrome.storage.sync.get({ pillEnabled: true, decodeEnabled: true }, (res) => {
+        this.pillEnabled = res.pillEnabled;
+        this.decodeEnabled = res.decodeEnabled;
+        this.initGlobalListeners();
+        this.initObservers();
+      });
+      window.tonal.injectFonts(this.shadowRoot);
     }
 
     getShadowRoot() {
@@ -741,16 +852,21 @@
 
     initGlobalListeners() {
       document.addEventListener("click", (e) => this.dismissPopovers(e));
-      document.addEventListener("selectionchange", () =>
-        this.decodeController.handleSelection(),
-      );
+      document.addEventListener("selectionchange", () => {
+        if (!this.decodeEnabled) return;
+        this.decodeController.handleSelection();
+      });
       document.addEventListener("mousemove", (e) =>
         this.magnetPhysics.handleMouseMove(e.clientX, e.clientY),
       );
-      document.addEventListener("click", () => this.registry.scan(), {
+      document.addEventListener("click", () => {
+        if (this.pillEnabled) this.registry.scan();
+      }, {
         passive: true,
       });
-      document.addEventListener("focusin", () => this.registry.scan(), {
+      document.addEventListener("focusin", () => {
+        if (this.pillEnabled) this.registry.scan();
+      }, {
         passive: true,
       });
 
@@ -789,14 +905,61 @@
             this.registry.render(entry.input);
           });
         }
+        if (changes.pillEnabled) {
+          this.pillEnabled = changes.pillEnabled.newValue;
+          if (!this.pillEnabled) {
+            // Clean up all existing pills immediately
+            this.registry.registry.forEach((entry) => {
+              this.magnetPhysics.unregister(entry.pill);
+              entry.wrap.remove();
+            });
+            this.registry.registry.clear();
+            // Reset data-tonal markers so pills re-register when re-enabled
+            document.querySelectorAll('[data-tonal]').forEach((el) => delete el.dataset.tonal);
+          }
+        }
+        if (changes.decodeEnabled) {
+          this.decodeEnabled = changes.decodeEnabled.newValue;
+          if (!this.decodeEnabled) {
+            this.decodeController.hideButton();
+            this.decodeController.dismissCard();
+          }
+        }
+      });
+
+      // Keyboard shortcut: TONAL_ACTIVATE sent from background.js
+      chrome.runtime.onMessage.addListener((msg) => {
+        if (msg.type !== "TONAL_ACTIVATE" || !this.pillEnabled) return;
+        // Find the first registered input that is currently focused or visible
+        const activeEl = document.activeElement;
+        let entry = this.registry.registry.get(activeEl);
+        if (!entry) {
+          // Fall back to first registered entry
+          entry = this.registry.registry.values().next().value;
+        }
+        if (entry) {
+          entry.state = "expanded";
+          entry.popover = true;
+          this.registry.render(entry.input);
+          entry.input.focus();
+        }
       });
     }
 
     initObservers() {
-      this.observer = new MutationObserver(() => this.registry.scan());
+      this.observer = new MutationObserver((mutations) => {
+        if (!this.pillEnabled) return;
+        // Skip if only tonal's own root changed (prevents scan loops)
+        const relevant = mutations.some((m) => {
+          if (m.target && m.target.id === 'tonal-root') return false;
+          if (m.addedNodes.length === 0 && m.removedNodes.length === 0) return false;
+          return true;
+        });
+        if (relevant) this.registry.scan();
+      });
       this.observer.observe(document.body, { childList: true, subtree: true });
 
-      this.registry.scan();
+      if (this.pillEnabled) this.registry.scan();
     }
 
     dismissPopovers(e) {
