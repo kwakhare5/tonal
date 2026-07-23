@@ -2,8 +2,8 @@
 const fs = require('fs');
 const path = require('path');
 
-const srcJs = path.resolve(__dirname, '../../extension/tonal.js');
-const srcCss = path.resolve(__dirname, '../../extension/tonal.css');
+const srcJs = path.resolve(__dirname, '../../extension/core/tonal.js');
+const srcCss = path.resolve(__dirname, '../../extension/core/tonal.css');
 const destJs = path.resolve(__dirname, '../src/extension_shared/tonal.js');
 const destCss = path.resolve(__dirname, '../src/extension_shared/tonal.css');
 

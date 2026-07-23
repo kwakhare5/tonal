@@ -8,7 +8,7 @@
   --font-sans: "DM Sans", sans-serif;
   --font-serif: "Lora", serif;
 
-  /* Tonal Color Tokens */
+  /* tonal Color Tokens */
   --black: #0F0F0F;
   --gray-1: #1C1C1E;
   --gray-2: #2C2C2E;
@@ -24,7 +24,7 @@
   --red: #FF3B30;
   --orange: #FF9F0A;
 
-  /* UI Tokens mapped to Tonal Palette */
+  /* UI Tokens mapped to tonal Palette */
   --color-bg-base: var(--white);
   --color-bg-alt: var(--gray-9);
   --color-bg-card: var(--white);
@@ -34,7 +34,7 @@
   --color-border: var(--gray-7);
   --color-border-light: var(--gray-8);
 
-  /* Accents (Tonal Brand Colors) */
+  /* Accents (tonal Brand Colors) */
   --color-blue: #0098f2;
   --color-blue-bg: rgba(0, 152, 242, 0.08);
   --color-magenta: #f200ca;

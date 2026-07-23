@@ -83,7 +83,7 @@ export default function Home() {
             
             <div className="comp-col comp-col--solution">
               <h3 style={{ fontFamily: 'var(--font-sans)', fontWeight: 600, fontSize: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                Tonal Inline Integration <span className="badge-status badge-status--solution">Seamless</span>
+                tonal Inline Integration <span className="badge-status badge-status--solution">Seamless</span>
               </h3>
               <ul className="comp-list" style={{ gap: '16px' }}>
                 <li className="comp-item comp-item--strong">
@@ -118,7 +118,7 @@ export default function Home() {
             <div className="engine-col">
               <h3 style={{ fontFamily: 'var(--font-serif)', fontWeight: 600 }}>Sub-Second Latency</h3>
               <p>
-                Tonal communicates directly with Groq LPU (Language Processing Unit) inference nodes. By executing Llama 3.3 70B models at hardware-accelerated speeds, rewrites are delivered in milliseconds. There is no waiting, spinning wheels, or delays.
+                tonal communicates directly with Groq LPU (Language Processing Unit) inference nodes. By executing Llama 3.3 70B models at hardware-accelerated speeds, rewrites are delivered in milliseconds. There is no waiting, spinning wheels, or delays.
               </p>
               <div className="engine-meta" style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
                 <span style={{ display: 'inline-flex', alignItems: 'center' }}>
@@ -136,7 +136,7 @@ export default function Home() {
             <div className="engine-col">
               <h3 style={{ fontFamily: 'var(--font-serif)', fontWeight: 600 }}>Complete Keystroke Privacy</h3>
               <p>
-                Your writing stays yours. Tonal executes in an isolated Shadow DOM container inside your browser, meaning host scripts cannot read your inputs. Drafts are forwarded securely to the API proxy without ever being logged, stored, or used for model training.
+                Your writing stays yours. tonal executes in an isolated Shadow DOM container inside your browser, meaning host scripts cannot read your inputs. Drafts are forwarded securely to the API proxy without ever being logged, stored, or used for model training.
               </p>
               <div className="engine-meta" style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
                 <span style={{ display: 'inline-flex', alignItems: 'center' }}>
@@ -197,8 +197,8 @@ export default function Home() {
           <div className="footer-grid">
             <div className="footer-logo-col">
               <a href="#" className="logo">
-                <Image src="/icons/icon128.png" alt="Tonal Logo" width={24} height={24} style={{ borderRadius: 'var(--radius-xs)', marginRight: 'var(--space-1)' }} />
-                <span>Tonal</span>
+                <Image src="/icons/icon128.png" alt="tonal Logo" width={24} height={24} style={{ borderRadius: 'var(--radius-xs)', marginRight: 'var(--space-1)' }} />
+                <span>tonal</span>
               </a>
               <p className="footer-tagline">Open Source Inline Assistant</p>
               <p className="footer-author" style={{ fontSize: '12px', color: 'var(--gray-4)', marginTop: 'var(--space-2)' }}>
@@ -209,9 +209,9 @@ export default function Home() {
             <div className="footer-col">
               <h4>Resources</h4>
               <ul className="footer-links">
-                <li><a href="https://github.com/kwakhare5/Tonal" target="_blank" rel="noopener noreferrer">GitHub Repository</a></li>
-                <li><a href="https://github.com/kwakhare5/Tonal/blob/main/README.md" target="_blank" rel="noopener noreferrer">Documentation</a></li>
-                <li><a href="https://github.com/kwakhare5/Tonal/issues" target="_blank" rel="noopener noreferrer">Report Issues</a></li>
+                <li><a href="https://github.com/kwakhare5/tonal" target="_blank" rel="noopener noreferrer">GitHub Repository</a></li>
+                <li><a href="https://github.com/kwakhare5/tonal/blob/main/README.md" target="_blank" rel="noopener noreferrer">Documentation</a></li>
+                <li><a href="https://github.com/kwakhare5/tonal/issues" target="_blank" rel="noopener noreferrer">Report Issues</a></li>
               </ul>
             </div>
             
@@ -220,7 +220,7 @@ export default function Home() {
               <ul className="footer-links">
                 <li><a href="#security">Shadow DOM Isolation</a></li>
                 <li><a href="#security">Worker Encryption</a></li>
-                <li><a href="https://github.com/kwakhare5/Tonal/blob/main/CONTEXT.md" target="_blank" rel="noopener noreferrer">Security Context</a></li>
+                <li><a href="https://github.com/kwakhare5/tonal/blob/main/CONTEXT.md" target="_blank" rel="noopener noreferrer">Security Context</a></li>
               </ul>
             </div>
             
@@ -235,7 +235,7 @@ export default function Home() {
           </div>
           
           <div className="footer-bottom">
-            <span>© 2026 Tonal Chrome Extension. Built by Karan Wakhare. Released under the MIT License.</span>
+            <span>© 2026 tonal Chrome Extension. Built by Karan Wakhare. Released under the MIT License.</span>
             <div className="footer-bottom-links">
               <a href="#">Privacy Policy</a>
               <a href="#">Terms of Service</a>

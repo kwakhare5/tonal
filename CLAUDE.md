@@ -7,7 +7,7 @@
 
 ## 1. PROJECT IDENTITY
 
-**Name:** Tonal
+**Name:** tonal
 **Goal:** Chrome extension that adds AI-powered tone adjustment to any text input on any website
 **Status:** In Progress
 **Stack type:** Chrome Extension (MV3) — Vanilla JS only, no build step
@@ -17,7 +17,7 @@
 ## 2. TECH STACK
 
 - **Extension:** Chrome Extension Manifest V3, Vanilla JS ONLY (no React, no Vue, no npm, no bundler)
-- **UI isolation:** Shadow DOM — all Tonal UI wrapped in Shadow DOM, no exceptions
+- **UI isolation:** Shadow DOM — all tonal UI wrapped in Shadow DOM, no exceptions
 - **AI:** Groq via Cloudflare Worker (content.js → background.js → Worker → Groq). API key never in content script.
 - **Storage:** `chrome.storage.local` (persistence) + `chrome.storage.sync` (user prefs, syncs across devices, max 100KB)
 - **CSS:** All CSS inlined in the content script — no external stylesheets
@@ -46,7 +46,7 @@
 1. **HARD CONSTRAINTS — never break:**
    - Vanilla JS ONLY. No React, no Vue, no npm, no bundler, no build step.
    - All CSS inlined in content script. No external stylesheets.
-   - All Tonal UI wrapped in Shadow DOM. No exceptions.
+   - All tonal UI wrapped in Shadow DOM. No exceptions.
    - Never inject into `<iframe>` elements.
    - Never put the API key in content script. All API calls: `content.js → background.js → Cloudflare Worker → Groq`
 
@@ -62,8 +62,8 @@
 4. **Adding a new platform adapter:**
    1. Create `src/extension/adapters/[platform].js`
    2. Find the platform's text input injection point
-   3. Create host element → attach Shadow DOM → render Tonal pill inside shadow root
-   4. Register adapter in `src/extension/adapters/manager.js`
+   3. Create host element → attach Shadow DOM → render tonal pill inside shadow root
+   4. Register adapter in `src/extension/adapters/index.js`
    5. Add `host_permissions` for the platform's domain in `manifest.json`
 
 5. **Before marking any task done:**
@@ -92,7 +92,7 @@
 /backend            — Cloudflare Worker API proxy
   worker.js         — backend worker script (holds API key securely)
   wrangler.toml     — wrangler deployment config
-/website            — Next.js App Router website for Tonal
+/website            — Next.js App Router website for tonal
   tsconfig.json     — TypeScript config with custom aliases (@tonal-core)
   /public           — static assets, CDN images, and extension icons
   /src/app
@@ -121,7 +121,7 @@ content.js (user interaction)
 <!-- AI appends here after every VERIFY failure -->
 <!-- Format: [YYYY-MM-DD] What went wrong → What to do instead -->
 - [2026-07-14] Module format mismatch when importing extension files into Next.js → Used `.cjs` extension and `tsconfig.json` paths to ensure Next.js Turbopack resolves external CommonJS files correctly.
-- [2026-07-14] Removed adapters/manager.js from manifest.json when refactoring paths → Always double-check every item in manifest script arrays to prevent breaking extension initialization.
+- [2026-07-14] Removed adapters/index.js from manifest.json when refactoring paths → Always double-check every item in manifest script arrays to prevent breaking extension initialization.
 - [2026-07-14] `document.execCommand("selectAll")` is GLOBAL — selects entire page on Gmail, corrupts To:/Subject fields → Use `range.selectNodeContents(el)` scoped to the target element only.
 - [2026-07-14] `background.js` message listener drops the `sender` param → Always accept `(request, sender, sendResponse)` and use `sender.tab?.url` to detect platform for worker context injection.
 - [2026-07-14] `getValue()` returning `innerHTML` sends raw HTML tags to AI → Always return `innerText` for AI input; the paste handler reconstructs HTML on insert.
@@ -132,31 +132,35 @@ content.js (user interaction)
 
 _AI fills this at the END of every session. Read this at the START of the next session._
 
-**Last session date:** 2026-07-22
+**Last session date:** 2026-07-23
 
 **What we built / changed:**
-- **Modal Redesign**: Refactored the step-by-step installation modal to use the exact same glassmorphism design as the landing page (Lora serif numbers, reflective inset shadows, borderless cards).
-- **Centering & Viewport Fit**: Fixed modal height and centering coordinate offset issues caused by the global `zoom: 1.1` factor. Modal now fits 100% inside small viewports.
-- **Dynamic OG Image**: Implemented `opengraph-image.tsx` inside Next.js App Router using the Edge runtime. It dynamically captures a real-time browser screenshot of the live site (`https://tonall.vercel.app`) using Microlink API and caches it, ensuring the social share preview is always up to date.
-- **Zip Whitelisting**: Whitelisted `website/public/tonal-extension.zip` in `.gitignore`, rebuilt the latest package, and pushed to GitHub (preventing 404 download errors).
-- **Cloudflare Worker Deploy**: Deployed `tonal-proxy` to Cloudflare with `ALLOWED_ORIGIN = "https://tonall.vercel.app"` and verified CORS success headers.
-- **Vercel Rename & Domain**: Renamed the Vercel project from `website` to `tonal` and successfully bound the domain `tonall.vercel.app` to the live deployment.
+- **Codebase Reorganization**: Moved `tonal.js` and `tonal.css` into `extension/core/`. Relocated backend tests from root `tests/` to `backend/tests/`. Placed backend worker in `backend/src/index.js`. Moved `extension_demo.html` to `extension/ui-spec.html`.
+- **Branding Renaming**: Systematically updated all occurrences of the brand name "Tonal" to lowercase "tonal" in HTML text, configurations, documentation, and global variables (`window.tonal` / `window.tonalAdapters`). Fixed editor type-checking warnings in `extension/globals.d.ts`.
+- **Entry Point Standardizations**: Renamed `adapters/manager.js` to `adapters/index.js` and repointed all references in `manifest.json`.
+- **Cleanups**: Removed residual local file `diff_output.txt` from the workspace root and deleted the unused `website/public/assets` directory.
+- **Build & Test Verification**: Confirmed that the relocated test suite (22/22 tests) passes successfully and the Next.js production app compiles successfully.
 
 **Immediate next task:**
-- Conduct final manual download and installation verification from `https://tonall.vercel.app`.
+- Verify extension manual loading and injection behavior with the renamed core/ folder in Chrome.
 
 **Open blockers:**
-- None. All deployment configurations and layouts are active and verified.
+- None.
 
 **Files most recently changed:**
-- `website/package.json`
-- `website/scripts/copy-assets.cjs`
-- `website/src/app/globals.css`
-- `website/src/app/page.tsx`
-- `website/src/app/layout.tsx`
-- `website/src/app/opengraph-image.tsx`
-- `website/src/components/InstallSteps.tsx`
-- `website/src/components/InstallGuideModal.tsx`
+- `extension/manifest.json`
+- `extension/content.js`
+- `extension/core/tonal.js`
+- `extension/core/tonal.css`
+- `extension/adapters/index.js`
+- `extension/globals.d.ts`
+- `extension/adapters/gmail.js`
+- `extension/adapters/linkedin.js`
+- `extension/adapters/slack.js`
+- `backend/src/index.js`
 - `backend/wrangler.toml`
-- `.gitignore`
+- `website/scripts/copy-assets.cjs`
+- `website/src/components/TonalMockup.tsx`
 - `CLAUDE.md`
+- `CONTEXT.md`
+- `ARCHITECTURE.md`

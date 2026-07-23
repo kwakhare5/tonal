@@ -2,7 +2,7 @@
 
 ## Overview
 
-This file serves as the "Ground Truth" for Tonal's rephrasing engine.
+This file serves as the "Ground Truth" for tonal's rephrasing engine.
 
 ---
 

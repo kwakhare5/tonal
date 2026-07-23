@@ -14,7 +14,8 @@ export default function InstallGuideModal({ isOpen, onClose }: InstallGuideModal
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
+    const t = setTimeout(() => setMounted(true), 0);
+    return () => clearTimeout(t);
   }, []);
 
   // Close on Escape key press
@@ -51,12 +52,12 @@ export default function InstallGuideModal({ isOpen, onClose }: InstallGuideModal
           <div className="modal-title-group">
             <Image 
               src="/icons/icon128.png" 
-              alt="Tonal Logo" 
+              alt="tonal Logo" 
               width={24} 
               height={24} 
               className="modal-logo"
             />
-            <h3 className="modal-title">Install Tonal for Chrome</h3>
+            <h3 className="modal-title">Install tonal for Chrome</h3>
           </div>
           <button 
             className="modal-close-btn" 
@@ -73,7 +74,7 @@ export default function InstallGuideModal({ isOpen, onClose }: InstallGuideModal
         {/* Scrollable Content */}
         <div className="modal-body">
           <p className="modal-subtitle" style={{ marginBottom: 'var(--space-4)' }}>
-            Since Tonal is open-source and run locally, you can install it manually in less than a minute by following these steps:
+            Since tonal is open-source and run locally, you can install it manually in less than a minute by following these steps:
           </p>
           <InstallSteps />
         </div>

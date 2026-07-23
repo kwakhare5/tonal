@@ -3,9 +3,9 @@
  * Handles: Compose Window, Reply Area, Inline Replies
  */
 
-window.TonalAdapters = window.TonalAdapters || {};
+window.tonalAdapters = window.tonalAdapters || {};
 
-window.TonalAdapters.gmail = {
+window.tonalAdapters.gmail = {
   id: "gmail",
 
   matches: (url) => url.includes("mail.google.com"),
@@ -61,6 +61,6 @@ window.TonalAdapters.gmail = {
   },
 
   insertText(input, text, isRichText = false) {
-    window.Tonal.insertText(input, text);
+    window.tonal.insertText(input, text);
   },
 };

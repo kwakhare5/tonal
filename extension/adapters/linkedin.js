@@ -3,9 +3,9 @@
  * Handles: Main Chat, Feed Comments, InMail
  */
 
-window.TonalAdapters = window.TonalAdapters || {};
+window.tonalAdapters = window.tonalAdapters || {};
 
-window.TonalAdapters.linkedin = {
+window.tonalAdapters.linkedin = {
   id: "linkedin",
 
   matches: (url) => url.includes("linkedin.com"),
@@ -68,7 +68,7 @@ window.TonalAdapters.linkedin = {
   insertText(el, text, isRichText = false) {
     el.focus();
 
-    window.Tonal.insertText(el, text);
+    window.tonal.insertText(el, text);
 
     // Cursor Anchor: Robust Multi-Tick restoration for Draft.js stability
     const restore = (attempts = 0) => {

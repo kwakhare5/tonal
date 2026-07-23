@@ -3,9 +3,9 @@
  * Handles: Channel Chat, Direct Messages, Thread Replies
  */
 
-window.TonalAdapters = window.TonalAdapters || {};
+window.tonalAdapters = window.tonalAdapters || {};
 
-window.TonalAdapters.slack = {
+window.tonalAdapters.slack = {
   id: "slack",
 
   matches: (url) => url.includes("slack.com"),
@@ -57,6 +57,6 @@ window.TonalAdapters.slack = {
   },
 
   insertText(input, text, isRichText = false) {
-    window.Tonal.insertText(input, text);
+    window.tonal.insertText(input, text);
   },
 };

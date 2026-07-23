@@ -2,7 +2,7 @@
 
 declare global {
   interface Window {
-    Tonal: {
+    tonal: {
       TONES: Array<{ id: string; l: string; s: string }>;
       renderPill: (
         container: HTMLElement,
@@ -72,7 +72,7 @@ export default function TonalMockup() {
   const [isTyping, setIsTyping] = useState(false);
   const [platform, setPlatform] = useState<'gmail' | 'slack' | 'linkedin'>('gmail');
 
-  const [tonalLoaded, setTonalLoaded] = useState(false);
+  const [tonalLoaded, settonalLoaded] = useState(false);
   // Refs live outside platform branches — only one branch renders at a time via &&
   // so there is never a duplicate mount. Previously both branches mounted to the same
   // ref simultaneously, causing the Gmail refs to be overwritten by Slack's mount.
@@ -84,7 +84,7 @@ export default function TonalMockup() {
     if (typeof window !== 'undefined') {
       // @ts-expect-error - tonal.js is a plain JavaScript script file, not an ES module
       import('../extension_shared/tonal.js').then(() => {
-        setTonalLoaded(true);
+        settonalLoaded(true);
       });
     }
   }, []);
@@ -92,13 +92,13 @@ export default function TonalMockup() {
   // Sync Pill Rendering
   React.useEffect(() => {
     const container = pillRef.current;
-    if (!container || typeof window === 'undefined' || !window.Tonal) return;
+    if (!container || typeof window === 'undefined' || !window.tonal) return;
 
     container.innerHTML = '';
     const wrapper = document.createElement('div');
     container.appendChild(wrapper);
 
-    window.Tonal.renderPill(
+    window.tonal.renderPill(
       wrapper,
       pillState,
       activeTone,
@@ -112,8 +112,8 @@ export default function TonalMockup() {
           } else if (pillState === 'done') {
             setText(INITIAL_TEXT);
             setPillState('rest');
-            if (window.Tonal.showToast) {
-              window.Tonal.showToast(document.body, 'Rewriting undone', 'success');
+            if (window.tonal.showToast) {
+              window.tonal.showToast(document.body, 'Rewriting undone', 'success');
             }
           }
         },
@@ -137,11 +137,11 @@ export default function TonalMockup() {
   // Sync Popover Rendering
   React.useEffect(() => {
     const container = popoverRef.current;
-    if (!container || typeof window === 'undefined' || !window.Tonal) return;
+    if (!container || typeof window === 'undefined' || !window.tonal) return;
 
     container.innerHTML = '';
     if (showPopover) {
-      const pop = window.Tonal.createPopover(
+      const pop = window.tonal.createPopover(
         activeTone,
         (toneId: string) => {
           setActiveTone(toneId as ToneId);
@@ -154,8 +154,8 @@ export default function TonalMockup() {
             setTimeout(() => {
               setText(FALLBACKS[toneId as ToneId]);
               setPillState('done');
-              if (window.Tonal.showToast) {
-                window.Tonal.showToast(document.body, 'Text rewritten successfully', 'success');
+              if (window.tonal.showToast) {
+                window.tonal.showToast(document.body, 'Text rewritten successfully', 'success');
               }
             }, 1200);
           }, 200);

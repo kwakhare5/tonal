@@ -9,10 +9,10 @@ interface FaqItemProps {
 
 const FAQ_ITEMS: FaqItemProps[] = [
   {
-    question: 'Is Tonal really free?',
+    question: 'Is tonal really free?',
     answer: (
       <p>
-        Yes. Tonal is completely free and open-source. There are no monthly subscriptions, hidden fees, or premium limits. The code is entirely open for inspection, and you can download and run it directly.
+        Yes. tonal is completely free and open-source. There are no monthly subscriptions, hidden fees, or premium limits. The code is entirely open for inspection, and you can download and run it directly.
       </p>
     )
   },
@@ -20,7 +20,7 @@ const FAQ_ITEMS: FaqItemProps[] = [
     question: 'Do I need my own Groq API key?',
     answer: (
       <p>
-        No. Tonal works out of the box using our pre-configured backend proxy, so you can start adjusting your tone immediately. If you want to use your own Groq API key (to get higher limits or customize prompts), you can easily add it in the extension settings.
+        No. tonal works out of the box using our pre-configured backend proxy, so you can start adjusting your tone immediately. If you want to use your own Groq API key (to get higher limits or customize prompts), you can easily add it in the extension settings.
       </p>
     )
   },
@@ -28,7 +28,7 @@ const FAQ_ITEMS: FaqItemProps[] = [
     question: 'Is my text data private and secure?',
     answer: (
       <p>
-        Absolutely. Tonal does not store, log, or track your text. It simply forwards your inputs securely to the AI model and replaces them. For security, all Tonal interface elements are encapsulated within a isolated <strong>Shadow Root</strong>, meaning the host website cannot inspect, read, or alter Tonal&apos;s internal UI or your API key settings.
+        Absolutely. tonal does not store, log, or track your text. It simply forwards your inputs securely to the AI model and replaces them. For security, all tonal interface elements are encapsulated within a isolated <strong>Shadow Root</strong>, meaning the host website cannot inspect, read, or alter tonal&apos;s internal UI or your API key settings.
       </p>
     )
   },
@@ -36,7 +36,7 @@ const FAQ_ITEMS: FaqItemProps[] = [
     question: 'Which websites are supported?',
     answer: (
       <p>
-        Tonal has dedicated adapters for <strong>Gmail</strong>, <strong>Slack (Web)</strong>, and <strong>LinkedIn</strong> to perfectly align with their custom input fields. For other sites, Tonal&apos;s smart <strong>Default Adapter</strong> automatically detects any standard text input or textarea, allowing it to work on virtually any site (such as Twitter/X, GitHub, Notion, etc.).
+        tonal has dedicated adapters for <strong>Gmail</strong>, <strong>Slack (Web)</strong>, and <strong>LinkedIn</strong> to perfectly align with their custom input fields. For other sites, tonal&apos;s smart <strong>Default Adapter</strong> automatically detects any standard text input or textarea, allowing it to work on virtually any site (such as Twitter/X, GitHub, Notion, etc.).
       </p>
     )
   },
@@ -44,7 +44,7 @@ const FAQ_ITEMS: FaqItemProps[] = [
     question: 'How does the Undo feature work?',
     answer: (
       <p>
-        Tonal saves a local, temporary copy of your draft in memory immediately before it requests a tone rewrite. If you aren&apos;t happy with the result, or if you clicked the wrong option, a floating <strong>Undo</strong> pill will appear next to your text box. One click restores your draft exactly as it was.
+        tonal saves a local, temporary copy of your draft in memory immediately before it requests a tone rewrite. If you aren&apos;t happy with the result, or if you clicked the wrong option, a floating <strong>Undo</strong> pill will appear next to your text box. One click restores your draft exactly as it was.
       </p>
     )
   },
@@ -52,7 +52,7 @@ const FAQ_ITEMS: FaqItemProps[] = [
     question: 'How fast are the tone adjustments?',
     answer: (
       <p>
-        Under the hood, Tonal communicates with the Groq API running <strong>Llama 3.3 70B</strong>. Because Groq&apos;s LPUs process tokens at incredible speeds, tone adjustments are practically instantaneous—usually completing in under 0.5 seconds.
+        Under the hood, tonal communicates with the Groq API running <strong>Llama 3.3 70B</strong>. Because Groq&apos;s LPUs process tokens at incredible speeds, tone adjustments are practically instantaneous—usually completing in under 0.5 seconds.
       </p>
     )
   }

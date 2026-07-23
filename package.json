@@ -8,7 +8,7 @@
     "deploy": "cd backend && wrangler deploy",
     "dev": "cd backend && wrangler dev",
     "zip": "powershell -Command \"Compress-Archive -Path extension/* -DestinationPath website/public/tonal-extension.zip -Force\"",
-    "test": "node --test tests/worker.test.js tests/worker_logic.test.js tests/worker_real_scenarios.test.js",
+    "test": "node --test backend/tests/worker.test.js backend/tests/worker_logic.test.js backend/tests/worker_real_scenarios.test.js backend/tests/bug_regression.test.js",
     "kill": "npx kill-port 3000 3001 3002 8080",
     "save": "git add -A && git commit -m \"checkpoint: [timestamp]\" && git push"
   },

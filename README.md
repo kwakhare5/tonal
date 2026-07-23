@@ -1,14 +1,14 @@
 <!-- ╔══════════════════════════════════════════════════════════════════╗
-     ║          Tonal — README                                             ║
+     ║          tonal — README                                             ║
      ║          Precision Tone Translation for Gmail, Slack, & LinkedIn    ║
      ╚══════════════════════════════════════════════════════════════════╝ -->
 
 <div align="center">
 
-  <img src="https://raw.githubusercontent.com/kwakhare5/Tonal/main/icons/icon128.png" alt="Tonal Logo" width="128"/>
+  <img src="https://raw.githubusercontent.com/kwakhare5/tonal/main/icons/icon128.png" alt="tonal Logo" width="128"/>
   <br/>
 
-  # Tonal
+  # tonal
 
   ### *The two-way tone translator for elite professional communication.*
 
@@ -16,8 +16,8 @@
 
   ![Version](https://img.shields.io/badge/version-1.0.0-blue?style=for-the-badge)
   ![License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge)
-  ![Last Commit](https://img.shields.io/github/last-commit/kwakhare5/Tonal?style=for-the-badge&color=orange)
-  ![Stars](https://img.shields.io/github/stars/kwakhare5/Tonal?style=for-the-badge&color=yellow)
+  ![Last Commit](https://img.shields.io/github/last-commit/kwakhare5/tonal?style=for-the-badge&color=orange)
+  ![Stars](https://img.shields.io/github/stars/kwakhare5/tonal?style=for-the-badge&color=yellow)
   ![Language](https://img.shields.io/badge/Language-Vanilla_JS-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
 
   <br/>
@@ -37,12 +37,12 @@
 ## 🎬 Demo
 
 <div align="center">
-  <img src="media/demo.gif" alt="Tonal Demo" width="800"/>
+  <img src="media/demo.gif" alt="tonal Demo" width="800"/>
 </div>
 
 <br/>
 
-> 🎨 **Interactive Visual spec**: You can preview and test all floating pill states, popover menus, and toasts in the standalone, light-mode **[extension_demo.html](extension_demo.html)** page directly in your browser.
+> 🎨 **Interactive Visual spec**: You can preview and test all floating pill states, popover menus, and toasts in the standalone, light-mode **[extension/ui-spec.html](extension/ui-spec.html)** page directly in your browser.
 
 <br/>
 
@@ -50,12 +50,12 @@
 
 ## 📌 About the Project
 
-**Tonal** is a **zero-dependency Chrome extension** built with **Vanilla JavaScript (Manifest V3)**.
+**tonal** is a **zero-dependency Chrome extension** built with **Vanilla JavaScript (Manifest V3)**.
 
-Tonal solves the friction of switching between casual drafts and professional execution. Powered by Groq Llama 3.3 70B, it provides high-fidelity, preamble-free rephrasing inside Gmail, Slack, and LinkedIn.
+tonal solves the friction of switching between casual drafts and professional execution. Powered by Groq Llama 3.3 70B, it provides high-fidelity, preamble-free rephrasing inside Gmail, Slack, and LinkedIn.
 
 > **Why this project?**
-> Most professional friction comes from tone mismatch. Tonal bridges that gap instantly.
+> Most professional friction comes from tone mismatch. tonal bridges that gap instantly.
 
 <br/>
 
@@ -123,7 +123,7 @@ flowchart LR
 ## 📁 Project Structure
 
 ```
-Tonal/
+tonal/
 ├── backend/                     # Cloudflare Worker proxy backend
 │   ├── src/index.js             # Worker router & LLM orchestrator
 │   └── wrangler.toml            # Cloudflare Wrangler config
@@ -143,7 +143,7 @@ Tonal/
 │   ├── src/app/page.tsx         # Landing page with scroll animations
 │   └── public/icons/            # Unified brand icons
 │
-├── extension_demo.html          # Standalone Light-Mode UI States Playground
+├── extension/ui-spec.html          # Standalone Light-Mode UI States Playground
 └── README.md
 ```
 
@@ -163,13 +163,13 @@ Tonal/
 ### Step 1 — Clone
 
 ```bash
-git clone https://github.com/kwakhare5/Tonal.git
-cd Tonal
+git clone https://github.com/kwakhare5/tonal.git
+cd tonal
 ```
 
 ### Step 2 — Load Unpacked
 
-Open chrome://extensions/, toggle Developer mode, and click Load unpacked selecting the Tonal folder.
+Open chrome://extensions/, toggle Developer mode, and click Load unpacked selecting the tonal folder.
 
 ```bash
 chrome://extensions/
@@ -177,7 +177,7 @@ chrome://extensions/
 
 ### Step 3 — Configure Preferences
 
-Click the Tonal Icon, select your default tone level, and settings will sync instantly.
+Click the tonal Icon, select your default tone level, and settings will sync instantly.
 
 ```bash
 # UI Interaction
@@ -201,7 +201,7 @@ Click the Tonal Icon, select your default tone level, and settings will sync ins
 
 ## 🛡️ Privacy & Security
 
-> Tonal is a stateless utility. No message data is ever stored on our servers. Requests are processed in real-time by Groq Llama 3.3 and discarded immediately.
+> tonal is a stateless utility. No message data is ever stored on our servers. Requests are processed in real-time by Groq Llama 3.3 and discarded immediately.
 
 <br/>
 

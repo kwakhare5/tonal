@@ -8,13 +8,13 @@
 
 | Term | What it means in THIS app | Never call it |
 |------|--------------------------|---------------|
-| Tonal Pill | The floating UI button injected into a text input field | Widget, button, toolbar, overlay |
+| tonal Pill | The floating UI button injected into a text input field | Widget, button, toolbar, overlay |
 | Adapter | A platform-specific module that finds and injects into a site's text inputs | Plugin, integration, connector |
-| Shadow Root | The isolated DOM container that holds all Tonal UI (prevents CSS conflicts) | Shadow DOM, iframe, container |
+| Shadow Root | The isolated DOM container that holds all tonal UI (prevents CSS conflicts) | Shadow DOM, iframe, container |
 | Tone | A writing style the user can apply (e.g. Professional, Casual, Concise) | Mode, style, preset, voice |
 | Decode Card | The popup that appears showing the analysis/transformation result | Popup, modal, result card |
 | Cloudflare Worker | The serverless proxy that holds the API key and forwards requests to Groq | Backend, server, API layer |
-| Host Page | The website where Tonal is injected — its styles must not affect Tonal | Page, site, tab |
+| Host Page | The website where tonal is injected — its styles must not affect tonal | Page, site, tab |
 
 ---
 
@@ -22,7 +22,7 @@
 
 1. Vanilla JS ONLY — no npm, no bundler, no framework, no build step ever
 2. API key lives ONLY in the Cloudflare Worker — never in content script or background script
-3. ALL Tonal UI is inside Shadow DOM — no exceptions, no direct DOM injection to host page
+3. ALL tonal UI is inside Shadow DOM — no exceptions, no direct DOM injection to host page
 4. Never inject into `<iframe>` elements
 5. `chrome.storage.local` for data persistence — NOT `localStorage` (doesn't work across pages in MV3)
 6. All CSS is inlined in content script — no external stylesheets loaded
@@ -39,7 +39,7 @@
 | LinkedIn | `adapters/linkedin.js` | 🟢 Live |
 | Twitter/X | — | ⏸️ Paused |
 
-_Always register new adapters in `adapters/manager.js` and add `host_permissions` in `manifest.json`._
+_Always register new adapters in `adapters/index.js` and add `host_permissions` in `manifest.json`._
 
 ---
 
@@ -48,7 +48,7 @@ _Always register new adapters in `adapters/manager.js` and add `host_permissions
 | Feature | Status | Notes |
 |---------|--------|-------|
 | Shadow DOM injection | 🟢 Live | All UI isolated in shadow roots |
-| Cloudflare Worker proxy | 🟢 Live | `src/backend/worker.js` + `wrangler.toml` |
+| Cloudflare Worker proxy | 🟢 Live | `src/backend/src/index.js` + `wrangler.toml` |
 | Tone picker (3 levels) | 🟢 Live | Casual / Work Chat / Formal |
 | Undo button | 🟢 Live | Restores original text exactly |
 | Floating Decode button | 🟢 Live | Appears on text selection |
@@ -63,7 +63,7 @@ _Always register new adapters in `adapters/manager.js` and add `host_permissions
 ## Real File Map
 
 ```
-Tonal/
+tonal/
 ├── extension/                       ← self-contained Chrome Extension (MV3)
 │   ├── manifest.json                ← MV3 configuration
 │   ├── background.js                ← Service Worker → Cloudflare Worker proxy
@@ -92,8 +92,8 @@ Tonal/
 │       │   └── page.tsx
 │       └── components/
 │           └── TonalMockup.tsx      ← Interactive tone selector demo
-├── tests/                           ← Backend test suite (Node --test)
-└── extension_demo.html              ← Standalone Light-Mode UI States Playground
+├── backend/tests/                           ← Backend test suite (Node --test)
+└── extension/ui-spec.html              ← Standalone Light-Mode UI States Playground
 ```
 
 **AI model:** Groq Llama 3.3 70B via `https://api.groq.com/openai/v1/chat/completions`
@@ -151,11 +151,11 @@ User triggers tone change
 | 2026-07-14 | Mockup Tab Target Expansion | Configured ::before pseudo-element targets to expand Gmail/Slack tab hit bounds to 44px on mobile viewports. |
 | 2026-07-14 | Unified Branding Assets | Replaced SVGs with the official rounded square `icon128.png` branding across all files (mockups, navbar, popup, floating pill). |
 | 2026-07-14 | Purposeful Motion & Animation | Implemented CSS fades, ambient glows, Intersection Observer scroll reveals, and responsive active button feedback. |
-| 2026-07-14 | Standalone Light-Mode Visual Spec | Created a clean visual states catalog in `extension_demo.html` with no codes or technical bloat, styled in light mode. |
+| 2026-07-14 | Standalone Light-Mode Visual Spec | Created a clean visual states catalog in `extension/ui-spec.html` with no codes or technical bloat, styled in light mode. |
 | 2026-07-14 | Authentic Dynamic Mockup Headers | Styled interactive mockup headers to dynamically adapt their backgrounds and borders matching Gmail (#F2F6FC) and Slack (#3F0E40) branding when selected. |
 | 2026-07-14 | Global Dot Grid Background | Exposed the dot-grid drafting background pattern across the entire site by setting all main section backgrounds to transparent. |
 | 2026-07-14 | Mockup Card Border | Set a solid border of rgba(0, 0, 0, 0.15) to composer-mockup to stand out clearly on the global dot-grid background. |
-| 2026-07-14 | Test Suite Restoration | Relocated tests/ folder back to root to fix relative module imports and package.json integration. |
+| 2026-07-14 | Test Suite Restoration | Relocated backend/tests/ folder back to root to fix relative module imports and package.json integration. |
 | 2026-07-14 | Dynamic Mockup Height (480px) and Flex Sizing | Defined a fixed mockup height of 480px in globals.css and refactored inner container layouts to size dynamically using CSS Flexbox. |
 | 2026-07-14 | Scoped Text Selection Scoping Fix | Replaced global selectAll execution inside tonal.js with node-level scoped selection to protect external document text inputs. |
 | 2026-07-14 | Cloudflare Pages CORS and Rate-Limit Response Patches | Allowed Cloudflare Pages origins dynamically in worker.js and structured Groq API 429 rate limit exceptions into human-readable JSON payloads. |
@@ -167,7 +167,7 @@ User triggers tone change
 | 2026-07-22 | Extension Asset Build Sync | Added `website/scripts/copy-assets.cjs` prebuild step to sync extension assets locally and allow Vercel build compilation under the `website` root. |
 | 2026-07-22 | Whitelisted Extension Zip Package | Removed `.zip` exclusion for `website/public/tonal-extension.zip` in `.gitignore` to prevent 404 download errors on Vercel. |
 | 2026-07-22 | Cloudflare Worker CORS Whitelisting | Deployed Cloudflare Worker proxy with `ALLOWED_ORIGIN = "https://tonall.vercel.app"` and verified CORS preflight response headers. |
-| 2026-07-22 | Favicon Fallback Cleanup | Deleted default Next.js/Vercel `favicon.ico` in `app/` folder to enable seamless fallback to official Tonal brand icons in metadata. |
+| 2026-07-22 | Favicon Fallback Cleanup | Deleted default Next.js/Vercel `favicon.ico` in `app/` folder to enable seamless fallback to official tonal brand icons in metadata. |
 
 ---
 
@@ -201,4 +201,4 @@ _Append-only. Never repeat these._
 | 2026-07-22 | Modal Cut-off Under Zoom | Switched overlay positioning from fixed viewport dimensions (`width: 100vw; height: 100vh`) to absolute boundary pins (`top: 0; bottom: 0; left: 0; right: 0;`). |
 | 2026-07-22 | Vercel Subdirectory Import Missing Modules | Created `website/scripts/copy-assets.cjs` prebuild asset copy step so Vercel builds can resolve extension assets without path resolution errors. |
 | 2026-07-22 | Zip Download 404 on Vercel | Whitelisted `website/public/tonal-extension.zip` in root `.gitignore` to allow git tracking and production downloads. |
-| 2026-07-22 | Vercel Favicon Override | Deleted `website/src/app/favicon.ico` default Vercel triangle icon to fallback to Tonal branding PNG icons in metadata. |
+| 2026-07-22 | Vercel Favicon Override | Deleted `website/src/app/favicon.ico` default Vercel triangle icon to fallback to tonal branding PNG icons in metadata. |

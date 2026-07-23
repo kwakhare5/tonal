@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>tonal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="core/tonal.css?v=2" />
+  <script src="core/tonal.js"></script>
+  <style>
+    /* Clean Light Mode Documentation Theme */
+    /* Spec Target Position Override Guards */
+    .spec-preview-box {
+      position: relative;
+    }
+    .spec-preview-box .t-hitbox {
+      position: relative !important;
+      right: auto !important;
+      bottom: auto !important;
+      padding: 0 !important;
+      z-index: 1 !important;
+    }
+    #popover-target {
+      position: relative;
+      min-height: 180px;
+    }
+    #popover-target .popover {
+      position: relative !important;
+      bottom: auto !important;
+      right: auto !important;
+      opacity: 1 !important;
+      transform: none !important;
+      pointer-events: auto !important;
+      z-index: 1 !important;
+    }
+    #decode-float-target {
+      position: relative;
+    }
+    #decode-float-target .decode-float {
+      position: relative !important;
+      top: auto !important;
+      left: auto !important;
+      right: auto !important;
+      bottom: auto !important;
+      opacity: 1 !important;
+      transform: none !important;
+      pointer-events: auto !important;
+      z-index: 1 !important;
+    }
+    #decode-card-target {
+      position: relative;
+    }
+    #decode-card-target .decode-card {
+      position: relative !important;
+      top: auto !important;
+      left: auto !important;
+      right: auto !important;
+      bottom: auto !important;
+      opacity: 1 !important;
+      transform: none !important;
+      pointer-events: auto !important;
+      z-index: 1 !important;
+    }
+
+    :root {
+      --bg: #F9FAFB;
+      --panel: #FFFFFF;
+      --border: #E5E7EB;
+      --text: #111827;
+      --text-muted: #6B7280;
+      --blue: #0098f2;
+      --green: #34C759;
+      --red: #FF3B30;
+      --orange: #FF9F0A;
+
+      --font: 'DM Sans', sans-serif;
+      --mono: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      min-height: 100vh;
+      padding: 48px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      line-height: 1.5;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1100px;
+      display: flex;
+      flex-direction: column;
+      gap: 48px;
+    }
+
+    /* Header styling */
+    header {
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 24px;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 34px;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+
+    header p {
+      color: var(--text-muted);
+      font-size: 15px;
+    }
+
+    /* Section Styling */
+    .section-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .section-title::after {
+      content: '';
+      flex-grow: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* Component Spec Card Grid */
+    .spec-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 20px;
+    }
+
+    .spec-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      text-align: center;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    }
+
+    .spec-card-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .spec-preview-box {
+      background: #F9FAFB;
+      border: 1px dashed var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 70px;
+      width: 100%;
+      position: relative;
+    }
+
+    /* Columns layout for popover and toasts */
+    .side-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+
+    @media (min-width: 768px) {
+      .side-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .side-panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .side-panel-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 8px;
+      margin-bottom: 8px;
+    }
+
+    /* Override absolutely positioned/hidden elements inside static docs side-panel */
+    .side-panel .popover,
+    .side-panel .toast,
+    .side-panel .decode-float,
+    .side-panel .decode-card {
+      position: static !important;
+      opacity: 1 !important;
+      pointer-events: auto !important;
+      transform: none !important;
+    }
+
+    .side-panel .toast {
+      width: fit-content !important;
+    }
+
+    /* Sandbox Interactive area */
+    .sandbox-container {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      min-height: 380px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    }
+
+    .composer-mock {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.08);
+      width: 100%;
+      max-width: 540px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      color: var(--black);
+    }
+
+    .composer-header {
+      background: var(--gray-9);
+      border-bottom: 1px solid var(--gray-8);
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gray-4);
+    }
+
+    .composer-body {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      position: relative;
+    }
+
+    .composer-textarea-container {
+      position: relative;
+      min-height: 140px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .composer-textarea {
+      width: 100%;
+      border: none;
+      outline: none;
+      font-family: var(--font);
+      font-size: 15px;
+      color: var(--black);
+      line-height: 1.5;
+      resize: none;
+      background: transparent;
+      flex-grow: 1;
+    }
+
+    .sandbox-pill-wrapper {
+      position: absolute;
+      right: 4px;
+      bottom: 4px;
+      z-index: 200;
+    }
+
+    .sandbox-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 24px;
+      justify-content: center;
+    }
+
+    .sandbox-btn {
+      background: #FFF;
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+    }
+
+    .sandbox-btn:hover {
+      background: #F9FAFB;
+      border-color: var(--text-muted);
+    }
+
+    .sandbox-btn.active {
+      background: var(--black);
+      border-color: var(--black);
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- Header -->
+    <header>
+      <h1>Tonal Extension UI States</h1>
+      <p>Visual states catalog and live mockup sandbox for the Tonal composer pill.</p>
+    </header>
+
+    <!-- Section 1: Pill States -->
+    <section>
+      <div class="section-title">1. Floating Pill Component States</div>
+
+      <div class="spec-grid">
+        <!-- 1. Rest State -->
+        <div class="spec-card">
+          <div class="spec-card-title">Rest State</div>
+          <div class="spec-preview-box" id="pill-rest-target"></div>
+        </div>
+
+        <!-- 2. Expanded State -->
+        <div class="spec-card">
+          <div class="spec-card-title">Expanded State</div>
+          <div class="spec-preview-box" id="pill-expanded-target"></div>
+        </div>
+
+        <!-- 3. Loading State -->
+        <div class="spec-card">
+          <div class="spec-card-title">Converting State</div>
+          <div class="spec-preview-box" id="pill-loading-target"></div>
+        </div>
+
+        <!-- 4. Done / Undo State -->
+        <div class="spec-card">
+          <div class="spec-card-title">Done State</div>
+          <div class="spec-preview-box" id="pill-done-target"></div>
+        </div>
+
+        <!-- 5. Error State -->
+        <div class="spec-card">
+          <div class="spec-card-title">Error / Retry</div>
+          <div class="spec-preview-box" id="pill-error-target"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Side-by-side grid for popover and toasts -->
+    <div class="side-grid">
+      <!-- Popover Section -->
+      <div class="side-panel">
+        <div class="side-panel-title">2. Tone Selector Popover</div>
+        <div style="display: flex; justify-content: center; padding: 20px 0;" id="popover-target"></div>
+      </div>
+
+      <!-- Toasts Section -->
+      <div class="side-panel">
+        <div class="side-panel-title">3. Toast Notification Alerts</div>
+        <div style="display: flex; flex-direction: column; gap: 16px; align-items: center; justify-content: center; height: 100%; min-height: 180px;">
+          <div class="toast toast--success">
+            <div class="toast-dot toast-dot--success"></div>
+            <span>Text rewritten successfully</span>
+          </div>
+          <div class="toast toast--error">
+            <div class="toast-dot toast-dot--error"></div>
+            <span>Rewriting failed. Please retry</span>
+          </div>
+          <div class="toast toast--info">
+            <div class="toast-dot toast-dot--info"></div>
+            <span>Rewriting undone</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Side-by-side grid for Decode Float and Decode Card -->
+    <div class="side-grid">
+      <!-- Decode Float Section -->
+      <div class="side-panel">
+        <div class="side-panel-title">4. Decode Floating Button</div>
+        <div style="display: flex; justify-content: center; padding: 20px 0; align-items: center; min-height: 180px;" id="decode-float-target"></div>
+      </div>
+
+      <!-- Decode Card Section -->
+      <div class="side-panel">
+        <div class="side-panel-title">5. Decode Result Card</div>
+        <div style="display: flex; justify-content: center; padding: 20px 0;" id="decode-card-target"></div>
+      </div>
+    </div>
+
+    <!-- Section 6: Extension Popup UI -->
+    <section>
+      <div class="section-title">6. Chrome Extension Popup Window</div>
+
+      <div class="side-grid">
+        <!-- Popup Default state -->
+        <div class="side-panel" style="align-items: center; justify-content: center;">
+          <div class="side-panel-title" style="width: 100%;">Default Popup View</div>
+          <iframe src="popup.html" style="width: 282px; height: 310px; border: 1px solid var(--border); border-radius: 12px; box-shadow: var(--sh-md); display: block; margin: 0 auto; overflow: hidden;" scrolling="no"></iframe>
+        </div>
+
+        <!-- Popup info -->
+        <div class="side-panel" style="justify-content: center;">
+          <div class="side-panel-title">Popup UI Specs</div>
+          <div style="font-size: 14px; color: var(--text-muted); display: flex; flex-direction: column; gap: 12px;">
+            <p>The Chrome Extension popup provides a clean, native interface for the user to configure global preferences.</p>
+            <p><strong>Design System Alignment:</strong></p>
+            <ul style="padding-left: 20px; display: flex; flex-direction: column; gap: 6px; list-style-type: disc;">
+              <li><strong>280px Width:</strong> Sized perfectly for Chrome's native extensions window.</li>
+              <li><strong>Segmented Control:</strong> Seamlessly switches default tone using shared rounded corner metrics (<code style="font-family: var(--mono); font-size: 12px;">--r-md</code>).</li>
+              <li><strong>Dynamic Status Badge:</strong> Confirms helper state and system availability.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 7: Interactive Sandbox -->
+    <section>
+      <div class="section-title">7. Live Interactive Sandbox</div>
+
+      <div class="sandbox-container">
+        <!-- Sandbox State Controls -->
+        <div class="sandbox-controls">
+          <button class="sandbox-btn active" id="btn-rest" onclick="setSandboxState('rest')">Rest Mode</button>
+          <button class="sandbox-btn" id="btn-expanded" onclick="setSandboxState('expanded')">Expanded Mode</button>
+          <button class="sandbox-btn" id="btn-loading" onclick="setSandboxState('loading')">Converting Mode</button>
+          <button class="sandbox-btn" id="btn-done" onclick="setSandboxState('done')">Done Mode</button>
+          <button class="sandbox-btn" id="btn-error" onclick="setSandboxState('error')">Error Mode</button>
+          <button class="sandbox-btn" style="border-color: var(--orange);" onclick="toggleSandboxPopover()">Toggle Popover</button>
+        </div>
+
+        <div class="composer-mock">
+          <div class="composer-header">
+            <span>New Message</span>
+            <span>✕</span>
+          </div>
+          <div class="composer-body">
+            <div class="composer-textarea-container">
+              <textarea class="composer-textarea" id="sandbox-textarea" readonly>hey guys need that report asap thx</textarea>
+
+              <!-- Floating Pill wrapper -->
+              <div class="sandbox-pill-wrapper">
+                <!-- Sandbox Popover Container -->
+                <div id="sandbox-popover-container"></div>
+                <!-- Sandbox Pill Container -->
+                <div id="sandbox-pill-container"></div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+
+      </div>
+    </section>
+  </div>
+
+  <script>
+    // Render static specs on load
+    window.addEventListener('DOMContentLoaded', () => {
+      // Helper to render pills inside wrappers to preserve spec box styles
+      const renderPillInBox = (targetId, state, toneId) => {
+        const box = document.getElementById(targetId);
+        const wrapper = document.createElement('div');
+        box.appendChild(wrapper);
+        tonal.renderPill(wrapper, state, toneId, false, {
+          onClick: () => {},
+          onHover: () => {},
+          onTogglePopover: () => {}
+        });
+      };
+
+      // 1. Pill States
+      renderPillInBox('pill-rest-target', 'rest', 'workChat');
+      renderPillInBox('pill-expanded-target', 'expanded', 'workChat');
+      renderPillInBox('pill-loading-target', 'loading', 'workChat');
+      renderPillInBox('pill-done-target', 'done', 'workChat');
+      renderPillInBox('pill-error-target', 'error', 'workChat');
+
+      // 2. Popover Spec
+      const popoverSpec = tonal.createPopover('workChat', () => {}, () => {}, () => {}, () => {});
+      document.getElementById('popover-target').appendChild(popoverSpec);
+
+      // 4. Decode Float Spec
+      const floatSpec = tonal.createDecodeFloat(() => {});
+      floatSpec.classList.add('decode-float--active');
+      document.getElementById('decode-float-target').appendChild(floatSpec);
+
+      // 5. Decode Card Spec
+      const cardSpec = tonal.createDecodeCard('Hey team, please share the latest report as soon as possible. Thanks!', () => {});
+      cardSpec.classList.add('decode-card--active');
+      document.getElementById('decode-card-target').appendChild(cardSpec);
+
+      // Initialize Sandbox
+      updateSandboxPill();
+      renderSandboxPopover();
+    });
+
+    let sandboxState = 'rest';
+    let sandboxPopoverActive = false;
+    let selectedSandboxTone = 'workChat';
+
+    const MOCK_TEXTS = {
+      original: 'hey guys need that report asap thx',
+      workChat: 'Hey team, please share the latest report as soon as possible. Thanks!',
+      casual: 'hey guys, can someone send over that report whenever you get a chance? thanks! 🙌',
+      formal: 'Dear team, could you please send over the latest report at your earliest convenience? Thank you.'
+    };
+
+    function setSandboxState(state) {
+      sandboxState = state;
+      sandboxPopoverActive = false;
+      renderSandboxPopover();
+
+      // Update control buttons
+      document.querySelectorAll('.sandbox-btn').forEach(btn => btn.classList.remove('active'));
+      const activeBtn = document.getElementById(`btn-${state}`);
+      if (activeBtn) activeBtn.classList.add('active');
+
+      updateSandboxPill();
+    }
+
+    function updateSandboxPill() {
+      const container = document.getElementById('sandbox-pill-container');
+      tonal.renderPill(
+        container,
+        sandboxState,
+        selectedSandboxTone,
+        sandboxPopoverActive,
+        {
+          onClick: handleSandboxPillClick,
+          onHover: (hovering) => {
+            if (sandboxState === 'rest' && hovering) setSandboxState('hover');
+            if (sandboxState === 'hover' && !hovering) setSandboxState('rest');
+          },
+          onTogglePopover: toggleSandboxPopover
+        }
+      );
+    }
+
+    function renderSandboxPopover() {
+      const container = document.getElementById('sandbox-popover-container');
+      container.innerHTML = '';
+      if (sandboxPopoverActive) {
+        const pop = tonal.createPopover(
+          selectedSandboxTone,
+          (toneId) => {
+            triggerSandboxTone(toneId);
+          },
+          () => {
+            toggleSandboxPopover();
+          },
+          () => {},
+          () => {}
+        );
+        container.appendChild(pop);
+      }
+      // Sync chevron rotation
+      updateSandboxPill();
+    }
+
+    function toggleSandboxPopover() {
+      if (sandboxState !== 'expanded') {
+        setSandboxState('expanded');
+      }
+      sandboxPopoverActive = !sandboxPopoverActive;
+      renderSandboxPopover();
+    }
+
+    function triggerSandboxTone(toneId) {
+      selectedSandboxTone = toneId;
+      sandboxPopoverActive = false;
+      renderSandboxPopover();
+      setSandboxState('expanded');
+
+      // Simulate rewrite operation
+      setTimeout(() => {
+        setSandboxState('loading');
+        setTimeout(() => {
+          document.getElementById('sandbox-textarea').value = MOCK_TEXTS[toneId];
+          setSandboxState('done');
+          tonal.showToast(document.body, 'Text rewritten successfully', 'success');
+        }, 1200);
+      }, 200);
+    }
+
+    function handleSandboxPillClick() {
+      if (sandboxState === 'rest' || sandboxState === 'hover') {
+        setSandboxState('expanded');
+      } else if (sandboxState === 'expanded') {
+         toggleSandboxPopover();
+      } else if (sandboxState === 'done') {
+        // Undo rewrite
+        document.getElementById('sandbox-textarea').value = MOCK_TEXTS.original;
+        setSandboxState('rest');
+        tonal.showToast(document.body, 'Rewriting undone', 'success');
+      } else if (sandboxState === 'error') {
+        setSandboxState('loading');
+        setTimeout(() => {
+          document.getElementById('sandbox-textarea').value = MOCK_TEXTS[selectedSandboxTone];
+          setSandboxState('done');
+        }, 1200);
+      }
+    }
+  </script>
+</body>
+</html>

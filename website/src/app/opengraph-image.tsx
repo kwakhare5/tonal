@@ -1,5 +1,5 @@
 export const runtime = 'edge';
-export const alt = 'Tonal — Inline Tone Adjustment';
+export const alt = 'tonal — Inline Tone Adjustment';
 export const contentType = 'image/png';
 
 export default async function Image() {
@@ -23,7 +23,7 @@ export default async function Image() {
     return new Response(
       `<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
         <rect width="1200" height="630" fill="#FFFFFF"/>
-        <text x="600" y="315" font-family="sans-serif" font-size="48" font-weight="bold" fill="#0F0F0F" text-anchor="middle">Tonal</text>
+        <text x="600" y="315" font-family="sans-serif" font-size="48" font-weight="bold" fill="#0F0F0F" text-anchor="middle">tonal</text>
         <text x="600" y="370" font-family="sans-serif" font-size="24" fill="#666666" text-anchor="middle">Inline Tone Adjustment Chrome Extension</text>
       </svg>`,
       {

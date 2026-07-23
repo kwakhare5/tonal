@@ -1,4 +1,4 @@
-# Tonal — Architecture & Implementation Reference
+# tonal — Architecture & Implementation Reference
 
 ## Supported Platforms
 
@@ -80,7 +80,7 @@ INPUT_DATA: {TEXT}
 - **Adaptive Flipping**: Tone menu opens downward if the input is near the top of the screen.
 - **Toast System**: Semantic color dots (Green/Red/Orange) for status feedback.
 - **Accessibility**: Full `role="button"`, `aria-label`, and `tabindex` support for keyboard navigation.
-- **Visual spec playground**: A standalone light-mode playground is available in `extension_demo.html` to preview all states simultaneously without any code snippets.
+- **Visual spec playground**: A standalone light-mode playground is available in `extension/ui-spec.html` to preview all states simultaneously without any code snippets.
 - **Onboarding**: "Shift the tone here â†“" Coach Mark tooltips for first-time use.
 
 ---
@@ -97,7 +97,7 @@ INPUT_DATA: {TEXT}
 - **Shadow Scanning**: Scans for host Shadow Roots to find nested text boxes.
 
 - **Zero Drift**: All UI styling is stored in `core/tonal.css` and injected dynamically inside the Shadow DOM using `chrome.runtime.getURL`. Do NOT use inline CSS in JS.
-- **Shadow DOM**: Every Tonal component MUST be wrapped in an isolated Shadow Root.
+- **Shadow DOM**: Every tonal component MUST be wrapped in an isolated Shadow Root.
 - **Scoping**: All design tokens (variables) MUST be scoped to `:host` inside the Shadow Root.
 - **Docking**: Use a high-frequency `requestAnimationFrame` watchdog to maintain coordinates.
 - **Memory Safety**: `ResizeObserver` MUST be cleaned up on element disconnection.
@@ -115,7 +115,7 @@ INPUT_DATA: {TEXT}
 ```json
 {
   "manifest_version": 3,
-  "name": "Tonal — Two-Way Tone Translator",
+  "name": "tonal — Two-Way Tone Translator",
   "version": "1.0.0",
   "description": "Two-way tone translator. Convert casual to formal, or decode corporate speak — inside Gmail, Slack, and LinkedIn.",
   "permissions": ["storage"],
@@ -139,7 +139,7 @@ INPUT_DATA: {TEXT}
         "adapters/linkedin.js",
         "adapters/slack.js",
         "adapters/gmail.js",
-        "adapters/manager.js",
+        "adapters/index.js",
         "core/config.cjs",
         "core/tonal.js",
         "content.js"
@@ -242,7 +242,7 @@ _Auto-updated by AI when it hits project-specific errors._
 - Do NOT use `localStorage` — use `chrome.storage` for all persistence.
 - Do NOT inject UI into `<iframe>` elements.
 - All CSS MUST be inlined in `tonal.js` — no external CSS files for injected UI.
-- Every Tonal component MUST be wrapped in an isolated Shadow Root.
+- Every tonal component MUST be wrapped in an isolated Shadow Root.
 - All design tokens (CSS variables) MUST be scoped to `:host` inside the Shadow Root.
 
 
@@ -298,7 +298,7 @@ _Auto-maintained by AI. Updated whenever a new token or class is discovered._
  - **2026-07-14 - Headline marker highlight effect**: Selected a sweeping soft blue marker-like background highlight (`.text-highlight`) on the hero heading to emphasize "without breaking focus."
  - **2026-07-14 - Unified Branding Assets**: Replaced vector SVGs with the official rounded square `icon128.png` branding across all files (mockups, navbar, popup, floating pill).
  - **2026-07-14 - Purposeful Motion & Animation**: Implemented CSS fades, ambient glows, Intersection Observer scroll reveals, and responsive active button feedback.
- - **2026-07-14 - Standalone Light-Mode Visual Spec**: Created a clean visual states catalog in `extension_demo.html` with no codes or technical bloat, styled in light mode.
+ - **2026-07-14 - Standalone Light-Mode Visual Spec**: Created a clean visual states catalog in `extension/ui-spec.html` with no codes or technical bloat, styled in light mode.
  - **2026-07-14 - Dynamic Mockup Height (480px) and Flex Sizing**: Defined a fixed mockup height of 480px in globals.css and refactored inner container layouts to size dynamically using CSS Flexbox.
  - **2026-07-14 - Scoped Text Selection Scoping Fix**: Replaced global selectAll execution inside tonal.js with node-level scoped selection to protect external document text inputs.
  - **2026-07-14 - Cloudflare Pages CORS and Rate-Limit Response Patches**: Allowed Cloudflare Pages origins dynamically in worker.js and structured Groq API 429 rate limit exceptions into human-readable JSON payloads.
@@ -310,7 +310,7 @@ _Auto-maintained by AI. Updated whenever a new token or class is discovered._
  - **2026-07-22 - Extension Asset Build Sync**: Added `website/scripts/copy-assets.cjs` prebuild step to sync extension assets locally and allow Vercel build compilation under the `website` root.
  - **2026-07-22 - Whitelisted Extension Zip Package**: Removed `.zip` exclusion for `website/public/tonal-extension.zip` in `.gitignore` to prevent 404 download errors on Vercel.
  - **2026-07-22 - Cloudflare Worker CORS Whitelisting**: Deployed Cloudflare Worker proxy with `ALLOWED_ORIGIN = "https://tonall.vercel.app"` and verified CORS preflight response headers.
- - **2026-07-22 - Favicon Fallback Cleanup**: Deleted default Next.js/Vercel `favicon.ico` in `app/` folder to enable seamless fallback to official Tonal brand icons in metadata.
+ - **2026-07-22 - Favicon Fallback Cleanup**: Deleted default Next.js/Vercel `favicon.ico` in `app/` folder to enable seamless fallback to official tonal brand icons in metadata.
  
  ---
  
@@ -325,31 +325,31 @@ _Auto-maintained by AI. Updated whenever a new token or class is discovered._
  - **Mistakes caught:** None.
 
  ### 2026-07-11 — Built Next.js Website
- - **Changed:** `website/` directory (created), `tests/worker.test.js`, `tests/worker_real_scenarios.test.js`, `ARCHITECTURE.md`
+ - **Changed:** `website/` directory (created), `backend/tests/worker.test.js`, `backend/tests/worker_real_scenarios.test.js`, `ARCHITECTURE.md`
  - **Why:** Transition the landing page into a production-ready Next.js + TypeScript project to serve as the face of the product.
- - **Patterns introduced:** Next.js Client Component state flow to control live typing animations, dropdown menus, and copy actions in React. Integrated custom DM Sans and DM Mono fonts via Next.js Google Fonts and imported the original PNG logo using optimized `<Image>` tags. Aligned visualizer padding grids (px-4 py-3, p-5) to strict Apple HIG and Radix UI layout guidelines. Upgraded Tonal pill buttons to match Design System specs (24px height, integrated SVG logo, w-[192px] dropdown menu with 14px rounded corners). Added a dynamic Example Selector preloaded with all 15 tone and 4 decoder training datasets, alongside visual indicators showing isolated Shadow DOM (#tonal-root) boundaries. Created integration tests in `worker_real_scenarios.test.js` to simulate and verify correct backend behavior during real-world Slack, LinkedIn, and Gmail extension usage.
+ - **Patterns introduced:** Next.js Client Component state flow to control live typing animations, dropdown menus, and copy actions in React. Integrated custom DM Sans and DM Mono fonts via Next.js Google Fonts and imported the original PNG logo using optimized `<Image>` tags. Aligned visualizer padding grids (px-4 py-3, p-5) to strict Apple HIG and Radix UI layout guidelines. Upgraded tonal pill buttons to match Design System specs (24px height, integrated SVG logo, w-[192px] dropdown menu with 14px rounded corners). Added a dynamic Example Selector preloaded with all 15 tone and 4 decoder training datasets, alongside visual indicators showing isolated Shadow DOM (#tonal-root) boundaries. Created integration tests in `worker_real_scenarios.test.js` to simulate and verify correct backend behavior during real-world Slack, LinkedIn, and Gmail extension usage.
  - **Mistakes caught:** Deprecated `tw-animate-css` import from default shadcn setups, unused imports causing TS typechecking compile failure, native img tag triggering LCP lint warnings, inconsistent paddings in visualizer platform tabs, custom text labels in extension pills, static text limits in interactive editor testing, and missing backend test coverage for real website origins and prompt injection scenarios.
 
  ### 2026-07-13 — Modern SaaS Redesign & Architecture Patches
- - **Changed:** `website/src/app/page.tsx`, `src/backend/worker.js`, `src/extension/content.js`, `tests/worker_real_scenarios.test.js`, `index.html` (deleted).
+ - **Changed:** `website/src/app/page.tsx`, `src/backend/src/index.js`, `src/extension/content.js`, `backend/tests/worker_real_scenarios.test.js`, `index.html` (deleted).
  - **Why:** The user requested a "Modern SaaS" aesthetic redesign with 2px rounded corners and a floating navbar, followed by an @ARCHITECTURE-REVIEW of the entire codebase for stability.
  - **Patterns introduced:** Floating navbar with blur, HTML entity escaping for Prompt Injection defense (`<`, `>`), and optimized DOM polling without `setInterval`.
  - **Mistakes caught:** Attempted to split `content.js` monolith into modules, but correctly aborted the plan during the `@TDD` phase due to lack of an E2E testing framework to verify extension injection order.
 
  ### 2026-07-14 — LinkedIn Adapter Completion, UI Resizing & Tooling Overhaul
- - **Changed:** `extension/adapters/linkedin.js`, `website/src/app/page.tsx`, `website/src/app/globals.css`, `website/src/components/TonalMockup.tsx`, `package.json`, `extension/jsconfig.json` (created), `extension/globals.d.ts` (created), `tests/` path updates.
+ - **Changed:** `extension/adapters/linkedin.js`, `website/src/app/page.tsx`, `website/src/app/globals.css`, `website/src/components/TonalMockup.tsx`, `package.json`, `extension/jsconfig.json` (created), `extension/globals.d.ts` (created), `backend/tests/` path updates.
  - **Why:** Complete the LinkedIn Platform adapter (Draft.js modal targetings), enlarge the website preview visualizer, redesign the floating navbar to include middle links and scroll states, fix root package.json dev scripts, and introduce TypeScript checkJs validation.
- - **Patterns introduced:** Recursive DOM child node scanning to identify the last text node for cursor snapping, React hook-based header scroll shrink transition, component extraction in [TonalMockup.tsx](file:///d:/Tonal/website/src/components/TonalMockup.tsx) for `<MockTonalPill />` reuse, and JSDoc-based TS analysis configuration.
+ - **Patterns introduced:** Recursive DOM child node scanning to identify the last text node for cursor snapping, React hook-based header scroll shrink transition, component extraction in [TonalMockup.tsx](file:///d:/tonal/website/src/components/TonalMockup.tsx) for `<MocktonalPill />` reuse, and JSDoc-based TS analysis configuration.
  - **Mistakes caught:** Broken test imports pointing to obsolete `src/backend/` folders, duplicate `.hero` class rule override in globals.css, and multiple unused/stale templated default SVGs in public assets (all cleaned).
 
  ### 2026-07-14 — Brand Logo Unification, Purposeful Motion & Standalone Spec playground
- - **Changed:** `extension_demo.html` (created), `extension/core/tonal.js`, `extension/core/tonal.css`, `website/src/app/page.tsx`, `website/src/app/layout.tsx`, `website/src/components/TonalMockup.tsx`, `extension/popup.html`, `README.md`, `CONTEXT.md`, `ARCHITECTURE.md`, `CLAUDE.md`.
+ - **Changed:** `extension/ui-spec.html` (created), `extension/core/tonal.js`, `extension/core/tonal.css`, `website/src/app/page.tsx`, `website/src/app/layout.tsx`, `website/src/components/TonalMockup.tsx`, `extension/popup.html`, `README.md`, `CONTEXT.md`, `ARCHITECTURE.md`, `CLAUDE.md`.
  - **Why:** Unified the brand logo to the original rounded square `icon128.png` everywhere, built clean light-mode visual speculation playground showcasing all pill/popover/toast states, and integrated scroll fade & active animations.
  - **Patterns introduced:** Light-mode layout catalogs, visual speculative layouts without codes, dynamic checkbox/subtext toggling in popover DOM mocks, and scroll reveal handlers.
  - **Mistakes caught:** Custom popover menu mocks in sandbox originally had header wrappers that differed from extension content script DOM renders; successfully aligned them to match `tonal.js` item builder outputs.
 
  ### 2026-07-14 — Extension Fixes & Mockup Sizing Pass
- - **Changed:** `extension/tonal.js`, `extension/background.js`, `extension/adapters/gmail.js`, `backend/worker.js`, `website/src/components/TonalMockup.tsx`, `website/src/app/globals.css`, `tests/bug_regression.test.js`
+ - **Changed:** `extension/core/tonal.js`, `extension/background.js`, `extension/adapters/gmail.js`, `backend/src/index.js`, `website/src/components/TonalMockup.tsx`, `website/src/app/globals.css`, `backend/tests/bug_regression.test.js`
  - **Why:** Scoped text insertion selection to target element nodes to stop page-level text corruption on Gmail, resolved inactive tab contrast issues, added LinkedIn mockup view, enabled worker to allow Cloudflare Pages CORS requests, and mapped Groq API rate limit responses.
  - **Patterns introduced:** Dynamic opacity transitions matching active header luminance, env-based allowed CORS origins, and regression tests verifying platform payload context mapping.
  - **Mistakes caught:** Duplicate React mockup refs mounted in different tabs resulting in mounting race conditions, and selectAll triggering page-wide text input resets.

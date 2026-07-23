@@ -143,7 +143,7 @@
       const text = selection.toString().trim();
 
       if (text.length > 0 && !this.card) {
-        const adapter = window.TonalAdapters.manager.getAdapter();
+        const adapter = window.tonalAdapters.manager.getAdapter();
         if (selection.rangeCount === 0) return;
         const range = selection.getRangeAt(0);
         const node = range.commonAncestorContainer;
@@ -178,7 +178,7 @@
         if (!rect || !this.selectedText) return;
 
         if (!this.button) {
-          this.button = window.Tonal.createDecodeFloat(() => this.decodeText());
+          this.button = window.tonal.createDecodeFloat(() => this.decodeText());
           this.shadowRoot.appendChild(this.button);
           this.magnetPhysics.register(this.button, 60, 0.35);
         }
@@ -293,7 +293,7 @@
         this.showCard(result, this.selectedRect);
       } catch (err) {
         this.isDecoding = false;
-        window.Tonal.showToast(this.shadowRoot, "Decode failed", "error");
+        window.tonal.showToast(this.shadowRoot, "Decode failed", "error");
       }
     }
 
@@ -315,7 +315,7 @@
         if (aboveTop > 12) {
           top = aboveTop;
         } else {
-          this.card = window.Tonal.createDecodeCard(resultText, dismissCard);
+          this.card = window.tonal.createDecodeCard(resultText, dismissCard);
           Object.assign(this.card.style, {
             position: "fixed",
             left: "50%",
@@ -332,7 +332,7 @@
       }
 
       left = Math.max(12, Math.min(left, vW - cardWidth - 12));
-      this.card = window.Tonal.createDecodeCard(resultText, dismissCard);
+      this.card = window.tonal.createDecodeCard(resultText, dismissCard);
       Object.assign(this.card.style, {
         position: "absolute",
         left: `${left}px`,
@@ -386,7 +386,7 @@
       if (this.scanTimeout) clearTimeout(this.scanTimeout);
       this.scanTimeout = setTimeout(() => {
         if (document.visibilityState === "hidden") return;
-        const adapter = window.TonalAdapters.manager.getAdapter();
+        const adapter = window.tonalAdapters.manager.getAdapter();
         if (!adapter || adapter.id === "none") return;
 
         const scanNode = (root) => {
@@ -410,7 +410,7 @@
     }
 
     register(input, adapter) {
-      const wrap = window.Tonal.h("div", {
+      const wrap = window.tonal.h("div", {
         className: "t-wrap",
         style: "position:absolute; pointer-events:auto; width:0; height:0;",
       });
@@ -454,7 +454,7 @@
       if (!entry) return;
 
       if (!entry.pill) {
-        entry.pill = window.Tonal.h("div", {
+        entry.pill = window.tonal.h("div", {
           className: "t-pill",
           style:
             "position:absolute; right:0; bottom:0; transition: transform 0.2s cubic-bezier(0.2, 0, 0, 1);",
@@ -463,7 +463,7 @@
         this.magnetPhysics.register(entry.pill, 50, 0.25);
       }
 
-      window.Tonal.renderPill(
+      window.tonal.renderPill(
         entry.pill,
         entry.state,
         entry.tone,
@@ -519,7 +519,7 @@
     updatePopoverState(entry) {
       if (entry.popover) {
         if (!entry.popNode) {
-          entry.popNode = window.Tonal.createPopover(
+          entry.popNode = window.tonal.createPopover(
             entry.tone,
             (t) => {
               entry.tone = t;
@@ -580,7 +580,7 @@
       if (!entry) return;
       const currentText = entry.adapter.getValue(input);
       if (!currentText || currentText.length < 2) {
-        return window.Tonal.showToast(
+        return window.tonal.showToast(
           this.shadowRoot,
           "Type something first",
           "error",
@@ -597,7 +597,7 @@
       try {
         let res = await AIClient.call(sourceText, "convert", entry.tone);
         if (entry.adapter.getValue(input) !== textAtStart) {
-          window.Tonal.showToast(
+          window.tonal.showToast(
             this.shadowRoot,
             "Draft changed. Re-click to update.",
             "error",
@@ -612,13 +612,13 @@
           input.isContentEditable,
         );
         entry.state = "done";
-        window.Tonal.showToast(this.shadowRoot, "Converted");
+        window.tonal.showToast(this.shadowRoot, "Converted");
       } catch (err) {
         entry.state = "error";
         let msg = "AI Offline";
         if (err.message === "Failed to fetch") msg = "Check your internet";
         if (err.message === "Extension reloaded. Please refresh.") msg = "Extension updated. Refresh page.";
-        window.Tonal.showToast(this.shadowRoot, msg, "error");
+        window.tonal.showToast(this.shadowRoot, msg, "error");
       }
       this.render(input);
     }
@@ -633,7 +633,7 @@
       );
       entry.state = "rest";
       this.render(input);
-      window.Tonal.showToast(this.shadowRoot, "Restored");
+      window.tonal.showToast(this.shadowRoot, "Restored");
     }
 
     requestPositionUpdate() {
@@ -720,7 +720,7 @@
 
       this.initGlobalListeners();
       this.initObservers();
-      window.Tonal.injectFonts();
+      window.tonal.injectFonts();
     }
 
     getShadowRoot() {
@@ -734,7 +734,7 @@
       }
       const shadow = host.shadowRoot || host.attachShadow({ mode: "open" });
       if (!shadow.querySelector("style")) {
-        window.Tonal.injectStyles(shadow);
+        window.tonal.injectStyles(shadow);
       }
       return shadow;
     }
@@ -817,10 +817,10 @@
     }
   }
 
-  if (window.Tonal) {
+  if (window.tonal) {
     window.tonalInjector = new TonalBootstrap();
     console.info(
-      "%c Tonal Elite %c Active on " + window.location.host,
+      "%c tonal Elite %c Active on " + window.location.host,
       "background: #000; color: #fff; padding: 2px 5px; border-radius: 3px;",
       "color: #888;",
     );
