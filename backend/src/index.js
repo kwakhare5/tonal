@@ -154,7 +154,7 @@ function getCorsHeaders(origin, environment) {
   return {
     "Access-Control-Allow-Origin": allowed ? (origin || "*") : "null",
     "Access-Control-Allow-Methods": "POST, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type, Authorization",
+    "Access-Control-Allow-Headers": "Content-Type",
   };
 }
 
@@ -172,15 +172,6 @@ export default {
 
     if (request.method !== "POST")
       return json({ success: false, error: "Method not allowed" }, 405, corsHeaders);
-
-    // Auth token validation — requires Authorization: Bearer <token>
-    if (environment.AUTH_TOKEN) {
-      const authHeader = request.headers.get("Authorization") || "";
-      const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : "";
-      if (token !== environment.AUTH_TOKEN) {
-        return json({ success: false, error: "Unauthorized" }, 401, corsHeaders);
-      }
-    }
 
     let body;
     try {

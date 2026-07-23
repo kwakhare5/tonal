@@ -2,10 +2,8 @@
  * Tonal Background Service Worker
  */
 
-const CONFIG = {
-  WORKER_URL: "https://tonal-proxy.kwakhare5.workers.dev",
-  AUTH_TOKEN: "tonal_sk_7f3a9b2e4d1c8f5a6b0e3d7c9a2f4b8e",
-};
+const WORKER_URL = "https://tonal-proxy.kwakhare5.workers.dev";
+
 
 /**
  * Detects the platform from a tab URL.
@@ -63,11 +61,10 @@ async function handleRequest(request, sendResponse, platform) {
   };
 
   try {
-    const response = await fetch(CONFIG.WORKER_URL, {
+    const response = await fetch(WORKER_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${CONFIG.AUTH_TOKEN}`,
       },
       body: JSON.stringify(payload),
     });
