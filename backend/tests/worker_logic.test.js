@@ -33,6 +33,7 @@ test('Worker — CORS Forbidden Origin', async () => {
 });
 
 test('Worker — Prompt Injection Protection Payload', async () => {
+  /** @type {{ messages: Array<{role:string, content:string}>, [key:string]: unknown } | null} */
   let capturedPayload = null;
 
   // Mock global fetch to intercept Groq request
