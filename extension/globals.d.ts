@@ -5,4 +5,5 @@ interface Window {
   tonal: any;
   tonalAdapters: any;
   tonalInjector: any;
+  chrome: any;
 }
