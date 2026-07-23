@@ -14,7 +14,7 @@
 
   <br/>
 
-  ![Version](https://img.shields.io/badge/version-1.0.0-blue?style=for-the-badge)
+  ![Version](https://img.shields.io/badge/version-1.1.0-blue?style=for-the-badge)
   ![License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge)
   ![Last Commit](https://img.shields.io/github/last-commit/kwakhare5/tonal?style=for-the-badge&color=orange)
   ![Stars](https://img.shields.io/github/stars/kwakhare5/tonal?style=for-the-badge&color=yellow)
@@ -67,9 +67,12 @@ tonal solves the friction of switching between casual drafts and professional ex
 |:---:|---|---|
 | ✅ | **Precision Sending** | Convert casual drafts to Formal Professional or Work Chat instantly. |
 | ✅ | **Blunt Decoding** | Highlight jargon and get a plain English explanation in a magnetic viewport card. |
-| ✅ | **1.5s Watchdog** | A heartbeat loop ensures the UI persists through complex React/Lexical re-renders. |
 | ✅ | **Identity Lock** | AI engine preserves names, dates, emails, and numbers as immutable constants. |
 | ✅ | **Platform Adapters** | Custom DOM synchronization for Gmail, Slack, and LinkedIn to prevent cursor drift. |
+| ✅ | **Keyboard Shortcut** | Press `Ctrl+Shift+T` (Mac: `Cmd+Shift+T`) to activate tonal on any focused input — no mouse needed. |
+| ✅ | **Per-Site Tone Memory** | Remembers your last tone per site. Gmail, Slack, LinkedIn each retain their own preference. |
+| ✅ | **Persistent Undo History** | Every rewrite saved locally (last 10). Undo anytime, even after navigating away. |
+| ✅ | **Offline Mode** | Built-in `OfflineToneEngine` — 30+ word-swap rules per tone. Works with zero network. |
 
 <br/>
 
@@ -114,6 +117,7 @@ flowchart LR
     C <--> E[Background Service Worker]
     E <--> F[Cloudflare Proxy]
     F <--> G[Groq Llama 3.3]
+    F -.->|CORS origin check| E
 ```
 
 <br/>
@@ -202,6 +206,8 @@ Click the tonal Icon, select your default tone level, and settings will sync ins
 ## 🛡️ Privacy & Security
 
 > tonal is a stateless utility. No message data is ever stored on our servers. Requests are processed in real-time by Groq Llama 3.3 and discarded immediately.
+>
+> **Worker security**: The Cloudflare Worker enforces strict CORS origin-checking. Only requests from `chrome-extension://` origins, `localhost`, and `https://tonall.pages.dev` are accepted. No API keys are ever present in the extension bundle.
 
 <br/>
 

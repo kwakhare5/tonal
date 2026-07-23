@@ -29,7 +29,7 @@
 4. Never inject into `<iframe>` elements
 5. `chrome.storage.local` for data persistence — NOT `localStorage` (doesn't work across pages in MV3)
 6. All CSS is inlined in content script — no external stylesheets loaded
-7. Worker requires `Authorization: Bearer <AUTH_TOKEN>` on all POST requests — token hardcoded in `background.js`, validated against `AUTH_TOKEN` secret in Cloudflare
+7. Worker is protected by **CORS-only origin checking** — only `chrome-extension://`, `localhost`, and `tonall.pages.dev` are allowed. No `Authorization` header is sent or required.
 8. Keyboard shortcut (`Ctrl+Shift+T`) forwards `TONAL_ACTIVATE` via `chrome.commands` → `chrome.tabs.sendMessage` → content script
 
 ---
@@ -58,7 +58,7 @@ _Always register new adapters in `adapters/index.js` and add `host_permissions` 
 | Decode result card | 🟢 Live | Viewport-aware, auto-dismiss, Copy button |
 | Real-time pref sync | 🟢 Live | Popup changes → all tabs instantly |
 | LinkedIn adapter | 🟢 Live | `adapters/linkedin.js` fully integrated and validated |
-| Auth Bearer token | 🟢 Live | Worker validates `AUTH_TOKEN` secret; background.js sends header |
+| Auth protection | 🟢 Live | CORS origin-only: `chrome-extension://`, `localhost`, `tonall.pages.dev` — no token needed |
 | Popup toggles | 🟢 Live | `pillEnabled`/`decodeEnabled` gate scanning and decode in real-time |
 | Real usage stats | 🟢 Live | `statRewrites`/`statDecoded` tracked in `chrome.storage.local` |
 | Keyboard shortcut | 🟢 Live | `Ctrl+Shift+T` / `Cmd+Shift+T` → opens popover on focused input |
@@ -112,8 +112,8 @@ tonal/
 User triggers tone change
 → content.js captures text + tone selection
 → chrome.runtime.sendMessage() to background.js
-→ background.js fetches Cloudflare Worker URL with Authorization: Bearer header
-→ Cloudflare Worker validates auth token, then calls Groq (holds API key)
+→ background.js fetches Cloudflare Worker URL (Content-Type: application/json only)
+→ Cloudflare Worker validates Origin header (CORS-only auth), then calls Groq (holds API key)
 → result flows back: Worker → background.js → content.js → Decode Card displayed
 ```
 
@@ -177,6 +177,11 @@ User triggers tone change
 | 2026-07-23 | Auth Token on Worker | Added `Authorization: Bearer` validation to Cloudflare Worker. Token hardcoded in `background.js`, validated against `AUTH_TOKEN` env secret. Blocks unauthorized API usage. |
 | 2026-07-23 | CORS Origin Pinning | Removed `!origin` bypass (rejected no-origin requests). Pinned `.pages.dev` to `tonall.pages.dev` only (was wildcard `*.pages.dev`). |
 | 2026-07-23 | Popup Toggles Wired | `pillEnabled` and `decodeEnabled` prefs from `chrome.storage.sync` now gate scanning, decode, and MutationObserver. Real-time via `onChanged`. |
+| 2026-07-23 | Keyboard Shortcut | `Ctrl+Shift+T` (`Cmd+Shift+T` Mac) → `chrome.commands.onCommand` → `chrome.tabs.sendMessage({ type: "TONAL_ACTIVATE" })` → content.js handler opens popover on focused input |
+| 2026-07-23 | Per-Site Tone Memory | `toneMemory[hostname]` persisted in `chrome.storage.local`. Read on pill registration; written on user tone selection. |
+| 2026-07-23 | Undo History Persistence | `undoHistory[]` (max 10) in `chrome.storage.local`. Each entry: `{originalText, rewrittenText, tone, ts}`. Survives navigation and tab close. |
+| 2026-07-23 | OfflineToneEngine | 30+ word-swap rules per tone level in `content.js`. Triggers when background.js returns `offline:true` (fetch failure, 401, 503). No network required. |
+| 2026-07-23 | Removed AUTH_TOKEN | Hardcoded token removed from `background.js`. Cloudflare secret deleted. Worker now relies on CORS origin-only protection. Old token is fully invalidated. |
 
 ---
 
@@ -214,3 +219,4 @@ _Append-only. Never repeat these._
 | 2026-07-23 | CORS `!origin` bypass let curl/Postman bypass CORS | Changed `isAllowedOrigin` to return `false` when no Origin header present |
 | 2026-07-23 | `.pages.dev` wildcard let any CF Pages site proxy through worker | Pinned to `tonall.pages.dev` specifically |
 | 2026-07-23 | Popup toggles (`pillEnabled`, `decodeEnabled`) stored but never read | Wired into `TonalBootstrap`: gates scan, decode, MutationObserver; cleans up pills on toggle-off |
+| 2026-07-23 | AUTH_TOKEN hardcoded in `background.js` was committed to public git repo | Removed token from code entirely; deleted Cloudflare secret; switched to CORS-only auth |
