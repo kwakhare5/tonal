@@ -21,7 +21,7 @@ export default function Home() {
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
               Gmail, Slack, and LinkedIn
             </span>
-            <h1 className="hero-title" style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(36px, 6vw, 52px)', letterSpacing: '-0.02em', marginBottom: 'var(--space-6)', fontWeight: 700 }}>
+            <h1 className="hero-title" style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(28px, 6.5vw, 52px)', letterSpacing: '-0.02em', marginBottom: 'var(--space-6)', fontWeight: 700 }}>
               Adjust your tone <span className="text-highlight">without breaking focus</span>.
             </h1>
             <p className="hero-description hero-desc" style={{ fontSize: '16px', maxWidth: '520px', marginBottom: 'var(--space-8)' }}>
@@ -51,7 +51,7 @@ export default function Home() {
         <div className="container">
           <div className="section-header" style={{ textAlign: 'center', marginBottom: 'var(--space-10)' }}>
             <span className="badge badge-red" style={{ fontWeight: 600 }}>The Copy-Paste Tax</span>
-            <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(32px, 4vw, 46px)', fontWeight: 600 }}>
+            <h2 className="section-title">
               Traditional AI tools break your writing flow
             </h2>
           </div>
@@ -113,7 +113,7 @@ export default function Home() {
         <div className="container">
           <div className="section-header" style={{ textAlign: 'center', marginBottom: 'var(--space-10)' }}>
             <span className="badge badge-blue" style={{ fontWeight: 600 }}>What&apos;s New</span>
-            <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(32px, 4vw, 46px)', fontWeight: 600 }}>
+            <h2 className="section-title">
               Built for how you actually write
             </h2>
           </div>
@@ -177,7 +177,7 @@ export default function Home() {
         <div className="container">
           <div className="section-header" style={{ textAlign: 'center', marginBottom: 'var(--space-10)' }}>
             <span className="badge badge-orange" style={{ fontWeight: 600 }}>The Engine</span>
-            <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(32px, 4vw, 46px)', fontWeight: 600 }}>
+            <h2 className="section-title">
               Built for speed and absolute isolation
             </h2>
           </div>
@@ -230,7 +230,7 @@ export default function Home() {
         <div className="container">
           <div className="section-header" style={{ textAlign: 'center', marginBottom: 'var(--space-10)' }}>
             <span className="badge badge-blue" style={{ fontWeight: 600 }}>Easy Setup</span>
-            <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(32px, 4vw, 46px)', fontWeight: 600 }}>
+            <h2 className="section-title">
               Manual Installation Guide
             </h2>
             <p style={{ color: 'var(--color-text-secondary)', fontSize: '15px', marginTop: 'var(--space-3)' }}>
