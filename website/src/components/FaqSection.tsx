@@ -99,7 +99,7 @@ function FaqItem({ question, answer }: FaqItemProps) {
   const elementId = `faq-answer-${question.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-]/g, '').toLowerCase()}`;
 
   return (
-    <div className={`faq-item ${isOpen ? 'active' : ''}`}>
+    <div className={`faq-item ${isOpen ? 'faq-item--open active' : ''}`}>
       <div 
         className="faq-question" 
         onClick={toggleOpen}
