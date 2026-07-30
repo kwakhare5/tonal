@@ -18,7 +18,6 @@ export default function InstallGuideModal({ isOpen, onClose }: InstallGuideModal
     return () => clearTimeout(t);
   }, []);
 
-  // Close on Escape key press
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -27,7 +26,7 @@ export default function InstallGuideModal({ isOpen, onClose }: InstallGuideModal
     };
     if (isOpen) {
       window.addEventListener('keydown', handleKeyDown);
-      document.body.style.overflow = 'hidden'; // Lock background scroll
+      document.body.style.overflow = 'hidden';
     }
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
@@ -37,7 +36,6 @@ export default function InstallGuideModal({ isOpen, onClose }: InstallGuideModal
 
   if (!isOpen || !mounted) return null;
 
-  // Handle click on backdrop
   const handleBackdropClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
       onClose();
@@ -52,12 +50,15 @@ export default function InstallGuideModal({ isOpen, onClose }: InstallGuideModal
           <div className="modal-title-group">
             <Image 
               src="/icons/icon128.png" 
-              alt="tonal Logo" 
-              width={24} 
-              height={24} 
+              alt="Tonal Logo" 
+              width={26} 
+              height={26} 
               className="modal-logo"
             />
-            <h3 className="modal-title">Install tonal for Chrome</h3>
+            <div>
+              <h3 className="modal-title">Install Tonal for Chrome</h3>
+              <span style={{ fontSize: '12px', color: 'var(--color-text-secondary)' }}>Easy 60-second local setup</span>
+            </div>
           </div>
           <button 
             className="modal-close-btn" 
@@ -71,17 +72,17 @@ export default function InstallGuideModal({ isOpen, onClose }: InstallGuideModal
           </button>
         </div>
 
-        {/* Scrollable Content */}
+        {/* Scrollable Content with 5-Card Bento Grid */}
         <div className="modal-body">
-          <p className="modal-subtitle" style={{ marginBottom: 'var(--space-4)' }}>
-            Since tonal is open-source and run locally, you can install it manually in less than a minute by following these steps:
-          </p>
-          <InstallSteps />
+          <InstallSteps variant="modal" />
         </div>
 
         {/* Footer */}
-        <div className="modal-footer">
-          <button className="btn btn-primary modal-action-btn" onClick={onClose}>
+        <div className="modal-footer" style={{ padding: '16px 28px', borderTop: '1px solid var(--color-border-light)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#FAFCFF' }}>
+          <a href="/tonal-extension.zip" download style={{ fontSize: '13px', color: 'var(--color-blue)', textDecoration: 'none', fontWeight: 500 }}>
+            ↓ Re-download Zip Archive
+          </a>
+          <button className="btn btn-primary hero-cta-btn" onClick={onClose} style={{ height: '36px', padding: '6px 18px', fontSize: '13px' }}>
             Got it, I&apos;m ready!
           </button>
         </div>

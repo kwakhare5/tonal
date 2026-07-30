@@ -1,63 +1,77 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 
-export default function InstallSteps() {
+export default function InstallSteps({ variant = 'page' }: { variant?: 'page' | 'modal' }) {
+  const [copied, setCopied] = useState(false);
+
+  const copyChromeUrl = () => {
+    navigator.clipboard.writeText('chrome://extensions/');
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
   const steps = [
     {
-      num: 1,
-      title: 'Download Bundle',
+      num: '01',
+      title: 'Download Archive',
       desc: (
         <>
-          Click download to save the latest release. The file <code className="install-code">tonal-extension.zip</code> will be saved to your device.
+          Click download to save the latest release archive. The file <code className="install-code">tonal-extension.zip</code> will be saved to your computer.
         </>
       ),
     },
     {
-      num: 2,
+      num: '02',
       title: 'Extract Files',
       desc: (
         <>
-          Locate the ZIP archive and extract/unzip it into a permanent folder on your drive (e.g., in your Documents folder).
+          Locate the downloaded ZIP file and extract it into a permanent folder (e.g., inside your Documents folder).
         </>
       ),
     },
     {
-      num: 3,
+      num: '03',
       title: 'Open Extensions',
+      hasCopy: true,
       desc: (
         <>
-          Open a new tab in Google Chrome and type <code className="install-code">chrome://extensions/</code> in the address bar.
+          Open Google Chrome and navigate to <code className="install-code">chrome://extensions/</code> in your address bar.
         </>
       ),
     },
     {
-      num: 4,
+      num: '04',
       title: 'Developer Mode',
       desc: (
         <>
-          Locate the <strong>Developer mode</strong> toggle switch in the top-right corner of the dashboard, and toggle it <strong>ON</strong>.
+          Toggle the <strong>Developer mode</strong> switch in the top-right corner of the Chrome extensions page to <strong>ON</strong>.
         </>
       ),
     },
     {
-      num: 5,
+      num: '05',
       title: 'Load Unpacked',
       desc: (
         <>
-          Click the <strong>Load unpacked</strong> button in the top-left, select the folder where you extracted the files, and click OK.
+          Click the <strong>Load unpacked</strong> button in the top-left, select your extracted folder, and Tonal will instantly activate!
         </>
       ),
     },
   ];
 
   return (
-    <div className="install-steps-container">
-      <div className="install-steps-grid">
+    <div className={`install-steps-container install-steps-container--${variant}`}>
+      <div className={`install-steps-grid ${variant === 'modal' ? 'install-steps-grid--modal' : 'install-steps-grid--bento'}`}>
         {steps.map((step) => (
-          <div key={step.num} className="install-step-card reveal-on-scroll">
-            <div className="install-step-header">
-              <span className="install-step-number">0{step.num}</span>
+          <div key={step.num} className={`install-step-card ${variant === 'modal' ? 'install-step-card--modal' : 'install-step-card--bento'}`}>
+            <div className="install-step-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+              <span className="install-step-num">{step.num}</span>
+              {step.hasCopy && (
+                <button onClick={copyChromeUrl} className="modal-copy-btn">
+                  {copied ? '✓ Copied!' : 'Copy Link'}
+                </button>
+              )}
             </div>
             <div className="install-step-body">
               <h3 className="install-step-title">{step.title}</h3>
