@@ -29,8 +29,8 @@
   --red:      #FF3B30;
   --orange:   #FF9F0A;
 
-  --font: var(--font-sans, 'DM Sans', sans-serif);
-  --mono: var(--font-sans, 'DM Sans', sans-serif);
+  --font: 'DM Sans', sans-serif;
+  --mono: 'DM Sans', sans-serif;
 
   --r-sm:  6px;
   --r-md:  10px;
