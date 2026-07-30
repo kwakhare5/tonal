@@ -10,7 +10,7 @@ import ScrollObserver from '../components/ScrollObserver';
 export default function Home() {
   return (
     <>
-      {/* Atmospheric Video Background Layer */}
+      {/* Atmospheric Video & Animated Dots Background Layer */}
       <div className="bg-ambient-layer">
         <video
           autoPlay
@@ -21,6 +21,7 @@ export default function Home() {
         >
           <source src="/ascii-animation.mp4" type="video/mp4" />
         </video>
+        <div className="bg-animated-dots" />
       </div>
 
       {/* Navigation */}
@@ -38,7 +39,8 @@ export default function Home() {
                 Gmail, Slack, and LinkedIn
               </span>
               <h1 className="hero-title">
-                Adjust your tone <span className="text-highlight">without breaking focus</span>.
+                Adjust your tone<br />
+                <span className="text-highlight">without breaking focus</span>.
               </h1>
               <p className="hero-description hero-desc">
                 Rewrite text directly inside any input field. Eliminate context switching and craft professional communication instantly.
