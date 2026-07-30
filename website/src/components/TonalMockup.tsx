@@ -82,7 +82,7 @@ export default function TonalMockup() {
   }, []);
 
   // Handle tone rewrite execution on user click
-  const handleRewrite = async (toneId: ToneId) => {
+  const handleRewrite = React.useCallback(async (toneId: ToneId) => {
     setActiveTone(toneId);
     setShowPopover(false);
     setPillState('loading');
@@ -116,7 +116,7 @@ export default function TonalMockup() {
     if (typeof window !== 'undefined' && window.tonal?.showToast) {
       window.tonal.showToast(document.body, `Rewritten to ${toneId}`, 'success');
     }
-  };
+  }, [text, platform]);
 
   // Sync Pill Rendering
   React.useEffect(() => {
@@ -186,7 +186,7 @@ export default function TonalMockup() {
       pop.style.bottom = 'calc(100% + 8px)';
       pop.style.right = '0';
     }
-  }, [showPopover, activeTone, platform, tonalLoaded, text]);
+  }, [showPopover, activeTone, platform, tonalLoaded, text, handleRewrite]);
 
   return (
     <div className={`composer-mockup composer-mockup--${platform}`}>
