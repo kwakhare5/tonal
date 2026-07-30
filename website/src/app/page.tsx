@@ -10,46 +10,58 @@ import ScrollObserver from '../components/ScrollObserver';
 export default function Home() {
   return (
     <>
+      {/* Atmospheric Video Background Layer */}
+      <div className="bg-ambient-layer">
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="bg-ambient-img bg-ambient-video"
+        >
+          <source src="/ascii-animation.mp4" type="video/mp4" />
+        </video>
+      </div>
+
       {/* Navigation */}
       <Navbar />
 
       <main>
         <section className="hero">
-        <div className="container hero-content">
-          <div className="hero-text">
-            <span className="badge badge-blue hero-badge" style={{ fontWeight: 600, marginBottom: 'var(--space-6)', display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-              Gmail, Slack, and LinkedIn
-            </span>
-            <h1 className="hero-title" style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(28px, 6.5vw, 52px)', letterSpacing: '-0.02em', marginBottom: 'var(--space-6)', fontWeight: 700 }}>
-              Adjust your tone <span className="text-highlight">without breaking focus</span>.
-            </h1>
-            <p className="hero-description hero-desc" style={{ fontSize: '16px', maxWidth: '520px', marginBottom: 'var(--space-8)' }}>
-              Rewrite text directly inside any input field. Eliminate context switching and craft professional communication instantly.
-            </p>
-            <div className="hero-cta">
-              <DownloadButton 
-                className="btn btn-primary hero-cta-btn" 
-                style={{ padding: 'var(--space-2) var(--space-4)', fontSize: '14px', fontWeight: 500 }}
-              >
-                Download for Chrome
-              </DownloadButton>
+          <div className="container hero-content">
+            <div className="hero-text">
+              <span className="hero-announcement-badge">
+                <span className="hero-announcement-pill">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '3px', verticalAlign: '-1px' }}><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                  New
+                </span>
+                Gmail, Slack, and LinkedIn
+              </span>
+              <h1 className="hero-title">
+                Adjust your tone <span className="text-highlight">without breaking focus</span>.
+              </h1>
+              <p className="hero-description hero-desc">
+                Rewrite text directly inside any input field. Eliminate context switching and craft professional communication instantly.
+              </p>
+              <div className="hero-cta">
+                <DownloadButton className="btn btn-primary hero-cta-btn">
+                  Download for Chrome
+                </DownloadButton>
+              </div>
             </div>
-          </div>
 
-          <div className="hero-visual">
-            <div className="hero-glow"></div>
-            <div className="hero-mockup-container hero-mockup-reveal">
-              <TonalMockup />
+            <div className="hero-visual">
+              <div className="hero-mockup-container hero-mockup-reveal">
+                <TonalMockup />
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
       {/* Comparison / Problem Section */}
       <section className="comparison-section section-padding reveal-on-scroll" id="features">
         <div className="container">
-          <div className="section-header" style={{ textAlign: 'center', marginBottom: 'var(--space-10)' }}>
+          <div className="section-header">
             <span className="badge badge-red" style={{ fontWeight: 600 }}>The Copy-Paste Tax</span>
             <h2 className="section-title">
               Traditional AI tools break your writing flow
@@ -111,7 +123,7 @@ export default function Home() {
       {/* New Features Section */}
       <section className="features-grid-section section-padding reveal-on-scroll" id="new-features">
         <div className="container">
-          <div className="section-header" style={{ textAlign: 'center', marginBottom: 'var(--space-10)' }}>
+          <div className="section-header">
             <span className="badge badge-blue" style={{ fontWeight: 600 }}>What&apos;s New</span>
             <h2 className="section-title">
               Built for how you actually write
@@ -175,7 +187,7 @@ export default function Home() {
       {/* Engine & Security Section */}
       <section className="engine-section section-padding reveal-on-scroll" id="security">
         <div className="container">
-          <div className="section-header" style={{ textAlign: 'center', marginBottom: 'var(--space-10)' }}>
+          <div className="section-header">
             <span className="badge badge-orange" style={{ fontWeight: 600 }}>The Engine</span>
             <h2 className="section-title">
               Built for speed and absolute isolation
@@ -226,9 +238,9 @@ export default function Home() {
       <FaqSection />
 
       {/* Manual Installation Section */}
-      <section className="installation-section section-padding reveal-on-scroll" id="install" style={{ borderBottom: '1px solid var(--color-border-light)' }}>
+      <section className="installation-section section-padding reveal-on-scroll" id="install">
         <div className="container">
-          <div className="section-header" style={{ textAlign: 'center', marginBottom: 'var(--space-10)' }}>
+          <div className="section-header">
             <span className="badge badge-blue" style={{ fontWeight: 600 }}>Easy Setup</span>
             <h2 className="section-title">
               Manual Installation Guide
@@ -252,7 +264,7 @@ export default function Home() {
             Download the extension bundle now and start adjusting your writing tone inline on Gmail, Slack, and LinkedIn.
           </p>
           <DownloadButton className="btn btn-primary bottom-cta-btn">
-            Download Chrome Extension Zip
+            Download Extension Zip
           </DownloadButton>
         </div>
       </section>

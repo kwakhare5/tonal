@@ -53,7 +53,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${dmSans.variable} ${lora.variable}`}>
-      <body>
+      <body className={dmSans.className}>
         {children}
         <Analytics />
       </body>
