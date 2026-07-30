@@ -49,6 +49,28 @@ export default function Home() {
                 <DownloadButton className="btn btn-primary hero-cta-btn">
                   Download for Chrome
                 </DownloadButton>
+
+                <div className="hero-stats-bar">
+                  <div className="hero-stat-item">
+                    <span className="hero-stat-val">⚡ &lt;0.5s</span>
+                    <span className="hero-stat-lbl">Groq LPU Speed</span>
+                  </div>
+                  <div className="hero-stat-divider" />
+                  <div className="hero-stat-item">
+                    <span className="hero-stat-val">🔒 100%</span>
+                    <span className="hero-stat-lbl">Local Privacy</span>
+                  </div>
+                  <div className="hero-stat-divider" />
+                  <div className="hero-stat-item">
+                    <span className="hero-stat-val">✨ 6 Tones</span>
+                    <span className="hero-stat-lbl">One-Tap Rewrites</span>
+                  </div>
+                  <div className="hero-stat-divider" />
+                  <div className="hero-stat-item">
+                    <span className="hero-stat-val">🌐 3 Platforms</span>
+                    <span className="hero-stat-lbl">Gmail, Slack, LinkedIn</span>
+                  </div>
+                </div>
               </div>
             </div>
 
