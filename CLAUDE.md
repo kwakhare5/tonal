@@ -131,34 +131,26 @@ content.js (user interaction)
 
 _AI fills this at the END of every session. Read this at the START of the next session._
 
-**Last session date:** 2026-07-23
+**Last session date:** 2026-07-30
 
 **What we built / changed:**
-- **Keyboard shortcut**: `Ctrl+Shift+T` / `Cmd+Shift+T` → opens tone popover via Chrome `commands` API
-- **Per-site tone memory**: Last tone per hostname saved to `toneMemory` in `chrome.storage.local`
-- **Undo history persistence**: Last 10 rewrites in `undoHistory[]`, survives navigation
-- **Offline fallback**: `OfflineToneEngine` — 30+ word-swap rules, triggers on `offline:true` or dead service worker
-- **Website updated**: New 4-card "What's New" features section; FAQ updated (8 items); footer tagline; shortcut bullet
-- **Security incident resolved**: `AUTH_TOKEN` hardcoded value removed from `background.js`; Cloudflare secret deleted via `wrangler secret delete`; worker switched to CORS-only origin protection
-- **Extension zip rebuilt**: `website/public/tonal-extension.zip` regenerated at v1.1.0 (37 KB)
-- **Manifest**: v1.1.0
-- **Tests**: 25/25 pass (3 auth token tests removed — feature decommissioned)
+- **Modularized & Refactored Website Sections**: Consolidated landing page sections into `src/app/page.tsx`, retaining core reusable widgets (`Navbar`, `TonalMockup`, `ToneShowcase`, `InstallSteps`, `InstallGuideModal`, `FaqSection`, `DownloadButton`, `ScrollObserver`).
+- **UI Design System Upgrade**: Applied `apple-design` and `frontend-design` glassmorphic visual architecture (`Lora` display font with `-0.025em` tracking, `DM Sans` body, `backdrop-filter: blur(20px)`, radial glow backdrop, spring hover cards).
+- **Enforced Original Light Sky Palette**: Preserved `#F7F9FC` background, `#0B192C` primary navy typography, and brand accent colors (`#0066FF`, `#6C56FC`, `#F200CA`, `#10B981`, `#F59E0B`, `#EF4444`).
+- **Code & Asset Cleanup**: Purged 20.3MB of unreferenced legacy background assets (`qipeline_medium_sky_clouds.png`, etc.) and eliminated 5 redundant wrapper components.
+- **Verification**: `npm run build` (2.3s) and `npm run lint` passed cleanly with 0 errors.
 
 **Immediate next task:**
-- Reload extension in Chrome (`chrome://extensions` → reload) to pick up v1.1.0
-- Test `Ctrl+Shift+T` on Gmail/Slack/LinkedIn
-- Set Cloudflare WAF rate limiting: Dashboard → WAF → Rate Limiting → 30 POST req/min per IP, Block 60s
-- Vercel deploys automatically on git push (website + zip updated)
+- Test landing page locally or deploy to Vercel via git push.
+- Reload extension in Chrome (`chrome://extensions` → reload).
 
 **Open blockers:**
-- Cloudflare WAF rate limit rule not yet set (manual dashboard step)
+- None.
 
 **Files most recently changed:**
-- `extension/manifest.json` — version 1.1.0
-- `extension/background.js` — AUTH_TOKEN removed; CORS-only auth
-- `extension/ui-spec.html` — toast fix + dead var removed
-- `backend/src/index.js` — auth block removed; Authorization removed from CORS headers
-- `backend/tests/worker_logic.test.js` — 3 auth tests removed; JSDoc type fix
-- `website/public/tonal-extension.zip` — rebuilt v1.1.0
-- `website/src/app/globals.css` — feature-card stagger; FAQ stagger extended to 8; hover fix
-- `CONTEXT.md`, `ARCHITECTURE.md`, `README.md` — all fully updated
+- `website/src/app/page.tsx` — Consolidated section layouts & typography hierarchy
+- `website/src/app/globals.css` — Apple & Linear sky glassmorphism rules & hover transitions
+- `website/src/components/InstallGuideModal.tsx` — Reused InstallSteps & CSS classes
+- `website/src/app/install/page.tsx` — Reused InstallSteps component
+- `website/src/components/TonalMockup.tsx` — Typed React.FC export & typing session cancellation
+- `website/public/` — Purged 20.3MB unused legacy assets
