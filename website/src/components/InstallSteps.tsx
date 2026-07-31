@@ -2,16 +2,28 @@
 
 import React, { useState } from 'react';
 
-export default function InstallSteps({ variant = 'page' }: { variant?: 'page' | 'modal' }) {
-  const [copied, setCopied] = useState(false);
+interface InstallStepsProps {
+  variant?: 'page' | 'modal';
+}
 
-  const copyChromeUrl = () => {
+interface StepItem {
+  num: string;
+  title: string;
+  desc: React.ReactNode;
+  hasCopy?: boolean;
+}
+
+export const InstallSteps: React.FC<InstallStepsProps> = ({ variant = 'page' }) => {
+  const [copied, setCopied] = useState<boolean>(false);
+
+  const handleCopyChromeUrl = () => {
+    if (typeof window === 'undefined') return;
     navigator.clipboard.writeText('chrome://extensions/');
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const steps = [
+  const steps: StepItem[] = [
     {
       num: '01',
       title: 'Download Archive',
@@ -62,14 +74,19 @@ export default function InstallSteps({ variant = 'page' }: { variant?: 'page' | 
 
   return (
     <div className={`install-steps-container install-steps-container--${variant}`}>
-      <div className={`install-steps-grid ${variant === 'modal' ? 'install-steps-grid--modal' : 'install-steps-grid--bento'}`}>
+      <div className="install-steps-grid">
         {steps.map((step) => (
-          <div key={step.num} className={`install-step-card ${variant === 'modal' ? 'install-step-card--modal' : 'install-step-card--bento'}`}>
+          <div key={step.num} className="install-step-card">
             <div className="install-step-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
               <span className="install-step-num">{step.num}</span>
               {step.hasCopy && (
-                <button onClick={copyChromeUrl} className="modal-copy-btn">
-                  {copied ? '✓ Copied!' : 'Copy Link'}
+                <button type="button" onClick={handleCopyChromeUrl} className="modal-copy-btn">
+                  {copied ? (
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                      Copied!
+                    </span>
+                  ) : 'Copy Link'}
                 </button>
               )}
             </div>
@@ -82,4 +99,6 @@ export default function InstallSteps({ variant = 'page' }: { variant?: 'page' | 
       </div>
     </div>
   );
-}
+};
+
+export default InstallSteps;

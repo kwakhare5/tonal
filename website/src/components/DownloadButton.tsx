@@ -1,17 +1,20 @@
 'use client';
+
 import React, { useState } from 'react';
 import InstallGuideModal from './InstallGuideModal';
 
-export default function DownloadButton({ 
+interface DownloadButtonProps {
+  className?: string;
+  children: React.ReactNode;
+  style?: React.CSSProperties;
+}
+
+export const DownloadButton: React.FC<DownloadButtonProps> = ({ 
   className, 
   children, 
   style 
-}: { 
-  className?: string; 
-  children: React.ReactNode; 
-  style?: React.CSSProperties;
-}) {
-  const [isInstallModalOpen, setIsInstallModalOpen] = useState(false);
+}) => {
+  const [isInstallModalOpen, setIsInstallModalOpen] = useState<boolean>(false);
 
   return (
     <>
@@ -30,4 +33,6 @@ export default function DownloadButton({
       />
     </>
   );
-}
+};
+
+export default DownloadButton;

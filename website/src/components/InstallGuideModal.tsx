@@ -10,24 +10,26 @@ interface InstallGuideModalProps {
   onClose: () => void;
 }
 
-export default function InstallGuideModal({ isOpen, onClose }: InstallGuideModalProps) {
-  const [mounted, setMounted] = useState(false);
+export const InstallGuideModal: React.FC<InstallGuideModalProps> = ({ isOpen, onClose }) => {
+  const [mounted, setMounted] = useState<boolean>(false);
 
   useEffect(() => {
-    const t = setTimeout(() => setMounted(true), 0);
-    return () => clearTimeout(t);
+    const timer = setTimeout(() => setMounted(true), 0);
+    return () => clearTimeout(timer);
   }, []);
 
   useEffect(() => {
+    if (!isOpen) return;
+
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         onClose();
       }
     };
-    if (isOpen) {
-      window.addEventListener('keydown', handleKeyDown);
-      document.body.style.overflow = 'hidden';
-    }
+
+    window.addEventListener('keydown', handleKeyDown);
+    document.body.style.overflow = 'hidden';
+
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
       document.body.style.overflow = '';
@@ -36,7 +38,7 @@ export default function InstallGuideModal({ isOpen, onClose }: InstallGuideModal
 
   if (!isOpen || !mounted) return null;
 
-  const handleBackdropClick = (e: React.MouseEvent) => {
+  const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
       onClose();
     }
@@ -44,7 +46,7 @@ export default function InstallGuideModal({ isOpen, onClose }: InstallGuideModal
 
   return createPortal(
     <div className="modal-overlay" onClick={handleBackdropClick} aria-modal="true" role="dialog">
-      <div className="modal-container">
+      <div className="modal-container" aria-labelledby="modal-title" aria-describedby="modal-subtitle">
         {/* Header */}
         <div className="modal-header">
           <div className="modal-title-group">
@@ -56,18 +58,19 @@ export default function InstallGuideModal({ isOpen, onClose }: InstallGuideModal
               className="modal-logo"
             />
             <div>
-              <h3 className="modal-title">Install Tonal for Chrome</h3>
-              <span style={{ fontSize: '12px', color: 'var(--color-text-secondary)' }}>Easy 60-second local setup</span>
+              <h3 id="modal-title" className="modal-title">Install Tonal for Chrome</h3>
+              <span id="modal-subtitle" className="modal-subtitle">Easy 60-second local setup</span>
             </div>
           </div>
           <button 
+            type="button"
             className="modal-close-btn" 
             onClick={onClose} 
             aria-label="Close installation guide"
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
             </svg>
           </button>
         </div>
@@ -78,11 +81,11 @@ export default function InstallGuideModal({ isOpen, onClose }: InstallGuideModal
         </div>
 
         {/* Footer */}
-        <div className="modal-footer" style={{ padding: '16px 28px', borderTop: '1px solid var(--color-border-light)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#FAFCFF' }}>
-          <a href="/tonal-extension.zip" download style={{ fontSize: '13px', color: 'var(--color-blue)', textDecoration: 'none', fontWeight: 500 }}>
+        <div className="modal-footer">
+          <a href="/tonal-extension.zip" download className="modal-download-link">
             ↓ Re-download Zip Archive
           </a>
-          <button className="btn btn-primary hero-cta-btn" onClick={onClose} style={{ height: '36px', padding: '6px 18px', fontSize: '13px' }}>
+          <button type="button" className="btn btn-primary hero-cta-btn" onClick={onClose}>
             Got it, I&apos;m ready!
           </button>
         </div>
@@ -90,4 +93,6 @@ export default function InstallGuideModal({ isOpen, onClose }: InstallGuideModal
     </div>,
     document.body
   );
-}
+};
+
+export default InstallGuideModal;
