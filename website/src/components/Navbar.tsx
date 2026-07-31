@@ -26,7 +26,7 @@ export const Navbar: React.FC = () => {
   return (
     <>
       <nav className={`navbar ${scrolled ? 'navbar--scrolled' : ''} ${mobileMenuOpen ? 'navbar--open' : ''}`}>
-        <div className="container navbar-container" style={{ paddingLeft: 0, paddingRight: 0 }}>
+        <div className="container navbar-container">
           <a href="#" className="logo" onClick={handleNavLinkClick}>
             <Image src="/icons/icon128.png" alt="tonal Logo" width={20} height={20} style={{ borderRadius: 'var(--radius-xs)', marginRight: 'var(--space-1)' }} />
             <span>tonal</span>
@@ -69,6 +69,11 @@ export const Navbar: React.FC = () => {
           <li><a href="#security" onClick={handleNavLinkClick}>Security</a></li>
           <li><a href="#install" onClick={handleNavLinkClick}>Install Guide</a></li>
           <li><a href="#faq" onClick={handleNavLinkClick}>FAQ</a></li>
+          <li style={{ marginTop: '8px' }}>
+            <DownloadButton className="btn btn-primary nav-cta-btn" style={{ width: '100%', justifyContent: 'center', height: '40px' }} onClick={handleNavLinkClick}>
+              Download Extension
+            </DownloadButton>
+          </li>
           <li>
             <a 
               href="https://github.com/kwakhare5/tonal" 

@@ -784,6 +784,47 @@ kbd {
   .hero-cta { flex-direction: row; }
 }
 
+/* Direct Plain SVG Icon Floating Hover (Pure Text + Floating SVG) */
+.platform-hover-text {
+  position: relative;
+  display: inline-block;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  text-decoration: underline;
+  text-decoration-color: rgba(0, 0, 0, 0.22);
+  text-underline-offset: 4px;
+  transition: text-decoration-color 0.2s ease, color 0.2s ease;
+  cursor: pointer;
+}
+
+.platform-hover-text:hover {
+  text-decoration-color: #FFFFFF;
+  color: #FFFFFF !important;
+}
+
+.platform-hover-text .platform-hover-icon {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%) translateY(8px) scale(0.4);
+  opacity: 0;
+  pointer-events: none;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease;
+  z-index: 100;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.16));
+}
+
+.platform-hover-text:hover .platform-hover-icon {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0) scale(1.35);
+}
+
 .hero-mockup-container {
   display: flex;
   justify-content: center;
@@ -804,6 +845,65 @@ kbd {
   flex-direction: column;
   overflow: hidden !important;
   text-align: left;
+}
+
+@media (max-width: 639px) {
+  .hero-title {
+    font-size: clamp(26px, 6.5vw, 38px);
+    line-height: 1.18;
+  }
+
+  .hero-description {
+    font-size: 15px !important;
+    line-height: 1.55 !important;
+  }
+
+  .composer-mockup {
+    min-height: 350px;
+    border-radius: 16px;
+  }
+
+  .composer-header {
+    padding: 8px 10px;
+  }
+
+  .composer-body {
+    padding: 10px;
+  }
+
+  .composer-textarea {
+    font-size: 12.5px;
+  }
+
+  .composer-footer {
+    padding: 8px 10px;
+    gap: 6px;
+  }
+
+  .composer-tools {
+    gap: 8px;
+  }
+
+  .install-code {
+    word-break: break-all;
+    overflow-wrap: anywhere;
+  }
+
+  .comp-col-unboxed h3 {
+    font-size: 17.5px !important;
+    flex-wrap: wrap;
+  }
+
+  .eng-minimal-title {
+    font-size: 17px !important;
+    flex-wrap: wrap;
+  }
+
+  .badge-status {
+    font-size: 10px !important;
+    padding: 1px 7px !important;
+    height: 20px !important;
+  }
 }
 
 .composer-header {
@@ -1110,6 +1210,15 @@ kbd {
   font-size: 14.5px;
   color: var(--color-text-secondary);
   line-height: 1.5;
+  padding: 6px 10px;
+  border-radius: var(--radius-md);
+  transition: background 0.2s ease, transform 0.2s var(--ease-out-expo), color 0.2s ease;
+}
+
+.comp-item:hover {
+  background: rgba(255, 255, 255, 0.7);
+  transform: translateX(4px);
+  color: var(--color-text-primary);
 }
 
 .comp-icon {
@@ -1264,13 +1373,66 @@ kbd {
   height: 38px;
   border-radius: 10px;
   flex-shrink: 0;
-  transition: transform 0.22s var(--ease-out-expo);
+  transition: transform 0.25s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.25s ease, background 0.25s ease;
+}
+
+.eng-minimal-icon svg {
+  transition: transform 0.25s cubic-bezier(0.2, 0, 0, 1);
 }
 
 @media (hover: hover) and (pointer: fine) {
   .eng-minimal-item:hover .eng-minimal-icon {
-    transform: scale(1.12) rotate(5deg);
+    transform: translateY(-1px) scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 102, 255, 0.1);
   }
+  .eng-minimal-item:hover .eng-minimal-icon svg {
+    transform: scale(1.08);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   ICON ANIMATION SUITE — Subtle & Premium (All Sections)
+   -------------------------------------------------------------------------- */
+.hero-announcement-pill svg {
+  animation: spinStar 12s linear infinite;
+}
+
+@keyframes spinStar {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.comp-icon--check {
+  transition: transform 0.25s cubic-bezier(0.2, 0, 0, 1), background 0.2s ease;
+}
+
+.comp-item:hover .comp-icon--check {
+  transform: scale(1.12);
+  background: rgba(16, 185, 129, 0.18);
+}
+
+.comp-icon--cross {
+  transition: transform 0.25s cubic-bezier(0.2, 0, 0, 1), background 0.2s ease;
+}
+
+.comp-item:hover .comp-icon--cross {
+  transform: scale(1.1);
+  background: rgba(239, 68, 68, 0.18);
+}
+
+.install-step-card {
+  transition: transform 0.25s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.install-step-num {
+  transition: transform 0.25s cubic-bezier(0.2, 0, 0, 1), background 0.25s ease, color 0.25s ease;
+}
+
+.install-step-card:hover .install-step-num {
+  transform: scale(1.08);
+  background: var(--color-blue);
+  color: #FFFFFF;
+  box-shadow: 0 3px 10px rgba(0, 102, 255, 0.25);
 }
 
 .eng-minimal-title {

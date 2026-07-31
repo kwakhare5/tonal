@@ -7,12 +7,14 @@ interface DownloadButtonProps {
   className?: string;
   children: React.ReactNode;
   style?: React.CSSProperties;
+  onClick?: () => void;
 }
 
 export const DownloadButton: React.FC<DownloadButtonProps> = ({ 
   className, 
   children, 
-  style 
+  style,
+  onClick 
 }) => {
   const [isInstallModalOpen, setIsInstallModalOpen] = useState<boolean>(false);
 
@@ -21,7 +23,10 @@ export const DownloadButton: React.FC<DownloadButtonProps> = ({
       <a 
         href="/tonal-extension.zip" 
         download 
-        onClick={() => setIsInstallModalOpen(true)}
+        onClick={() => {
+          setIsInstallModalOpen(true);
+          onClick?.();
+        }}
         className={className} 
         style={style}
       >

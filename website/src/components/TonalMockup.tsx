@@ -343,27 +343,40 @@ export const TonalMockup: React.FC = () => {
           {/* Extension UI Spec Hitbox & Pill Anchor */}
           <div
             className="t-hitbox"
-            style={{ position: 'absolute', right: '0px', bottom: '0px', zIndex: 50 }}
+            style={{
+              position: 'absolute',
+              right: '0px',
+              bottom: '0px',
+              zIndex: 50,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'flex-end',
+              justifyContent: 'flex-end',
+            }}
             onMouseEnter={() => {
               if (pillState === 'rest') {
                 setPillState('expanded');
               }
             }}
             onMouseLeave={() => {
-              if (pillState === 'expanded') {
-                setShowPopover(false);
+              setShowPopover(false);
+              if (pillState === 'expanded' || pillState === 'hover') {
                 setPillState('rest');
               }
             }}
           >
             {/* Popover Menu (ui-spec.html & tonal.js compliant) */}
             {showPopover && (
-              <div className="popover popover--active">
+              <div className="popover popover--active" style={{ position: 'relative', bottom: '6px', marginBottom: '4px' }}>
                 {TONES_DATA.map((t, idx) => (
                   <React.Fragment key={t.id}>
                     <div
                       className={`pop-item ${activeTone === t.id ? 'pop-item--active' : ''}`}
-                      onClick={() => handleRewrite(t.id)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleRewrite(t.id);
+                        setShowPopover(false);
+                      }}
                       role="option"
                       aria-selected={activeTone === t.id}
                     >

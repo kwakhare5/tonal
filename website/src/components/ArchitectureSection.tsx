@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 
 interface FeatureItem {
@@ -17,7 +19,7 @@ const FEATURES: FeatureItem[] = [
     badgeType: 'blue',
     accentColor: '#0066FF',
     title: 'Sub-Second Acceleration',
-    description: 'Direct communication with Groq LPU hardware running Llama 3.3 70B models for instant, under-500ms rewrites.',
+    description: 'Powered by Groq LPU hardware nodes running Llama 3.3 70B models for instant, sub-500ms rewrites.',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
@@ -30,7 +32,7 @@ const FEATURES: FeatureItem[] = [
     badgeType: 'kbd',
     accentColor: '#6C56FC',
     title: 'Keyboard Shortcut',
-    description: 'Trigger the tone selector inline over any active input field without taking your hands off the keyboard.',
+    description: 'Activate the tone selector over any text input without taking your hands off the keyboard.',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <rect x="2" y="6" width="20" height="12" rx="2"/>
@@ -44,7 +46,7 @@ const FEATURES: FeatureItem[] = [
     badgeType: 'green',
     accentColor: '#10B981',
     title: 'Per-Site Tone Memory',
-    description: 'Automatically remembers your preferred tone per hostname across Gmail, Slack, and LinkedIn independently.',
+    description: 'Automatically remembers distinct tone preferences across Gmail, Slack, and LinkedIn independently.',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="12" cy="12" r="10"/>
@@ -59,7 +61,7 @@ const FEATURES: FeatureItem[] = [
     badgeType: 'orange',
     accentColor: '#F59E0B',
     title: 'Shadow DOM Isolation',
-    description: 'Text inputs are encapsulated inside a closed Shadow DOM container, protecting keystrokes from host page scripts.',
+    description: 'Encapsulated Shadow DOM container prevents host page scripts from reading your drafts or keystrokes.',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
@@ -72,7 +74,7 @@ const FEATURES: FeatureItem[] = [
     badgeType: 'blue',
     accentColor: '#0066FF',
     title: 'Local Heuristic Engine',
-    description: 'Instantly switches to zero-latency local transformation rules if network connectivity drops.',
+    description: 'Switches to intelligent local transformation rules automatically if network connectivity drops.',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M1 1l22 22"/>
@@ -89,8 +91,8 @@ const FEATURES: FeatureItem[] = [
     badge: '10-Draft History',
     badgeType: 'purple',
     accentColor: '#6C56FC',
-    title: '10-Draft History',
-    description: 'Caches your last 10 rewrites in browser session memory so you can restore prior drafts instantly.',
+    title: '10-Draft Persistent Memory',
+    description: 'Caches your last 10 rewrites in browser session memory for instant one-click restores.',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M3 7v6h6"/>
@@ -100,14 +102,14 @@ const FEATURES: FeatureItem[] = [
   },
 ];
 
-export const SpeedPrivacySection: React.FC = () => {
+export const ArchitectureSection: React.FC = () => {
   return (
     <section className="features-grid-section section-padding reveal-on-scroll" id="new-features">
       <div className="container">
         <div className="section-header" style={{ marginBottom: '32px' }}>
-          <span className="badge badge-purple">Architecture</span>
+          <span className="badge badge-purple">Sub-Second Engine</span>
           <h2 className="section-title">
-            Engineered for pure speed, total privacy, and effortless flow
+            Built for zero latency, ironclad privacy, and seamless execution
           </h2>
         </div>
 
@@ -128,7 +130,22 @@ export const SpeedPrivacySection: React.FC = () => {
               <h3 className="eng-minimal-title">
                 <span>{feature.title}</span>
                 {feature.badgeType === 'kbd' ? (
-                  <span className="kbd">{feature.badge}</span>
+                  <span 
+                    className="kbd" 
+                    title="Click to copy shortcut"
+                    style={{ cursor: 'pointer', transition: 'transform 0.15s ease' }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      navigator.clipboard.writeText('Ctrl+Shift+T');
+                      const target = e.currentTarget;
+                      target.innerText = 'Copied! ✓';
+                      setTimeout(() => {
+                        target.innerText = feature.badge;
+                      }, 2000);
+                    }}
+                  >
+                    {feature.badge}
+                  </span>
                 ) : (
                   <span className={`badge-status badge-status--${feature.badgeType}`}>{feature.badge}</span>
                 )}
@@ -141,3 +158,5 @@ export const SpeedPrivacySection: React.FC = () => {
     </section>
   );
 };
+
+export default ArchitectureSection;
