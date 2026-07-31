@@ -1,7 +1,6 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/react";
-
 import { DM_Sans, Lora } from 'next/font/google';
 
 const dmSans = DM_Sans({
@@ -16,10 +15,17 @@ const lora = Lora({
   variable: '--font-serif',
 });
 
+export const viewport: Viewport = {
+  themeColor: "#0B192C",
+  width: "device-width",
+  initialScale: 1,
+};
+
 export const metadata: Metadata = {
   metadataBase: new URL("https://tonall.vercel.app"),
   title: "tonal — Inline Tone Adjustment Chrome Extension",
-  description: "Adjust your writing tone inline on Gmail, Slack, and LinkedIn in one tap.",
+  description: "Adjust your writing tone inline on Gmail, Slack, and LinkedIn in one tap. Free & open-source.",
+  keywords: ["Chrome Extension", "Tone Adjuster", "AI Writing", "Groq LPU", "Gmail", "Slack", "LinkedIn"],
   icons: {
     icon: [
       { url: "/icons/icon128.png", sizes: "128x128", type: "image/png" },
@@ -46,17 +52,39 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "tonal",
+  "operatingSystem": "Chrome",
+  "applicationCategory": "BusinessApplication",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "description": "Chrome extension to adjust your writing tone inline across Gmail, Slack, and LinkedIn."
+};
+
+interface RootLayoutProps {
   children: React.ReactNode;
-}>) {
+}
+
+export const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
   return (
     <html lang="en" className={`${dmSans.variable} ${lora.variable}`}>
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </head>
       <body className={dmSans.className}>
         {children}
         <Analytics />
       </body>
     </html>
   );
-}
+};
+
+export default RootLayout;
