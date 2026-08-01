@@ -134,13 +134,13 @@ _AI fills this at the END of every session. Read this at the START of the next s
 **Last session date:** 2026-08-01
 
 **What we built / changed:**
-- **Executed Ponytail Cleanup (-31 lines)**:
-  - Removed mock `chrome.storage` fallback in `extension/popup.js` (-27 lines).
-  - Returned `null` fallback in `extension/adapters/index.js`.
-  - Streamlined `json()` response helper in `backend/src/index.js`.
-  - Used native `fs.cpSync` in `website/scripts/copy-assets.cjs`.
-- **Pushed Checkpoint to GitHub**: Committed and pushed commit `8a7e901` to `https://github.com/kwakhare5/tonal.git`.
-- **Verified Zero-Breakage Integrity**: Re-verified backend & extension test suite (33/33 tests passed 100%) and Next.js website build (compiled cleanly in 2.4s).
+- **Executed Master Optimization & Security Plan**:
+  - Added `MAX_INPUT_LENGTH` (4000 char cap) & `X-Content-Type-Options: nosniff` / `X-Frame-Options: DENY` headers in `backend/src/index.js`.
+  - Added `Inside-Out — MAX_INPUT_LENGTH Enforced` unit test in `backend/tests/deep_inside_out.test.js`.
+  - Added `{ passive: true }` flag to `mousemove` event listeners in `extension/content.js`.
+  - Configured static asset `Cache-Control` headers for `.zip` downloads and security headers in `website/next.config.ts`.
+- **Pushed Checkpoint to GitHub**: Committed and pushed commit `d72364d` to `https://github.com/kwakhare5/tonal.git`.
+- **Verified Zero-Breakage Integrity**: Re-verified backend & extension test suite (34/34 tests passed 100%) and Next.js website build (compiled cleanly in 2.2s).
 
 **Immediate next task:**
 - Launch Tonal! Load unpacked extension in Chrome (`chrome://extensions` → Load unpacked → `/extension`) or deploy to production.
@@ -149,9 +149,8 @@ _AI fills this at the END of every session. Read this at the START of the next s
 - None.
 
 **Files audited & finalized:**
-- `extension/popup.js` — Removed legacy mock storage fallback
-- `extension/adapters/index.js` — Streamlined null adapter fallback
-- `backend/src/index.js` — Simplified json helper
-- `website/scripts/copy-assets.cjs` — Uses native fs.cpSync
-- `website/src/components/TonalMockup.tsx` — Fixed Undo button pointer-events & position
+- `backend/src/index.js` — Added MAX_INPUT_LENGTH & security response headers
+- `backend/tests/deep_inside_out.test.js` — Added input length cap unit test (34 tests total)
+- `extension/content.js` — Added passive listener flags
+- `website/next.config.ts` — Configured Vercel cache-control & security headers
 - `website/public/tonal-extension.zip` — Synced extension download package
