@@ -14,10 +14,10 @@
 
   <br/>
 
-  ![Version](https://img.shields.io/badge/version-1.1.0-blue?style=for-the-badge)
+  ![Version](https://img.shields.io/badge/version-5.0.0-blue?style=for-the-badge)
   ![License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge)
+  ![Tests](https://img.shields.io/badge/tests-34%2F34%20passing-brightgreen?style=for-the-badge)
   ![Last Commit](https://img.shields.io/github/last-commit/kwakhare5/tonal?style=for-the-badge&color=orange)
-  ![Stars](https://img.shields.io/github/stars/kwakhare5/tonal?style=for-the-badge&color=yellow)
   ![Language](https://img.shields.io/badge/Language-Vanilla_JS-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
 
   <br/>
@@ -26,8 +26,9 @@
   <a href="#-demo">Demo</a> &nbsp;·&nbsp;
   <a href="#-features">Features</a> &nbsp;·&nbsp;
   <a href="#-tech-stack">Tech Stack</a> &nbsp;·&nbsp;
+  <a href="#-architecture">Architecture</a> &nbsp;·&nbsp;
   <a href="#-quickstart">Quickstart</a> &nbsp;·&nbsp;
-  <a href="#-contributing">Contributing</a> &nbsp;·&nbsp;
+  <a href="#-security--privacy">Security</a> &nbsp;·&nbsp;
   <a href="#-author">Author</a>
 
 </div>
@@ -42,7 +43,7 @@
 
 <br/>
 
-> 🎨 **Interactive Visual spec**: You can preview and test all floating pill states, popover menus, and toasts in the standalone, light-mode **[extension/ui-spec.html](extension/ui-spec.html)** page directly in your browser.
+> 🎨 **Interactive Visual Spec**: Preview all floating pill states, popover menus, decode cards, and toasts in the standalone **[extension/ui-spec.html](extension/ui-spec.html)** specification playground directly in your browser.
 
 <br/>
 
@@ -50,29 +51,33 @@
 
 ## 📌 About the Project
 
-**tonal** is a **zero-dependency Chrome extension** built with **Vanilla JavaScript (Manifest V3)**.
+**tonal** is a **zero-dependency Chrome Extension (Manifest V3)** paired with a **serverless AI edge gateway** and a **Next.js 16 Web Application**.
 
-tonal solves the friction of switching between casual drafts and professional execution. Powered by Groq Llama 3.3 70B, it provides high-fidelity, preamble-free rephrasing inside Gmail, Slack, and LinkedIn.
+tonal eliminates the friction of switching between casual drafts and professional execution. Powered by Groq (Llama 3.3 70B), it provides high-fidelity, preamble-free tone transformation inside Gmail, Slack, and LinkedIn.
 
-> **Why this project?**
-> Most professional friction comes from tone mismatch. tonal bridges that gap instantly.
+> **Why tonal?**  
+> Most professional friction comes from tone mismatch. tonal bridges that gap instantly with 100% preservation of facts, names, dates, links, and amounts.
 
 <br/>
 
 ---
 
-## ✨ Features
+## ✨ Features Matrix
 
-| Status | Feature | Description |
-|:---:|---|---|
-| ✅ | **Precision Sending** | Convert casual drafts to Formal Professional or Work Chat instantly. |
-| ✅ | **Blunt Decoding** | Highlight jargon and get a plain English explanation in a magnetic viewport card. |
-| ✅ | **Identity Lock** | AI engine preserves names, dates, emails, and numbers as immutable constants. |
-| ✅ | **Platform Adapters** | Custom DOM synchronization for Gmail, Slack, and LinkedIn to prevent cursor drift. |
-| ✅ | **Keyboard Shortcut** | Press `Ctrl+Shift+T` (Mac: `Cmd+Shift+T`) to activate tonal on any focused input — no mouse needed. |
-| ✅ | **Per-Site Tone Memory** | Remembers your last tone per site. Gmail, Slack, LinkedIn each retain their own preference. |
-| ✅ | **Persistent Undo History** | Every rewrite saved locally (last 10). Undo anytime, even after navigating away. |
-| ✅ | **Offline Mode** | Built-in `OfflineToneEngine` — 30+ word-swap rules per tone. Works with zero network. |
+| Feature | Description | Status |
+|:---|:---|:---:|
+| **Precision Tone Shifting** | Convert casual drafts to **Formal Professional** or **Work Chat** instantly without conversational fluff. | 🟢 Live |
+| **Rule 9: Exact Information Equivalence** | AI engine guarantees 100% preservation of dates, names, links, amounts, and conditions typed by the user. | 🟢 Live |
+| **Blunt Corporate Decoder** | Highlight jargon ("synergy", "circle back", "bandwidth") to get plain English translations in a glassmorphic card. | 🟢 Live |
+| **Shadow DOM Isolation** | All UI elements reside inside `#tonal-root` Shadow DOM, ensuring zero host-page CSS pollution. | 🟢 Live |
+| **Magnetic Cursor Physics** | RequestAnimationFrame physics engine (`MagnetPhysics`) tracks mouse position within a 40px radius for gentle pull. | 🟢 Live |
+| **Keyboard Shortcut** | Press `Ctrl+Shift+T` (Mac: `Cmd+Shift+T`) to activate the tone popover on any focused text input. | 🟢 Live |
+| **Per-Site Tone Memory** | Remembers default tone per domain (`mail.google.com` → Formal, `slack.com` → Work Chat) in `chrome.storage.local`. | 🟢 Live |
+| **Persistent Undo History** | Saves the last 10 rewrites with timestamps. Restores original draft even after page reloads. | 🟢 Live |
+| **Offline Fallback Engine** | Built-in `OfflineToneEngine` — 30+ regex word-swap rules per tone. Works with zero network connectivity. | 🟢 Live |
+| **Platform Adapters** | Custom DOM adapters (`gmail.js`, `slack.js`, `linkedin.js`) preventing cursor drift in Lexical/Draft.js editors. | 🟢 Live |
+| **A/B Growth Tracking** | Integrated experiment tracking on landing page CTA (`DownloadButton.tsx`) to measure install conversion. | 🟢 Live |
+| **Security Shield** | 4,000-character input cap, strict CORS origin checks, and security headers (`nosniff`, `DENY`). | 🟢 Live |
 
 <br/>
 
@@ -80,74 +85,67 @@ tonal solves the friction of switching between casual drafts and professional ex
 
 ## 🛠️ Tech Stack
 
-<div align="center">
-
-### Core
-![JS](https://skillicons.dev/icons?i=js)
-![HTML](https://skillicons.dev/icons?i=html)
-![CSS](https://skillicons.dev/icons?i=css)
-
-### Infrastructure
-![Cloudflare](https://skillicons.dev/icons?i=cloudflare)
-![GitHub Actions](https://skillicons.dev/icons?i=githubactions)
-
-</div>
-
-<br/>
-
 | Layer | Technology | Purpose |
 |---|---|---|
-| **Language** | Vanilla JS | Zero-dependency, lightweight runtime |
-| **Framework** | Manifest V3 | Chrome Extension architecture |
-| **Styling** | Shadow DOM CSS | Zero leakage to/from host pages |
-| **API / Engine** | Groq Llama 3.3 | 70B parameter high-fidelity rephrasing |
-| **Deployment** | Cloudflare Workers | Secure, serverless API routing |
+| **Extension Runtime** | Vanilla JS (MV3) | Zero-dependency, lightweight Chrome Extension runtime |
+| **UI Isolation** | Shadow DOM CSS (`core/tonal.css`) | Encapsulated styling preventing host page CSS bleed |
+| **Cloud AI Gateway** | Cloudflare Workers & Groq | Serverless API routing with Llama 3.3 70B parameter model |
+| **Web Application** | Next.js 16 (App Router + Turbopack) | Interactive landing page, component playground, and zip bundler |
+| **Testing Suite** | Node.js Test Runner | 34 automated unit, integration, and security edge-case tests |
 
 <br/>
 
 ---
 
-## 🏗️ Architecture
+## 🏗️ Architecture & Data Flow
 
 ```mermaid
-flowchart LR
-    A[Host DOM] <--> B[Platform Adapter]
-    B <--> C[Content Orchestrator]
-    C <--> D[Shadow Root UI]
-    C <--> E[Background Service Worker]
-    E <--> F[Cloudflare Proxy]
-    F <--> G[Groq Llama 3.3]
-    F -.->|CORS origin check| E
+flowchart TD
+    A[User Selection / Input] --> B[Host Page DOM]
+    B <--> C[Platform Adapter: Gmail/Slack/LinkedIn]
+    C <--> D[Shadow DOM #tonal-root UI]
+    C <--> E[Content Script Orchestrator content.js]
+    E <--> F[Background Service Worker background.js]
+    F <--> G[Cloudflare Worker Gateway index.js]
+    G <--> H[Groq AI Engine Llama-3.3-70b]
+
+    subgraph Fallback Systems
+        E -.->|Network Disconnect| I[OfflineToneEngine 30+ Rules]
+    end
 ```
 
 <br/>
 
 ---
 
-## 📁 Project Structure
+## 📁 Subsystem Directory Structure
 
 ```
 tonal/
 ├── backend/                     # Cloudflare Worker proxy backend
-│   ├── src/index.js             # Worker router & LLM orchestrator
-│   └── wrangler.toml            # Cloudflare Wrangler config
+│   ├── src/index.js             # Worker router, LLM orchestrator & Rule 9 engine
+│   ├── tests/                   # 34 deep inside-out unit test files
+│   └── wrangler.toml            # Cloudflare Wrangler deployment config
 │
 ├── extension/                   # Manifest V3 Chrome Extension
-│   ├── manifest.json            # Extension manifest config
-│   ├── background.js            # Background service worker
-│   ├── content.js               # Target input orchestrator & watchdog
-│   ├── popup.html / popup.js    # Browser action settings popup
+│   ├── manifest.json            # Extension manifest config & host_permissions
+│   ├── background.js            # Background service worker (API gateway communication)
+│   ├── content.js               # Content orchestrator, MagnetPhysics & watchdog
+│   ├── popup.html / popup.js    # 280px popup control panel
 │   ├── core/
-│   │   ├── tonal.js             # Shared DOM builder & state controller
-│   │   └── tonal.css            # Isolated Shadow DOM styles & custom animations
-│   ├── adapters/                # Custom platform sync handlers
-│   └── icons/                   # Brand logo assets (icon128.png, etc.)
+│   │   ├── tonal.js             # Core DOM builder & state controller
+│   │   └── tonal.css            # Dynamic Shadow DOM styles & custom animations
+│   ├── adapters/                # DOM adapters (gmail.js, slack.js, linkedin.js)
+│   └── ui-spec.html             # Visual spec playground for component states
 │
-├── website/                     # Next.js homepage & interactive mockup
-│   ├── src/app/page.tsx         # Landing page with scroll animations
-│   └── public/icons/            # Unified brand icons
+├── website/                     # Next.js 16 website & interactive mockup
+│   ├── src/app/page.tsx         # Hero page with scroll animations
+│   ├── src/components/          # TonalMockup, ArchitectureSection, DownloadButton
+│   └── public/                  # Static assets & tonal-extension.zip package
 │
-├── extension/ui-spec.html          # Standalone Light-Mode UI States Playground
+├── ARCHITECTURE.md              # Deep technical architecture reference
+├── CONTEXT.md                   # Domain terminology & entity mappings
+├── CLAUDE.md                    # Project development guidelines & session resume
 └── README.md
 ```
 
@@ -155,111 +153,63 @@ tonal/
 
 ---
 
-## 🚀 Quickstart
+## 🚀 Quickstart & Local Development
 
 ### Prerequisites
 
-- **Google Chrome** — Or any Chromium-based browser
-- **Developer Mode** — Enabled in chrome://extensions/
+- **Google Chrome** — Or any Chromium-based browser (Brave, Edge)
+- **Node.js** — `v18.0.0` or higher
 
 <br/>
 
-### Step 1 — Clone
+### 1. Load Extension in Chrome
+
+1. Open `chrome://extensions/` in Chrome.
+2. Toggle **Developer mode** in the top-right corner.
+3. Click **Load unpacked** and select the `/extension` directory in this repository.
+
+<br/>
+
+### 2. Run Landing Page Web App
 
 ```bash
-git clone https://github.com/kwakhare5/tonal.git
-cd tonal
+# Navigate to website directory
+cd website
+
+# Install dependencies
+npm install
+
+# Start local dev server (runs on http://localhost:3000)
+npm run dev
 ```
 
-### Step 2 — Load Unpacked
+<br/>
 
-Open chrome://extensions/, toggle Developer mode, and click **Load unpacked** — select the `extension/` folder (not the repo root).
+### 3. Run Automated Test Suite
 
 ```bash
-chrome://extensions/
-```
-
-### Step 3 — Configure Preferences
-
-Click the tonal Icon, select your default tone level, and settings will sync instantly.
-
-```bash
-# UI Interaction
+# Run 34 deep inside-out tests from root directory
+npm test
 ```
 
 <br/>
 
 ---
 
-## 🤝 Contributing
+## 🔒 Security & Privacy Audit
 
-1. **Fork** the repository
-2. **Create** your feature branch (`git checkout -b feature/your-feature`)
-3. **Commit** using [Conventional Commits](https://www.conventionalcommits.org/) (`git commit -m "feat: add your feature"`)
-4. **Push** (`git push origin feature/your-feature`)
-5. **Open a Pull Request**
-
-<br/>
-
----
-
-## 🛡️ Privacy & Security
-
-> tonal is a stateless utility. No message data is ever stored on our servers. Requests are processed in real-time by Groq Llama 3.3 and discarded immediately.
->
-> **Worker security**: The Cloudflare Worker enforces strict CORS origin-checking. Only requests from `chrome-extension://` origins, `localhost`, and `https://tonall.pages.dev` are accepted. No API keys are ever present in the extension bundle.
+1. **API Key Protection**: The Groq API key is stored strictly inside the Cloudflare Worker environment variables. Content and background scripts never touch the key.
+2. **CORS Origin Filtering**: Worker verifies the `Origin` header against `chrome-extension://`, `localhost`, and `tonall.pages.dev`.
+3. **Input Length Cap**: Enforces a 4,000-character ceiling per request (`MAX_INPUT_LENGTH`).
+4. **Prompt Injection Defense**: Input text is wrapped inside `<input_data>` XML tags to prevent breakout attacks.
+5. **Response Headers**: Returns `X-Content-Type-Options: nosniff` and `X-Frame-Options: DENY`.
 
 <br/>
 
 ---
 
-## 📄 License
+## 📄 License & Author
 
-Distributed under the **MIT License**. See `LICENSE` for the full text.
+Distributed under the MIT License. See `LICENSE` for details.
 
-<br/>
-
----
-
-## 👨‍💻 Author
-
-<div align="center">
-
-### Karan Wakhare
-*Full Stack Engineer*
-
-<br/>
-
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-karanwakhare-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/karanwakhare)
-[![Twitter](https://img.shields.io/badge/Twitter-kwakhare5-1DA1F2?style=for-the-badge&logo=x&logoColor=white)](https://x.com/kwakhare5)
-[![Gmail](https://img.shields.io/badge/Gmail-kwakhare5%40gmail.com-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:kwakhare5@gmail.com)
-[![GitHub](https://img.shields.io/badge/GitHub-kwakhare5-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/kwakhare5)
-
-<br/>
-
-![GitHub Streak](https://streak-stats.demolab.com/?user=kwakhare5&theme=tokyonight&hide_border=true)
-
-<br/>
-
-![Profile Views](https://komarev.com/ghpvc/?username=kwakhare5&label=Profile+Views&color=0e75b6&style=for-the-badge)
-
-</div>
-
-<br/>
-
----
-
-<div align="center">
-
-  Made with ❤️ by [Karan Wakhare](https://github.com/kwakhare5)
-
-  <br/>
-
-  *"First, solve the problem. Then, write the code."*
-
-  <br/>
-
-  ![Wave](https://raw.githubusercontent.com/mayhemantt/mayhemantt/Update/svg/Bottom.svg)
-
-</div>
-
+Developed with precision by **Karan Wakhare** ([@kwakhare5](https://github.com/kwakhare5)).

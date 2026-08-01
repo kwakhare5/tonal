@@ -20,7 +20,7 @@
 - **UI isolation:** Shadow DOM — all tonal UI wrapped in Shadow DOM, no exceptions
 - **AI:** Groq via Cloudflare Worker (content.js → background.js → Worker → Groq). API key never in content script.
 - **Storage:** `chrome.storage.local` (persistence) + `chrome.storage.sync` (user prefs, syncs across devices, max 100KB)
-- **CSS:** All CSS inlined in the content script — no external stylesheets
+- **CSS:** Modular stylesheet in `extension/core/tonal.css` dynamically injected into Shadow Root via `tonal.js` (`injectStyles`)
 
 ---
 
@@ -45,7 +45,7 @@
 
 1. **HARD CONSTRAINTS — never break:**
    - Vanilla JS ONLY. No React, no Vue, no npm, no bundler, no build step.
-   - All CSS inlined in content script. No external stylesheets.
+   - Core CSS in `extension/core/tonal.css` injected directly into Shadow DOM via `chrome.runtime.getURL`.
    - All tonal UI wrapped in Shadow DOM. No exceptions.
    - Never inject into `<iframe>` elements.
    - Never put the API key in content script. All API calls: `content.js → background.js → Cloudflare Worker → Groq`
@@ -134,8 +134,9 @@ _AI fills this at the END of every session. Read this at the START of the next s
 **Last session date:** 2026-08-01
 
 **What we built / changed:**
-- **Popover Color Token Scoping**: Explicitly scoped `--black: #0F0F0F`, `--gray-5: #AEAEB2`, `--gray-7: #E5E5EA`, and `--gray-8: #F2F2F7` directly on `.popover` in `extension/core/tonal.css` and synced to `website/src/extension_shared/tonal.css`. Prevents host page/global CSS token contamination and guarantees 100% compliance with `extension/ui-spec.html`.
-- **Pushed Checkpoint to GitHub**: Committed and pushed commit `129c15a` to `https://github.com/kwakhare5/tonal.git`.
+- **Master Extension & Landing Page Synchronization**: Implemented Per-Site Tone Memory per tab (`gmail` → Formal, `slack` → Work Chat, `linkedin` → Formal), `Ctrl+Shift+T` / `Cmd+Shift+T` keyboard shortcut listener, `OfflineToneEngine` local regex fallback on network disconnects, and magnetic cursor offset tracking (`magnetOffset`) in `TonalMockup.tsx`.
+- **A/B Testing Growth Framework**: Added `variant?: 'control' | 'value_focused'` prop support to `DownloadButton.tsx` with Google Analytics event dispatch (`install_click`) for CTA optimization.
+- **Pushed Checkpoint to GitHub**: Committed and pushed commit `b3ccbff` to `https://github.com/kwakhare5/tonal.git`.
 - **Verified Zero-Breakage Integrity**: Re-verified backend & extension test suite (34/34 tests passed 100%) and Next.js website production build (compiled cleanly in 2.2s).
 
 **Immediate next task:**
@@ -145,6 +146,8 @@ _AI fills this at the END of every session. Read this at the START of the next s
 - None.
 
 **Files audited & finalized:**
+- `website/src/components/TonalMockup.tsx` — Per-site tone memory, Ctrl+Shift+T shortcut listener, local OfflineToneEngine fallback
+- `website/src/components/DownloadButton.tsx` — A/B testing variant prop & analytics event dispatch
 - `extension/core/tonal.css` — Explicit color scoping for .popover (#0F0F0F, #AEAEB2, #E5E5EA, #F2F2F7)
 - `website/src/extension_shared/tonal.css` — Synced extension CSS assets
 - `backend/src/index.js` — Added Rule 9 EXACT INFORMATION EQUIVALENCE to SYSTEM_LOGIC

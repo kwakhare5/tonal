@@ -28,7 +28,7 @@
 3. ALL tonal UI is inside Shadow DOM — no exceptions, no direct DOM injection to host page
 4. Never inject into `<iframe>` elements
 5. `chrome.storage.local` for data persistence — NOT `localStorage` (doesn't work across pages in MV3)
-6. All CSS is inlined in content script — no external stylesheets loaded
+6. Core CSS in `extension/core/tonal.css` injected dynamically into Shadow Root via `chrome.runtime.getURL` — zero global host page CSS leakage
 7. Worker is protected by **CORS-only origin checking** — only `chrome-extension://`, `localhost`, and `tonall.pages.dev` are allowed. No `Authorization` header is sent or required.
 8. Keyboard shortcut (`Ctrl+Shift+T`) forwards `TONAL_ACTIVATE` via `chrome.commands` → `chrome.tabs.sendMessage` → content script
 
