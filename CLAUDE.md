@@ -134,11 +134,12 @@ _AI fills this at the END of every session. Read this at the START of the next s
 **Last session date:** 2026-08-01
 
 **What we built / changed:**
-- **Master Extension & Landing Page Synchronization**: Implemented Per-Site Tone Memory per tab (`gmail` → Formal, `slack` → Work Chat, `linkedin` → Formal), `Ctrl+Shift+T` / `Cmd+Shift+T` keyboard shortcut listener, `OfflineToneEngine` local regex fallback on network disconnects, and magnetic cursor offset tracking (`magnetOffset`) in `TonalMockup.tsx`.
-- **A/B Testing Growth Framework**: Added `variant?: 'control' | 'value_focused'` prop support to `DownloadButton.tsx` with Google Analytics event dispatch (`install_click`) for CTA optimization.
-- **Documentation Audit & README v5.0.0 Overhaul**: Audited `CLAUDE.md` and `CONTEXT.md` line-by-line, purging outdated inline CSS claims. Overhauled `README.md` with version `v5.0.0`, 12 core capabilities matrix, architecture sequence diagram, local quickstart guide, security audit, and fixed double-quoted Mermaid labels.
-- **Pushed Checkpoints to GitHub**: Committed and pushed commits `b3ccbff`, `fffed4b`, and `991785d` to `https://github.com/kwakhare5/tonal.git`.
-- **Verified Zero-Breakage Integrity**: Re-verified backend & extension test suite (34/34 tests passed 100%) and Next.js website production build (compiled cleanly in 2.2s).
+- **Dynamic SEO & Publishing Engine**: Built dynamic generators for `sitemap.ts` (`sitemap.xml`), `robots.ts` (`robots.txt`), and `manifest.ts` (`manifest.webmanifest`).
+- **Real-Website OpenGraph Preview Card**: Re-architected `opengraph-image.tsx` to capture and serve the exact live landing page website rendering (`https://tonall.vercel.app`), automatically updating whenever the website design changes.
+- **Enhanced Rich Metadata & JSON-LD**: Added canonical URL `https://tonall.vercel.app`, `google-site-verification` support, and `SoftwareApplication` JSON-LD schema to `layout.tsx`.
+- **Master Extension & Landing Page Synchronization**: Implemented Per-Site Tone Memory per tab (`gmail` → Formal, `slack` → Work Chat, `linkedin` → Formal), `Ctrl+Shift+T` / `Cmd+Shift+T` keyboard shortcut listener, `OfflineToneEngine` local regex fallback, and magnetic cursor offset tracking (`magnetOffset`) in `TonalMockup.tsx`.
+- **Pushed Checkpoints to GitHub**: Committed and pushed commit `3c32057` to `https://github.com/kwakhare5/tonal.git`.
+- **Verified Zero-Breakage Integrity**: Re-verified backend & extension test suite (34/34 tests passed 100%) and Next.js website production build (compiled cleanly in 2.4s).
 
 **Immediate next task:**
 - Launch Tonal! Load unpacked extension in Chrome (`chrome://extensions` → Load unpacked → `/extension`) or deploy to production.
@@ -147,13 +148,12 @@ _AI fills this at the END of every session. Read this at the START of the next s
 - None.
 
 **Files audited & finalized:**
-- `README.md` — Complete v5.0.0 overhaul, 12 capabilities matrix, fixed Mermaid syntax labels
-- `CLAUDE.md` — Line-by-line audit & Session Resume update
-- `CONTEXT.md` — Line-by-line audit & Shadow DOM CSS rule alignment
+- `website/src/app/sitemap.ts` — Dynamic XML sitemap generator
+- `website/src/app/robots.ts` — Dynamic robots.txt crawler permissions
+- `website/src/app/manifest.ts` — Dynamic PWA web app manifest
+- `website/src/app/opengraph-image.tsx` — Real-website live screenshot OG preview
+- `website/src/app/layout.tsx` — Canonical URL, verification tags, JSON-LD schema
+- `README.md` — Complete v1.1.0 overhaul & logo path fix
 - `website/src/components/TonalMockup.tsx` — Per-site tone memory, Ctrl+Shift+T shortcut listener, local OfflineToneEngine fallback
 - `website/src/components/DownloadButton.tsx` — A/B testing variant prop & analytics event dispatch
-- `extension/core/tonal.css` — Explicit color scoping for .popover (#0F0F0F, #AEAEB2, #E5E5EA, #F2F2F7)
-- `website/src/extension_shared/tonal.css` — Synced extension CSS assets
-- `backend/src/index.js` — Added Rule 9 EXACT INFORMATION EQUIVALENCE to SYSTEM_LOGIC
-- `backend/tests/deep_inside_out.test.js` — Comprehensive test suite (34 tests total)
 - `website/public/tonal-extension.zip` — Synced extension download package
