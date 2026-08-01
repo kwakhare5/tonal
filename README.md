@@ -5,7 +5,7 @@
 
 <div align="center">
 
-  <img src="https://raw.githubusercontent.com/kwakhare5/tonal/main/icons/icon128.png" alt="tonal Logo" width="128"/>
+  <img src="https://raw.githubusercontent.com/kwakhare5/tonal/main/extension/icons/icon128.png" alt="tonal Logo" width="128"/>
   <br/>
 
   # tonal
