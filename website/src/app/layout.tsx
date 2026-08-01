@@ -37,6 +37,12 @@ export const metadata: Metadata = {
       { url: "/icons/icon128.png", sizes: "128x128", type: "image/png" },
     ],
   },
+  alternates: {
+    canonical: "https://tonall.vercel.app",
+  },
+  verification: {
+    google: "google-site-verification-token",
+  },
   openGraph: {
     title: "tonal — Inline Tone Adjustment Chrome Extension",
     description: "Adjust your writing tone inline on Gmail, Slack, and LinkedIn in one tap.",
