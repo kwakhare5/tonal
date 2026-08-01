@@ -65,6 +65,32 @@ export const TonalMockup: React.FC = () => {
   const typingSessionRef = useRef<number>(0);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
+  // Per-site tone memory (matches chrome.storage.local toneMemory)
+  const siteToneMemoryRef = useRef<Record<'gmail' | 'slack' | 'linkedin', ToneId>>({
+    gmail: 'formal',
+    slack: 'workChat',
+    linkedin: 'formal',
+  });
+
+  // Magnetic Cursor Offset (40px radius spring physics)
+  const [magnetOffset, setMagnetOffset] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+
+  // Keyboard shortcut listener: Ctrl+Shift+T / Cmd+Shift+T opens tone popover
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'T' || e.key === 't')) {
+        e.preventDefault();
+        setIsUserInteracting(true);
+        setPillState('expanded');
+        setShowPopover((prev) => !prev);
+        setToastMessage('Ctrl+Shift+T → Tone picker opened');
+        setTimeout(() => setToastMessage(null), 2200);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   // Handle text selection in textarea — Decode button appears ONLY when user selects text
   const handleSelectText = () => {
     if (!textareaRef.current) return;
@@ -95,16 +121,16 @@ export const TonalMockup: React.FC = () => {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  // Handle tone rewrite execution
+  // Handle tone rewrite execution with local OfflineToneEngine fallback
   const handleRewrite = useCallback(async (toneId: ToneId) => {
     setActiveTone(toneId);
+    siteToneMemoryRef.current[platform] = toneId;
     setShowPopover(false);
     setPillState('loading');
     setIsUserInteracting(true);
     justUndoneRef.current = false;
 
     const currentSessionId = ++typingSessionRef.current;
-    // Capture and lock original draft before starting rewrite animation if not already in done/rewrite state
     if (pillState !== 'done') {
       originalDraftRef.current = text.trim() || DRAFT_MESSAGES[0];
     }
@@ -123,9 +149,28 @@ export const TonalMockup: React.FC = () => {
         if (data && data.converted) {
           targetResult = data.converted;
         }
+      } else {
+        throw new Error('Worker unreachable');
       }
     } catch {
-      targetResult = FALLBACKS[toneId] || currentInputText;
+      // Local OfflineToneEngine regex word swap fallback
+      if (toneId === 'formal') {
+        targetResult = currentInputText
+          .replace(/\bwanna\b/gi, 'want to')
+          .replace(/\bgonna\b/gi, 'going to')
+          .replace(/\byeah\b/gi, 'yes')
+          .replace(/\basap\b/gi, 'at your earliest convenience')
+          .replace(/\bthx\b/gi, 'thank you');
+      } else if (toneId === 'casual') {
+        targetResult = currentInputText
+          .replace(/\bplease find attached\b/gi, "here's")
+          .replace(/\bas soon as possible\b/gi, 'whenever you get a chance 🙌')
+          .replace(/\bthank you\b/gi, 'thx!');
+      } else {
+        targetResult = FALLBACKS[toneId] || currentInputText;
+      }
+      setToastMessage('Converted (offline mode)');
+      setTimeout(() => setToastMessage(null), 2500);
     }
 
     if (currentSessionId !== typingSessionRef.current) return;
@@ -176,6 +221,9 @@ export const TonalMockup: React.FC = () => {
     setPillState('rest');
     setShowPopover(false);
     setShowDecodeCard(false);
+    // Restore per-site tone memory for this tab
+    const rememberedTone = siteToneMemoryRef.current[newPlatform] || 'workChat';
+    setActiveTone(rememberedTone);
     setText(DRAFT_MESSAGES[0]);
     originalDraftRef.current = DRAFT_MESSAGES[0];
   };

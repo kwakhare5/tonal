@@ -7,6 +7,7 @@ interface DownloadButtonProps {
   className?: string;
   children: React.ReactNode;
   style?: React.CSSProperties;
+  variant?: 'control' | 'value_focused';
   onClick?: () => void;
 }
 
@@ -14,23 +15,36 @@ export const DownloadButton: React.FC<DownloadButtonProps> = ({
   className, 
   children, 
   style,
+  variant = 'control',
   onClick 
 }) => {
   const [isInstallModalOpen, setIsInstallModalOpen] = useState<boolean>(false);
+
+  const handleClick = () => {
+    // A/B Experiment tracking dispatch
+    if (typeof window !== 'undefined' && (window as unknown as Record<string, Function>).gtag) {
+      ((window as unknown as Record<string, Function>).gtag)('event', 'install_click', {
+        event_category: 'engagement',
+        event_label: variant,
+      });
+    }
+    setIsInstallModalOpen(true);
+    onClick?.();
+  };
 
   return (
     <>
       <a 
         href="/tonal-extension.zip" 
         download 
-        onClick={() => {
-          setIsInstallModalOpen(true);
-          onClick?.();
-        }}
+        onClick={handleClick}
         className={className} 
         style={style}
+        data-experiment-variant={variant}
       >
-        {children}
+        {variant === 'value_focused' && typeof children === 'string'
+          ? "Transform Your Tone In 1-Click — Add Free Extension"
+          : children}
       </a>
       <InstallGuideModal 
         isOpen={isInstallModalOpen} 

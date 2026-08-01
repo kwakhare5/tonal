@@ -134,8 +134,8 @@ _AI fills this at the END of every session. Read this at the START of the next s
 **Last session date:** 2026-08-01
 
 **What we built / changed:**
-- **UI-Spec Color Token Scoping**: Explicitly scoped `--black: #0F0F0F` and `--green: #34C759` directly on `.t-pill` and `.t-pill--done` in `extension/core/tonal.css` and synced to `website/src/extension_shared/tonal.css`. Prevents host page/global CSS token contamination and guarantees 100% compliance with `extension/ui-spec.html`.
-- **Pushed Checkpoint to GitHub**: Committed and pushed commit `aa12689` to `https://github.com/kwakhare5/tonal.git`.
+- **Popover Color Token Scoping**: Explicitly scoped `--black: #0F0F0F`, `--gray-5: #AEAEB2`, `--gray-7: #E5E5EA`, and `--gray-8: #F2F2F7` directly on `.popover` in `extension/core/tonal.css` and synced to `website/src/extension_shared/tonal.css`. Prevents host page/global CSS token contamination and guarantees 100% compliance with `extension/ui-spec.html`.
+- **Pushed Checkpoint to GitHub**: Committed and pushed commit `129c15a` to `https://github.com/kwakhare5/tonal.git`.
 - **Verified Zero-Breakage Integrity**: Re-verified backend & extension test suite (34/34 tests passed 100%) and Next.js website production build (compiled cleanly in 2.2s).
 
 **Immediate next task:**
@@ -145,7 +145,7 @@ _AI fills this at the END of every session. Read this at the START of the next s
 - None.
 
 **Files audited & finalized:**
-- `extension/core/tonal.css` — Explicit color scoping for .t-pill (#0F0F0F) and .t-pill--done (#34C759)
+- `extension/core/tonal.css` — Explicit color scoping for .popover (#0F0F0F, #AEAEB2, #E5E5EA, #F2F2F7)
 - `website/src/extension_shared/tonal.css` — Synced extension CSS assets
 - `backend/src/index.js` — Added Rule 9 EXACT INFORMATION EQUIVALENCE to SYSTEM_LOGIC
 - `backend/tests/deep_inside_out.test.js` — Comprehensive test suite (34 tests total)
