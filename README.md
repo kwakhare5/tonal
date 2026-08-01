@@ -14,7 +14,7 @@
 
   <br/>
 
-  ![Version](https://img.shields.io/badge/version-5.0.0-blue?style=for-the-badge)
+  ![Version](https://img.shields.io/badge/version-1.1.0-blue?style=for-the-badge)
   ![License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge)
   ![Tests](https://img.shields.io/badge/tests-34%2F34%20passing-brightgreen?style=for-the-badge)
   ![Last Commit](https://img.shields.io/github/last-commit/kwakhare5/tonal?style=for-the-badge&color=orange)
