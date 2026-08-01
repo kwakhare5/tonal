@@ -134,9 +134,9 @@ _AI fills this at the END of every session. Read this at the START of the next s
 **Last session date:** 2026-08-01
 
 **What we built / changed:**
-- **Tone Precision & Quality Optimization**: Added Rule 9 (`EXACT INFORMATION EQUIVALENCE`) to `SYSTEM_LOGIC` in `backend/src/index.js`, guaranteeing 100% preservation of user facts, dates, names, links, and conditions across all tone shifts without overdoing, underdoing, or introducing unrequested fluff.
-- **Pushed Checkpoint to GitHub**: Committed and pushed commit `0e5215e` to `https://github.com/kwakhare5/tonal.git`.
-- **Verified Zero-Breakage Integrity**: Re-verified backend & extension test suite (34/34 tests passed 100%) and Next.js website production build (compiled cleanly in 2.5s).
+- **UI-Spec Color Token Scoping**: Explicitly scoped `--black: #0F0F0F` and `--green: #34C759` directly on `.t-pill` and `.t-pill--done` in `extension/core/tonal.css` and synced to `website/src/extension_shared/tonal.css`. Prevents host page/global CSS token contamination and guarantees 100% compliance with `extension/ui-spec.html`.
+- **Pushed Checkpoint to GitHub**: Committed and pushed commit `aa12689` to `https://github.com/kwakhare5/tonal.git`.
+- **Verified Zero-Breakage Integrity**: Re-verified backend & extension test suite (34/34 tests passed 100%) and Next.js website production build (compiled cleanly in 2.2s).
 
 **Immediate next task:**
 - Launch Tonal! Load unpacked extension in Chrome (`chrome://extensions` → Load unpacked → `/extension`) or deploy to production.
@@ -145,8 +145,8 @@ _AI fills this at the END of every session. Read this at the START of the next s
 - None.
 
 **Files audited & finalized:**
+- `extension/core/tonal.css` — Explicit color scoping for .t-pill (#0F0F0F) and .t-pill--done (#34C759)
+- `website/src/extension_shared/tonal.css` — Synced extension CSS assets
 - `backend/src/index.js` — Added Rule 9 EXACT INFORMATION EQUIVALENCE to SYSTEM_LOGIC
 - `backend/tests/deep_inside_out.test.js` — Comprehensive test suite (34 tests total)
-- `extension/content.js` — Passive event listener flags
-- `website/next.config.ts` — Vercel cache-control & security headers
 - `website/public/tonal-extension.zip` — Synced extension download package

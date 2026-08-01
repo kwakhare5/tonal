@@ -144,6 +144,12 @@
 
 /* ── POPOVER ────────────────────────────────────────────────── */
 .popover {
+  --black:  #0F0F0F;
+  --white:  #FFFFFF;
+  --gray-5: #AEAEB2;
+  --gray-7: #E5E5EA;
+  --gray-8: #F2F2F7;
+  --gray-9: #F5F5F7;
   position: absolute; bottom: calc(100% + 8px); right: 0;
   width: 192px; background: var(--white);
   border-radius: var(--r-lg); border: 1px solid var(--gray-7);
