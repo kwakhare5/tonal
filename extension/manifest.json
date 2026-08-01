@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "tonal",
-  "version": "1.1.0",
+  "version": "5.0.0",
   "description": "Two-way tone translator. Convert casual to formal, or decode corporate speak — inside Gmail, Slack, and LinkedIn.",
   "permissions": ["storage", "tabs"],
   "host_permissions": [
