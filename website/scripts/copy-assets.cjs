@@ -12,8 +12,8 @@ fs.mkdirSync(path.dirname(destJs), { recursive: true });
 
 // Copy if source files exist (local environment)
 if (fs.existsSync(srcJs) && fs.existsSync(srcCss)) {
-  fs.copyFileSync(srcJs, destJs);
-  fs.copyFileSync(srcCss, destCss);
+  fs.cpSync(srcJs, destJs);
+  fs.cpSync(srcCss, destCss);
   console.log('Successfully synced extension assets to website.');
 } else {
   console.log('Extension source files not found. Using cached assets.');

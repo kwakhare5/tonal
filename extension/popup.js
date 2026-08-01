@@ -1,30 +1,3 @@
-// Mock chrome.storage for local runs outside extension context
-if (typeof chrome === "undefined" || !chrome.storage || !chrome.storage.sync) {
-  window.chrome = {
-    storage: {
-      sync: {
-        get: (defaults, callback) => {
-          const defaultTone = localStorage.getItem("defaultTone") || defaults.defaultTone;
-          const pillEnabled = localStorage.getItem("pillEnabled") !== null
-            ? localStorage.getItem("pillEnabled") === "true"
-            : defaults.pillEnabled;
-          const decodeEnabled = localStorage.getItem("decodeEnabled") !== null
-            ? localStorage.getItem("decodeEnabled") === "true"
-            : defaults.decodeEnabled;
-          
-          callback({ defaultTone, pillEnabled, decodeEnabled });
-        },
-        set: (data, callback) => {
-          if (data.defaultTone !== undefined) localStorage.setItem("defaultTone", data.defaultTone);
-          if (data.pillEnabled !== undefined) localStorage.setItem("pillEnabled", data.pillEnabled);
-          if (data.decodeEnabled !== undefined) localStorage.setItem("decodeEnabled", data.decodeEnabled);
-          if (callback) callback();
-        }
-      }
-    }
-  };
-}
-
 document.addEventListener("DOMContentLoaded", () => {
   const tabSettings = document.getElementById("tab-settings");
   const tabActivity = document.getElementById("tab-activity");

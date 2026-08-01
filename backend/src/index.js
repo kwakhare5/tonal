@@ -268,14 +268,9 @@ export default {
   },
 };
 
-function json(payload, status = 200, corsHeaders = null) {
-  const headers = corsHeaders || {
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "POST, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type",
-  };
+function json(payload, status = 200, corsHeaders = {}) {
   return new Response(JSON.stringify(payload), {
     status,
-    headers: { ...headers, "Content-Type": "application/json" },
+    headers: { ...corsHeaders, "Content-Type": "application/json" },
   });
 }

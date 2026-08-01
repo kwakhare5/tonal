@@ -19,7 +19,7 @@ window.tonalAdapters.manager = {
     if (registry.slack?.matches(url)) return registry.slack;
     if (registry.gmail?.matches(url)) return registry.gmail;
 
-    // Fallback stub
-    return { id: "none", matches: () => false };
+    // Fallback if no matching platform
+    return null;
   },
 };

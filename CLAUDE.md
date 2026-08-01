@@ -134,17 +134,18 @@ _AI fills this at the END of every session. Read this at the START of the next s
 **Last session date:** 2026-08-01
 
 **What we built / changed:**
-- **Fixed Dead Undo Button (`TonalMockup.tsx`)**: Identified that `.t-pill` in `tonal.css` has `pointer-events: none`, causing click events on `.t-pill` to be swallowed. Attached `onClick` to `.t-hitbox` and set `pointerEvents: 'auto'` on `.t-pill`. Clicking **Undo** now triggers 100% reliably.
-- **Verification**: Next.js website compiled in 2.6s; `npm test` passed 33/33 tests in 190ms.
+- **Pushed Checkpoint to GitHub**: Successfully committed and pushed all verified changes to remote repo (`https://github.com/kwakhare5/tonal.git`, commit `7377d9d`).
+- **Verified Zero-Breakage Integrity**: Re-verified backend & extension test suite (33/33 tests passed 100%) and Next.js website build (compiled cleanly in 2.4s).
+- **Fixed Undo Button Pointer-Events**: Moved `onClick` to `.t-hitbox` and set `pointerEvents: 'auto'` on `.t-pill` in `TonalMockup.tsx`.
 
 **Immediate next task:**
-- Launch Tonal! Load unpacked extension in Chrome (`chrome://extensions` → Load unpacked → `/extension`) or push to production.
+- Launch Tonal! Load unpacked extension in Chrome (`chrome://extensions` → Load unpacked → `/extension`) or deploy to production.
 
 **Open blockers:**
 - None.
 
 **Files audited & finalized:**
-- `website/src/components/TonalMockup.tsx` — Fixed `.t-hitbox` `onClick` and `pointerEvents: 'auto'` for Undo button
+- `website/src/components/TonalMockup.tsx` — Fixed Undo button pointer-events & position
 - `backend/tests/deep_inside_out.test.js` — Deep inside-out test suite (33 tests)
 - `backend/src/index.js` — Cloudflare Worker proxy & quote stripping fix
 - `extension/adapters/linkedin.js` — LinkedIn chat overlay & message form selectors
