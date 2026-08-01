@@ -101,16 +101,16 @@ tonal eliminates the friction of switching between casual drafts and professiona
 
 ```mermaid
 flowchart TD
-    A[User Selection / Input] --> B[Host Page DOM]
-    B <--> C[Platform Adapter: Gmail/Slack/LinkedIn]
-    C <--> D[Shadow DOM #tonal-root UI]
-    C <--> E[Content Script Orchestrator content.js]
-    E <--> F[Background Service Worker background.js]
-    F <--> G[Cloudflare Worker Gateway index.js]
-    G <--> H[Groq AI Engine Llama-3.3-70b]
+    A["User Selection / Input"] --> B["Host Page DOM"]
+    B <--> C["Platform Adapter: Gmail/Slack/LinkedIn"]
+    C <--> D["Shadow DOM #tonal-root UI"]
+    C <--> E["Content Script Orchestrator content.js"]
+    E <--> F["Background Service Worker background.js"]
+    F <--> G["Cloudflare Worker Gateway index.js"]
+    G <--> H["Groq AI Engine Llama-3.3-70b"]
 
     subgraph Fallback Systems
-        E -.->|Network Disconnect| I[OfflineToneEngine 30+ Rules]
+        E -.->|Network Disconnect| I["OfflineToneEngine 30+ Rules"]
     end
 ```
 
