@@ -136,7 +136,8 @@ _AI fills this at the END of every session. Read this at the START of the next s
 **What we built / changed:**
 - **Master Extension & Landing Page Synchronization**: Implemented Per-Site Tone Memory per tab (`gmail` → Formal, `slack` → Work Chat, `linkedin` → Formal), `Ctrl+Shift+T` / `Cmd+Shift+T` keyboard shortcut listener, `OfflineToneEngine` local regex fallback on network disconnects, and magnetic cursor offset tracking (`magnetOffset`) in `TonalMockup.tsx`.
 - **A/B Testing Growth Framework**: Added `variant?: 'control' | 'value_focused'` prop support to `DownloadButton.tsx` with Google Analytics event dispatch (`install_click`) for CTA optimization.
-- **Pushed Checkpoint to GitHub**: Committed and pushed commit `b3ccbff` to `https://github.com/kwakhare5/tonal.git`.
+- **Documentation Audit & README v5.0.0 Overhaul**: Audited `CLAUDE.md` and `CONTEXT.md` line-by-line, purging outdated inline CSS claims. Overhauled `README.md` with version `v5.0.0`, 12 core capabilities matrix, architecture sequence diagram, local quickstart guide, security audit, and fixed double-quoted Mermaid labels.
+- **Pushed Checkpoints to GitHub**: Committed and pushed commits `b3ccbff`, `fffed4b`, and `991785d` to `https://github.com/kwakhare5/tonal.git`.
 - **Verified Zero-Breakage Integrity**: Re-verified backend & extension test suite (34/34 tests passed 100%) and Next.js website production build (compiled cleanly in 2.2s).
 
 **Immediate next task:**
@@ -146,6 +147,9 @@ _AI fills this at the END of every session. Read this at the START of the next s
 - None.
 
 **Files audited & finalized:**
+- `README.md` — Complete v5.0.0 overhaul, 12 capabilities matrix, fixed Mermaid syntax labels
+- `CLAUDE.md` — Line-by-line audit & Session Resume update
+- `CONTEXT.md` — Line-by-line audit & Shadow DOM CSS rule alignment
 - `website/src/components/TonalMockup.tsx` — Per-site tone memory, Ctrl+Shift+T shortcut listener, local OfflineToneEngine fallback
 - `website/src/components/DownloadButton.tsx` — A/B testing variant prop & analytics event dispatch
 - `extension/core/tonal.css` — Explicit color scoping for .popover (#0F0F0F, #AEAEB2, #E5E5EA, #F2F2F7)
