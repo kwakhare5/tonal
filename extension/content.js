@@ -858,6 +858,7 @@
       });
       document.addEventListener("mousemove", (e) =>
         this.magnetPhysics.handleMouseMove(e.clientX, e.clientY),
+        { passive: true },
       );
       document.addEventListener("click", () => {
         if (this.pillEnabled) this.registry.scan();

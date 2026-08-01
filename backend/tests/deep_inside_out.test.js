@@ -140,6 +140,21 @@ test('Inside-Out — Worker System Prompt Includes SYSTEM_LOGIC & Security Tags'
   }
 });
 
+test('Inside-Out — MAX_INPUT_LENGTH (4000 chars) Enforced', async () => {
+  const hugeText = 'a'.repeat(4001);
+  const req = new Request('https://tonal.dev/', {
+    method: 'POST',
+    headers: { Origin: 'http://localhost:3000', 'Content-Type': 'application/json' },
+    body: JSON.stringify({ text: hugeText, toneLevel: 'casual' })
+  });
+
+  const res = await worker.fetch(req, {});
+  assert.strictEqual(res.status, 400);
+  const body = await res.json();
+  assert.strictEqual(body.success, false);
+  assert.ok(body.error.includes('max length'));
+});
+
 // ── 4. EXTRACT OUTPUT PARSER FULL TEST SUITE ───────────────────────
 test('Inside-Out — extractOutput Parser Logic', () => {
   assert.strictEqual(extractOutput('<tonal_output>Clean Text</tonal_output>'), 'Clean Text');

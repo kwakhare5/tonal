@@ -181,11 +181,14 @@ export default {
       return json({ success: false, error: "Invalid JSON" }, 400, corsHeaders);
     }
 
-    const { text, toneLevel, mode, platform } = body;
+    const { text, toneLevel, mode, platform } = body || {};
+    const MAX_INPUT_LENGTH = 4000;
     if (text === undefined || text === null || typeof text !== "string")
       return json({ success: false, error: "Invalid or missing text field" }, 400, corsHeaders);
     if (text.trim().length < 2)
       return json({ success: false, error: "Text too short" }, 400, corsHeaders);
+    if (text.length > MAX_INPUT_LENGTH)
+      return json({ success: false, error: "Text exceeds max length of 4000 characters" }, 400, corsHeaders);
 
     const promptKey = mode === "decode" ? "decode" : toneLevel || "workChat";
     let systemPrompt = PROMPTS[promptKey] || PROMPTS.workChat;
@@ -271,6 +274,11 @@ export default {
 function json(payload, status = 200, corsHeaders = {}) {
   return new Response(JSON.stringify(payload), {
     status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
+    headers: {
+      ...corsHeaders,
+      "Content-Type": "application/json",
+      "X-Content-Type-Options": "nosniff",
+      "X-Frame-Options": "DENY",
+    },
   });
 }

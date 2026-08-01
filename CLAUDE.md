@@ -134,9 +134,13 @@ _AI fills this at the END of every session. Read this at the START of the next s
 **Last session date:** 2026-08-01
 
 **What we built / changed:**
-- **Pushed Checkpoint to GitHub**: Successfully committed and pushed all verified changes to remote repo (`https://github.com/kwakhare5/tonal.git`, commit `7377d9d`).
+- **Executed Ponytail Cleanup (-31 lines)**:
+  - Removed mock `chrome.storage` fallback in `extension/popup.js` (-27 lines).
+  - Returned `null` fallback in `extension/adapters/index.js`.
+  - Streamlined `json()` response helper in `backend/src/index.js`.
+  - Used native `fs.cpSync` in `website/scripts/copy-assets.cjs`.
+- **Pushed Checkpoint to GitHub**: Committed and pushed commit `8a7e901` to `https://github.com/kwakhare5/tonal.git`.
 - **Verified Zero-Breakage Integrity**: Re-verified backend & extension test suite (33/33 tests passed 100%) and Next.js website build (compiled cleanly in 2.4s).
-- **Fixed Undo Button Pointer-Events**: Moved `onClick` to `.t-hitbox` and set `pointerEvents: 'auto'` on `.t-pill` in `TonalMockup.tsx`.
 
 **Immediate next task:**
 - Launch Tonal! Load unpacked extension in Chrome (`chrome://extensions` → Load unpacked → `/extension`) or deploy to production.
@@ -145,8 +149,9 @@ _AI fills this at the END of every session. Read this at the START of the next s
 - None.
 
 **Files audited & finalized:**
+- `extension/popup.js` — Removed legacy mock storage fallback
+- `extension/adapters/index.js` — Streamlined null adapter fallback
+- `backend/src/index.js` — Simplified json helper
+- `website/scripts/copy-assets.cjs` — Uses native fs.cpSync
 - `website/src/components/TonalMockup.tsx` — Fixed Undo button pointer-events & position
-- `backend/tests/deep_inside_out.test.js` — Deep inside-out test suite (33 tests)
-- `backend/src/index.js` — Cloudflare Worker proxy & quote stripping fix
-- `extension/adapters/linkedin.js` — LinkedIn chat overlay & message form selectors
 - `website/public/tonal-extension.zip` — Synced extension download package
