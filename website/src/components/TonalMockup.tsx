@@ -347,8 +347,9 @@ export const TonalMockup: React.FC = () => {
 
           <textarea
             ref={textareaRef}
-            className="composer-textarea"
+            className={`composer-textarea ${isTyping ? 'composer-textarea--typing' : ''}`}
             value={text}
+            data-user-interacting={isUserInteracting}
             onSelect={handleSelectText}
             onMouseUp={handleSelectText}
             onKeyUp={handleSelectText}
@@ -364,7 +365,7 @@ export const TonalMockup: React.FC = () => {
           {showDecodeCard && (
             <div className="decode-card decode-card--active" style={{ position: 'absolute', top: '36px', right: '12px', zIndex: 300 }}>
               <div className="decode-card-header">
-                <span className="decode-card-tag">Plain English</span>
+                <span className="decode-card-tag">Plain English {selectedJargon ? `(${selectedJargon})` : ''}</span>
                 <div className="decode-card-close" onClick={() => setShowDecodeCard(false)}>
                   <svg width="8" height="8" viewBox="0 0 14 14" fill="none"><path d="M1 1l12 12M13 1L1 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
                 </div>
@@ -413,6 +414,21 @@ export const TonalMockup: React.FC = () => {
               justifyContent: 'flex-end',
               pointerEvents: 'auto',
               cursor: 'pointer',
+              transform: `translate(${magnetOffset.x}px, ${magnetOffset.y}px)`,
+              transition: 'transform 0.15s ease-out',
+            }}
+            onMouseMove={(e) => {
+              const rect = e.currentTarget.getBoundingClientRect();
+              const centerX = rect.left + rect.width / 2;
+              const centerY = rect.top + rect.height / 2;
+              const dx = e.clientX - centerX;
+              const dy = e.clientY - centerY;
+              const dist = Math.sqrt(dx * dx + dy * dy);
+              if (dist < 40) {
+                setMagnetOffset({ x: Math.round(dx * 0.15), y: Math.round(dy * 0.15) });
+              } else {
+                setMagnetOffset({ x: 0, y: 0 });
+              }
             }}
             onClick={(e) => {
               if ((e.target as HTMLElement).closest('.pill-chev-wrap')) return;
@@ -435,6 +451,7 @@ export const TonalMockup: React.FC = () => {
             onMouseLeave={() => {
               justUndoneRef.current = false;
               setShowPopover(false);
+              setMagnetOffset({ x: 0, y: 0 });
               if (pillState === 'expanded' || pillState === 'hover') {
                 setPillState('rest');
               }

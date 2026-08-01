@@ -11,6 +11,10 @@ interface DownloadButtonProps {
   onClick?: () => void;
 }
 
+interface WindowWithGtag extends Window {
+  gtag?: (command: string, action: string, params?: Record<string, unknown>) => void;
+}
+
 export const DownloadButton: React.FC<DownloadButtonProps> = ({ 
   className, 
   children, 
@@ -22,11 +26,14 @@ export const DownloadButton: React.FC<DownloadButtonProps> = ({
 
   const handleClick = () => {
     // A/B Experiment tracking dispatch
-    if (typeof window !== 'undefined' && (window as unknown as Record<string, Function>).gtag) {
-      ((window as unknown as Record<string, Function>).gtag)('event', 'install_click', {
-        event_category: 'engagement',
-        event_label: variant,
-      });
+    if (typeof window !== 'undefined') {
+      const win = window as WindowWithGtag;
+      if (typeof win.gtag === 'function') {
+        win.gtag('event', 'install_click', {
+          event_category: 'engagement',
+          event_label: variant,
+        });
+      }
     }
     setIsInstallModalOpen(true);
     onClick?.();
