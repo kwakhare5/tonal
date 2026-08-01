@@ -182,6 +182,7 @@ User triggers tone change
 | 2026-07-23 | Undo History Persistence | `undoHistory[]` (max 10) in `chrome.storage.local`. Each entry: `{originalText, rewrittenText, tone, ts}`. Survives navigation and tab close. |
 | 2026-07-23 | OfflineToneEngine | 30+ word-swap rules per tone level in `content.js`. Triggers when background.js returns `offline:true` (fetch failure, 401, 503). No network required. |
 | 2026-07-23 | Removed AUTH_TOKEN | Hardcoded token removed from `background.js`. Cloudflare secret deleted. Worker now relies on CORS origin-only protection. Old token is fully invalidated. |
+| 2026-08-01 | LinkedIn Messaging Overlay Fix & Package Sync | Enhanced `adapters/linkedin.js` with `.msg-convo-wrapper`, `.msg-overlay-conversation-bubble`, and `.msg-form` macro-zone containers and lowered height boundary to `>= 14px`. Synced `tonal-extension.zip` in `website/public/`. |
 
 ---
 

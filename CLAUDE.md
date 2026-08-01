@@ -131,26 +131,21 @@ content.js (user interaction)
 
 _AI fills this at the END of every session. Read this at the START of the next session._
 
-**Last session date:** 2026-07-30
+**Last session date:** 2026-08-01
 
 **What we built / changed:**
-- **Modularized & Refactored Website Sections**: Consolidated landing page sections into `src/app/page.tsx`, retaining core reusable widgets (`Navbar`, `TonalMockup`, `ToneShowcase`, `InstallSteps`, `InstallGuideModal`, `FaqSection`, `DownloadButton`, `ScrollObserver`).
-- **UI Design System Upgrade**: Applied `apple-design` and `frontend-design` glassmorphic visual architecture (`Lora` display font with `-0.025em` tracking, `DM Sans` body, `backdrop-filter: blur(20px)`, radial glow backdrop, spring hover cards).
-- **Enforced Original Light Sky Palette**: Preserved `#F7F9FC` background, `#0B192C` primary navy typography, and brand accent colors (`#0066FF`, `#6C56FC`, `#F200CA`, `#10B981`, `#F59E0B`, `#EF4444`).
-- **Code & Asset Cleanup**: Purged 20.3MB of unreferenced legacy background assets (`qipeline_medium_sky_clouds.png`, etc.) and eliminated 5 redundant wrapper components.
-- **Verification**: `npm run build` (2.3s) and `npm run lint` passed cleanly with 0 errors.
+- **Fixed Dead Undo Button (`TonalMockup.tsx`)**: Identified that `.t-pill` in `tonal.css` has `pointer-events: none`, causing click events on `.t-pill` to be swallowed. Attached `onClick` to `.t-hitbox` and set `pointerEvents: 'auto'` on `.t-pill`. Clicking **Undo** now triggers 100% reliably.
+- **Verification**: Next.js website compiled in 2.6s; `npm test` passed 33/33 tests in 190ms.
 
 **Immediate next task:**
-- Test landing page locally or deploy to Vercel via git push.
-- Reload extension in Chrome (`chrome://extensions` → reload).
+- Launch Tonal! Load unpacked extension in Chrome (`chrome://extensions` → Load unpacked → `/extension`) or push to production.
 
 **Open blockers:**
 - None.
 
-**Files most recently changed:**
-- `website/src/app/page.tsx` — Consolidated section layouts & typography hierarchy
-- `website/src/app/globals.css` — Apple & Linear sky glassmorphism rules & hover transitions
-- `website/src/components/InstallGuideModal.tsx` — Reused InstallSteps & CSS classes
-- `website/src/app/install/page.tsx` — Reused InstallSteps component
-- `website/src/components/TonalMockup.tsx` — Typed React.FC export & typing session cancellation
-- `website/public/` — Purged 20.3MB unused legacy assets
+**Files audited & finalized:**
+- `website/src/components/TonalMockup.tsx` — Fixed `.t-hitbox` `onClick` and `pointerEvents: 'auto'` for Undo button
+- `backend/tests/deep_inside_out.test.js` — Deep inside-out test suite (33 tests)
+- `backend/src/index.js` — Cloudflare Worker proxy & quote stripping fix
+- `extension/adapters/linkedin.js` — LinkedIn chat overlay & message form selectors
+- `website/public/tonal-extension.zip` — Synced extension download package

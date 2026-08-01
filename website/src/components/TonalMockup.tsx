@@ -45,7 +45,8 @@ const DRAFT_MESSAGES = [
 
 export const TonalMockup: React.FC = () => {
   const [text, setText] = useState(DRAFT_MESSAGES[0]);
-  const [originalText, setOriginalText] = useState(DRAFT_MESSAGES[0]);
+  const originalDraftRef = useRef<string>(DRAFT_MESSAGES[0]);
+  const justUndoneRef = useRef<boolean>(false);
   const [pillState, setPillState] = useState<PillState>('rest');
   const [showPopover, setShowPopover] = useState(false);
   const [activeTone, setActiveTone] = useState<ToneId>('workChat');
@@ -100,10 +101,14 @@ export const TonalMockup: React.FC = () => {
     setShowPopover(false);
     setPillState('loading');
     setIsUserInteracting(true);
+    justUndoneRef.current = false;
 
     const currentSessionId = ++typingSessionRef.current;
-    const currentInputText = text.trim() || DRAFT_MESSAGES[0];
-    setOriginalText(currentInputText);
+    // Capture and lock original draft before starting rewrite animation if not already in done/rewrite state
+    if (pillState !== 'done') {
+      originalDraftRef.current = text.trim() || DRAFT_MESSAGES[0];
+    }
+    const currentInputText = originalDraftRef.current;
     let targetResult = FALLBACKS[toneId] || currentInputText;
 
     try {
@@ -146,27 +151,33 @@ export const TonalMockup: React.FC = () => {
         setPillState('done');
       }
     }, 18);
-  }, [text, platform]);
+  }, [text, platform, pillState]);
 
   const handleUndo = () => {
     typingSessionRef.current++;
     setIsTyping(false);
-    setText(originalText);
-    setPillState('expanded');
-    setToastMessage('Rewriting undone');
-    setTimeout(() => setToastMessage(null), 2500);
+    justUndoneRef.current = true;
+    setText(originalDraftRef.current);
+    setPillState('rest');
+    setShowPopover(false);
+    setToastMessage('Restored original draft');
+    setTimeout(() => {
+      setToastMessage(null);
+      justUndoneRef.current = false;
+    }, 2000);
   };
 
   const handlePlatformChange = (newPlatform: 'gmail' | 'slack' | 'linkedin') => {
     typingSessionRef.current++;
     setIsTyping(false);
+    justUndoneRef.current = false;
     setPlatform(newPlatform);
     setIsUserInteracting(true);
     setPillState('rest');
     setShowPopover(false);
     setShowDecodeCard(false);
     setText(DRAFT_MESSAGES[0]);
-    setOriginalText(DRAFT_MESSAGES[0]);
+    originalDraftRef.current = DRAFT_MESSAGES[0];
   };
 
   const handleSend = () => {
@@ -352,13 +363,29 @@ export const TonalMockup: React.FC = () => {
               flexDirection: 'column',
               alignItems: 'flex-end',
               justifyContent: 'flex-end',
+              pointerEvents: 'auto',
+              cursor: 'pointer',
+            }}
+            onClick={(e) => {
+              if ((e.target as HTMLElement).closest('.pill-chev-wrap')) return;
+              setIsUserInteracting(true);
+              if (pillState === 'rest') {
+                setPillState('expanded');
+              } else if (pillState === 'done') {
+                handleUndo();
+              } else if (pillState === 'expanded') {
+                handleRewrite(activeTone);
+              } else if (pillState !== 'loading') {
+                handleRewrite(activeTone);
+              }
             }}
             onMouseEnter={() => {
-              if (pillState === 'rest') {
+              if (pillState === 'rest' && !justUndoneRef.current) {
                 setPillState('expanded');
               }
             }}
             onMouseLeave={() => {
+              justUndoneRef.current = false;
               setShowPopover(false);
               if (pillState === 'expanded' || pillState === 'hover') {
                 setPillState('rest');
@@ -396,14 +423,17 @@ export const TonalMockup: React.FC = () => {
             {/* Pill Element (ui-spec.html & tonal.js compliant) */}
             <div
               className={`t-pill t-pill--${pillState} ${showPopover ? 't-pill--popover-open' : ''}`}
-              onClick={() => {
+              style={{ pointerEvents: 'auto' }}
+              onClick={(e) => {
+                e.stopPropagation();
+                if ((e.target as HTMLElement).closest('.pill-chev-wrap')) return;
                 setIsUserInteracting(true);
                 if (pillState === 'rest') {
                   setPillState('expanded');
                 } else if (pillState === 'done') {
                   handleUndo();
                 } else if (pillState === 'expanded') {
-                  setShowPopover((prev) => !prev);
+                  handleRewrite(activeTone);
                 } else if (pillState !== 'loading') {
                   handleRewrite(activeTone);
                 }

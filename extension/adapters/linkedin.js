@@ -13,24 +13,31 @@ window.tonalAdapters.linkedin = {
   selectors: [
     ".msg-form__contenteditable",
     '.msg-form__contenteditable [contenteditable="true"]',
-    '[role="textbox"][aria-label*="message"]',
+    '[role="textbox"][aria-label*="message" i]',
+    '[role="textbox"][aria-label*="Write" i]',
+    '[role="textbox"][aria-label*="reply" i]',
     '.ql-editor[contenteditable="true"]',
     ".comments-comment-box__content-editable", // Feed Comments
     '.feed-shared-update-v2__comment-box [contenteditable="true"]', // Alternative Feed Comments
     ".msg-form__textarea", // Fallback for some InMail variations
+    '.msg-convo-wrapper [contenteditable="true"]',
+    '.msg-overlay-conversation-bubble [contenteditable="true"]',
+    '.msg-form [contenteditable="true"]',
+    '.msg-thread [contenteditable="true"]',
     // MACRO TARGETING: Ensure we capture generic editable elements in overlay/drawers and post creation modals
     '.msg-overlay-container [contenteditable="true"]',
     '.msg-overlay-container [role="textbox"]',
     '.share-creation-state__member-editor [contenteditable="true"]',
     '.share-creation-state__member-editor',
     '.artdeco-modal [contenteditable="true"]',
-    '.artdeco-modal [role="textbox"]'
+    '.artdeco-modal [role="textbox"]',
+    'p[contenteditable="true"]'
   ],
 
   isValid(el) {
     const label = (
       el.getAttribute("aria-label") ||
-      el.placeholder ||
+      el.getAttribute("placeholder") ||
       ""
     ).toLowerCase();
     const role = (el.getAttribute("role") || "").toLowerCase();
@@ -41,18 +48,19 @@ window.tonalAdapters.linkedin = {
     )
       return false;
 
-    // MACRO CHECK: Must be inside the main scaffold, overlay container, feed, or modal dialog
+    // MACRO CHECK: Must be inside the main scaffold, overlay container, messaging bubble, feed, or modal dialog
     const macroZone = el.closest(
-      ".scaffold-layout__main, .msg-overlay-container, .core-rail, .artdeco-modal, .share-creation-state"
+      ".scaffold-layout__main, .msg-overlay-container, .msg-convo-wrapper, .msg-overlay-conversation-bubble, .msg-form, .msg-thread, .core-rail, .artdeco-modal, .share-creation-state, form"
     );
-    return !!macroZone && el.offsetHeight > 20;
+    const height = el.offsetHeight || el.getBoundingClientRect().height;
+    return !!macroZone && height >= 14;
   },
 
   isInMessagingZone(el) {
     if (!el) return false;
-    // TARGET: Macro-pillars (Main Chat, Retractable Drawer, Feed/Comments, Post Creation Dialog)
+    // TARGET: Macro-pillars (Main Chat, Retractable Drawer, Messaging Overlay, Feed/Comments, Post Creation Dialog)
     const zone = el.closest(
-      '.scaffold-layout__main, .msg-overlay-container, .core-rail, [data-view-name="message-overlay"], .artdeco-modal, .share-creation-state'
+      '.scaffold-layout__main, .msg-overlay-container, .msg-convo-wrapper, .msg-overlay-conversation-bubble, .msg-form, .msg-thread, .core-rail, [data-view-name="message-overlay"], .artdeco-modal, .share-creation-state, form'
     );
     return !!zone;
   },
