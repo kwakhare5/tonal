@@ -41,7 +41,7 @@ export const metadata: Metadata = {
     canonical: "https://tonall.vercel.app",
   },
   verification: {
-    google: "google-site-verification-token",
+    google: "eGvRxHzO4y7ba19RYKajQQ8bY9LtP1QYKg0YkEDlowE",
   },
   openGraph: {
     title: "tonal — Inline Tone Adjustment Chrome Extension",
