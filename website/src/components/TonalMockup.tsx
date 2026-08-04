@@ -180,7 +180,6 @@ export const TonalMockup: React.FC = () => {
     siteToneMemoryRef.current[platform] = toneId;
     setShowPopover(false);
     setPillState('loading');
-    justUndoneRef.current = false;
 
     const currentSessionId = ++typingSessionRef.current;
     const currentInputText = text.trim() || DRAFT_MESSAGES.gmail[0];
@@ -237,21 +236,18 @@ export const TonalMockup: React.FC = () => {
   const handleUndo = () => {
     typingSessionRef.current++;
     setIsTyping(false);
-    justUndoneRef.current = true;
     setText(originalDraftRef.current);
     setPillState('rest');
     setShowPopover(false);
     setToastMessage('Restored original draft');
     setTimeout(() => {
       setToastMessage(null);
-      justUndoneRef.current = false;
     }, 2000);
   };
 
   const handlePlatformChange = (newPlatform: Platform) => {
     typingSessionRef.current++;
     setIsTyping(false);
-    justUndoneRef.current = false;
     setPlatform(newPlatform);
     setPillState('rest');
     setShowPopover(false);
@@ -411,7 +407,6 @@ export const TonalMockup: React.FC = () => {
               cursor: 'pointer',
             }}
             onMouseLeave={() => {
-              justUndoneRef.current = false;
               setShowPopover(false);
               if (pillState === 'expanded' || pillState === 'hover') setPillState('rest');
             }}
