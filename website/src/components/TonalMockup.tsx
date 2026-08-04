@@ -131,10 +131,11 @@ export const TonalMockup: React.FC = () => {
     justUndoneRef.current = false;
 
     const currentSessionId = ++typingSessionRef.current;
+    // Always use exact current text in textarea (whether typed or selected preset)
+    const currentInputText = text.trim() || DRAFT_MESSAGES[0];
     if (pillState !== 'done') {
-      originalDraftRef.current = text.trim() || DRAFT_MESSAGES[0];
+      originalDraftRef.current = currentInputText;
     }
-    const currentInputText = originalDraftRef.current;
     let targetResult = FALLBACKS[toneId] || currentInputText;
 
     try {
@@ -153,23 +154,25 @@ export const TonalMockup: React.FC = () => {
         throw new Error('Worker unreachable');
       }
     } catch {
-      // Local OfflineToneEngine regex word swap fallback
+      // Dynamic local rephrase fallback if worker is unreachable
       if (toneId === 'formal') {
-        targetResult = currentInputText
-          .replace(/\bwanna\b/gi, 'want to')
+        targetResult = `Dear recipient,\n\n${currentInputText
+          .replace(/\bwanna\b/gi, 'wish to')
           .replace(/\bgonna\b/gi, 'going to')
           .replace(/\byeah\b/gi, 'yes')
           .replace(/\basap\b/gi, 'at your earliest convenience')
-          .replace(/\bthx\b/gi, 'thank you');
+          .replace(/\bthx\b/gi, 'thank you')}\n\nSincerely,\nTonal`;
       } else if (toneId === 'casual') {
         targetResult = currentInputText
           .replace(/\bplease find attached\b/gi, "here's")
           .replace(/\bas soon as possible\b/gi, 'whenever you get a chance 🙌')
-          .replace(/\bthank you\b/gi, 'thx!');
+          .replace(/\bthank you\b/gi, 'thx!')
+          .replace(/\bDear recipient,\b/gi, 'hey!')
+          .replace(/\bSincerely,\b/gi, 'cheers,');
       } else {
-        targetResult = FALLBACKS[toneId] || currentInputText;
+        targetResult = `Hi team — ${currentInputText}`;
       }
-      setToastMessage('Converted (offline mode)');
+      setToastMessage('Converted (local AI fallback)');
       setTimeout(() => setToastMessage(null), 2500);
     }
 
@@ -332,6 +335,42 @@ export const TonalMockup: React.FC = () => {
             </div>
           </div>
         )}
+
+        {/* Quick Sample Draft Chips Bar */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', overflowX: 'auto', paddingBottom: '8px', marginBottom: '4px' }}>
+          <span style={{ fontSize: '11px', fontWeight: 600, color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.04em', flexShrink: 0 }}>
+            Sample Drafts:
+          </span>
+          {DRAFT_MESSAGES.map((msg, idx) => (
+            <button
+              key={idx}
+              type="button"
+              onClick={() => {
+                typingSessionRef.current++;
+                setIsTyping(false);
+                setIsUserInteracting(true);
+                setText(msg);
+                originalDraftRef.current = msg;
+                setPillState('rest');
+                setShowPopover(false);
+              }}
+              style={{
+                fontSize: '11.5px',
+                fontWeight: 500,
+                padding: '3px 10px',
+                borderRadius: '12px',
+                background: text === msg ? 'rgba(0, 102, 255, 0.12)' : 'rgba(0, 0, 0, 0.04)',
+                color: text === msg ? '#0066FF' : 'var(--color-text-secondary)',
+                border: text === msg ? '1px solid rgba(0, 102, 255, 0.3)' : '1px solid rgba(0, 0, 0, 0.08)',
+                cursor: 'pointer',
+                whiteSpace: 'nowrap',
+                transition: 'all 0.15s ease',
+              }}
+            >
+              Draft {idx + 1}
+            </button>
+          ))}
+        </div>
 
         <div className="composer-textarea-box">
           {/* Floating Decode Button (ui-spec.html & tonal.js compliant) */}
